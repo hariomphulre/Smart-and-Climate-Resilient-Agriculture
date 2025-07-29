@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart & Climate Resilient Agriculture</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="nav-bar">
+        <nav style="display: flex">
+            <span id="topic">Smart and Climate Resilient Agriculture</span>
+            <div class="nav-buttons">
+                <select name="Select Field" id="selectField">
+                    <option value="select Field">Select Field</option>
+                    <option value="Field 1">Farm 1</option>
+                    <option value="Field 1">Baramati</option>
+                </select>
+                <button onclick="climateOptions()" id="climate">Climate Analysis</button>
+                <button onclick="consoleOptions()" id="console">Farm Console</button>
+            </div>
+            <div class="search">
+                <input type="text" placeholder="Search..." id="search-bar">
+            </div>
+        </nav>
+    </div>
+    <div id="loadOptions"></div>
+    <script>
+            document.getElementById("climate").style.color = "blue";
+            fetch("climateOptions.html")
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById("loadOptions").innerHTML = data;
+            });
+        </script>
+    <script>
+        function climateOptions(){
+            document.getElementById("climate").style.color = "blue";
+            document.getElementById("console").style.color = "black";
+            fetch("climateOptions.html")
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById("loadOptions").innerHTML = data;
+            });
+        }
+        function consoleOptions(){
+            document.getElementById("console").style.color = "blue";
+            document.getElementById("climate").style.color = "black";
+            fetch("consoleOptions.html")
+            .then(response => response.text())
+            .then(data => {
+            document.getElementById("loadOptions").innerHTML = data;
+            });
+        }
+    </script>
+    <div>
+
+    </div>
+        
+</body>
+</html>

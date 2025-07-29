@@ -4,7 +4,10 @@
 			"path": "Smart_Agriculture"
 		},
 		{
-			"path": "Smart-and-Climate-Resilient-Agriculture"
+			"path": "System"
 		}
-	]
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "System"
+	}
 }

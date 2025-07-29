@@ -1,0 +1,103 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+.nav-bar{
+    /* display: flex; */
+    /* flex-direction: row; */
+    height: auto;
+    min-height: 47px;
+    /* background-color: rgb(0, 70, 0); */
+    /* background-color: #073b3a; */
+    background-color: #0c3c01;
+}
+
+nav{
+    display:flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    align-items: center;
+    height: 100%;
+    padding: 0 10px;
+}
+#topic{
+    margin-top: 8px;
+    /* margin-top: 7px; */
+    /* display: flex; */
+    font-family: Helvetica;
+    font-size: 22px;
+    color: white;
+}
+
+.nav-buttons{
+    margin-left:auto;
+    /* margin-right:100px; */
+    margin-top: 8px;
+    display:flex;
+    gap: 10px;
+    margin-right: 50px;
+}
+#search-bar{
+    margin-left:10px;
+    min-height: 30px;
+    padding-left: 7px;
+    border-radius: 4px;
+    max-width: 170px;
+    width: 100%;
+    min-width: 80px;
+    margin-top: 8px;
+    box-sizing: border-box;
+}
+#climate:hover,#console:hover{
+    color: blue;
+}
+#climate, #console{
+    font-family: Helvetica;
+    padding: 6px;
+    border-radius: 4px;
+    height: auto;
+    min-height: 32px;
+    padding-left: 10px; 
+    padding-right: 10px; 
+    font-size: 14px;
+}
+.classField{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0;
+    font-family: Helvetica;
+    /* height: auto; */
+    /* border: 1px solid black; */
+    /* border-radius: 4px; */
+    align-items: center;
+    justify-content: center;
+    
+}
+#selectField{
+    /* box-sizing: border-box; */
+    /* padding-top: 4px; */
+    /* padding-bottom: 4px; */
+    /* padding-left: 10px; */
+    /* padding-right: 6px; */
+    margin-top: 1.7px;
+    height: 28.6px;
+    border-radius: 3px; 
+    padding-left: 7px;
+    padding-right: 4px;
+    background-color: white;
+    color: #222;
+    /* width: 50px; */
+    /* font-size: 16px */
+    /* height: 32px; */
+    /* margin-top: 4px; */
+}
+
+/* #selectField{
+    
+    background-color: white;
+    color: black;
+    /* padding: 6px; */
+    /* font-size: 14px;
+    height: auto; */
+/* } */
