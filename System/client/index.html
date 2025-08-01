@@ -10,6 +10,18 @@
     <div class="nav-bar">
         <nav style="display: flex">
             <span id="topic">Smart and Climate Resilient Agriculture</span>
+            <!-- <div class="search">
+                <input type="text" placeholder="Search..." id="search-bar">
+            </div> -->
+
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Search (/) for tools, and more" autocomplete="off">
+                <div class="icons">
+                <button id="voiceBtn" style="color: #0c3c01ea"><i class="fa-solid fa-microphone"></i></button>
+                <button id="searchBtn" style="color: #0c3c01ea"><i class="fa-solid fa-magnifying-glass"></i></button>
+                </div>
+            </div>
+
             <div class="nav-buttons">
                 <select name="Select Field" id="selectField">
                     <option value="select Field">Select Field</option>
@@ -19,20 +31,33 @@
                 <button onclick="climateOptions()" id="climate">Climate Analysis</button>
                 <button onclick="consoleOptions()" id="console">Farm Console</button>
             </div>
-            <div class="search">
-                <input type="text" placeholder="Search..." id="search-bar">
-            </div>
+
+            <!-- <input list="language-options" id="language" name="language" placeholder="Select Language">
+            <datalist id="language-options">
+                <option value="English">
+                <option value="Hindi">
+                <option value="Marathi">
+            </datalist> -->
+
+            <input list="location-options" id="location" name="location" placeholder="Location ">
+            <datalist id="location-options">
+                <option value="DIT Pune">
+                <option value="Baramati">
+                <option value="Sterling Castle Bhopal">
+            </datalist>
+
+
         </nav>
     </div>
     <div id="loadOptions"></div>
     <script>
-            document.getElementById("climate").style.color = "blue";
-            fetch("climateOptions.html")
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById("loadOptions").innerHTML = data;
-            });
-        </script>
+        document.getElementById("climate").style.color = "blue";
+        fetch("climateOptions.html")
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById("loadOptions").innerHTML = data;
+        });
+    </script>
     <script>
         function climateOptions(){
             document.getElementById("climate").style.color = "blue";
@@ -53,9 +78,79 @@
             });
         }
     </script>
-    <div>
-
-    </div>
         
+    <!-- <div class="nav-bar2">
+        <button id="ai">AI</button>
+        <button id="menu">Menu</button>
+    </div>         -->
+
+    <div class="left-bar">
+        <ul>
+            <div class="left-bar-top">
+                <li>
+                    <a id="left-bar-btn" href="#">
+                        <i id="left-bar-icon" class="fa-solid fa-file"></i>
+                        <span>Reports</span>
+                    </a>
+                </li>
+                <li>
+                    <a id="left-bar-btn" href="#">
+                        <i id="left-bar-icon" class="fa-solid fa-database"></i>
+                        <span>Data</span>
+                    </a>
+                </li>
+                <li>
+                    <a id="left-bar-btn" href="#">
+                        <i id="left-bar-icon" class="fa-solid fa-database"></i>
+                        <span>Data</span>
+                    </a>
+                </li>
+                <li>
+                    <a id="left-bar-btn" href="#">
+                        <i id="left-bar-icon" class="fa-solid fa-database"></i>
+                        <span>Data</span>
+                    </a>
+                </li>
+                <li>
+                    <a id="left-bar-btn" href="#">
+                        <i id="left-bar-icon" class="fa-solid fa-database"></i>
+                        <span>Data</span>
+                    </a>
+                </li>
+                <li>
+                    <a id="left-bar-btn" href="#">
+                        <i id="left-bar-icon" class="fa-solid fa-database"></i>
+                        <span>Data</span>
+                    </a>
+                </li>
+            </div>
+            <div class="left-bar-btn-fixed">
+                <li>
+                    <a id="left-bar-btn-fix" href="#">
+                        <i id="left-bar-icon" class="fa-solid fa-brain"></i>
+                        <span>AI</span>
+                    </a>
+                </li>
+                <li>
+                    <a id="left-bar-btn-fix" href="#">
+                        <i id="left-bar-icon" class="fa-solid fa-user"></i>
+                        <span>Account</span>
+                    </a>
+                </li>
+                <li>
+                    <a id="left-bar-btn-fix" href="#">
+                        <i id="left-bar-icon" class="fa-solid fa-gear"></i>
+                        <span>Settings</span>
+                    </a>
+                </li>
+                <li>
+                    <a id="left-bar-btn-fix" href="#">
+                        <i id="left-bar-icon" class="fa-solid fa-arrow-right-from-bracket"></i>
+                        <span>Logout</span>
+                    </a>
+                </li>
+            </div>
+        </ul>
+    </div>
 </body>
 </html>
