@@ -16,7 +16,7 @@ except ee.EEException as e:
 
 # --- Configuration ---
 GCS_BUCKET_NAME = 'earth-engine-climate-data'
-GCS_FILE_NAME = 'Farm_NDVI_TimeSeries_with_LatLon'
+GCS_FILE_NAME = 'Farm_NDVI_TimeSeries_with_LatLon_new'
 file_path = f'./{GCS_FILE_NAME}-00000-of-00001.csv' 
 
 
@@ -82,25 +82,45 @@ if status['state'] == 'COMPLETED':
     print(f"File saved in GCS Bucket '{GCS_BUCKET_NAME}' with prefix '{GCS_FILE_NAME}'.")
     
     # Automatically download the file from GCS to your local system
+    # try:
+    #     from google.cloud import storage
+    #     storage_client = storage.Client()
+    #     bucket = storage_client.bucket(GCS_BUCKET_NAME)
+        
+    #     blob_name_to_download = None
+    #     for blob in bucket.list_blobs(prefix=GCS_FILE_NAME):
+    #         if blob.name.endswith('.csv'):
+    #             blob_name_to_download = blob.name
+    #             break
+        
+    #     if blob_name_to_download:
+    #         destination_file_name = f"./{os.path.basename(blob_name_to_download)}"
+    #         blob_to_download = bucket.blob(blob_name_to_download)
+    #         blob_to_download.download_to_filename(destination_file_name)
+    #         print(f"File '{blob_name_to_download}' downloaded from GCS to '{destination_file_name}'.")
+    #         file_path = destination_file_name # Update file_path for the next step
+    #     else:
+    #         print("Could not find the exported CSV file in the bucket.")
     try:
         from google.cloud import storage
         storage_client = storage.Client()
         bucket = storage_client.bucket(GCS_BUCKET_NAME)
-        
-        blob_name_to_download = None
-        for blob in bucket.list_blobs(prefix=GCS_FILE_NAME):
-            if blob.name.endswith('.csv'):
-                blob_name_to_download = blob.name
+
+        blobs = list(bucket.list_blobs(prefix=GCS_FILE_NAME))
+        if not blobs:
+            print(f"❌ No files found in bucket with prefix: {GCS_FILE_NAME}")
+            exit()
+
+        for blob in blobs:
+            print(f"📂 Found blob: {blob.name}")
+            if blob.name.endswith(".csv"):
+                destination_file_name = f"./{os.path.basename(blob.name)}"
+                blob.download_to_filename(destination_file_name)
+                print(f"✅ File downloaded to: {os.path.abspath(destination_file_name)}")
+                file_path = destination_file_name
                 break
-        
-        if blob_name_to_download:
-            destination_file_name = f"./{os.path.basename(blob_name_to_download)}"
-            blob_to_download = bucket.blob(blob_name_to_download)
-            blob_to_download.download_to_filename(destination_file_name)
-            print(f"File '{blob_name_to_download}' downloaded from GCS to '{destination_file_name}'.")
-            file_path = destination_file_name # Update file_path for the next step
         else:
-            print("Could not find the exported CSV file in the bucket.")
+            print("❌ No CSV file found in the exported blobs.")
 
     except ImportError:
         print("\nTo automatically download the file, please install the GCS client library:")
