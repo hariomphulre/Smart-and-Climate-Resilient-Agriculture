@@ -34,7 +34,7 @@ nav{
 
 .nav-buttons{
     margin-left: auto;
-    margin-right: 60px;
+    margin-right: 85px;
     margin-top: 8px;
     display:flex;
     gap: 10px;
@@ -101,7 +101,7 @@ nav{
 #location{
     margin-top: 8px;
     height: 28.3px;
-    max-width: 70px; 
+    max-width: 85px; 
     border-radius: 4px; 
     padding-left: 10px;
     padding-right: 4px;
@@ -113,7 +113,7 @@ nav{
 
 .search-container {
   position: relative;
-  width: 300px;
+  width: 350px;
   margin-left: 90px;
   margin-top: 8px;
 }
@@ -129,7 +129,7 @@ nav{
 .icons {
     position: absolute;
     top: 7px;
-    left: 265px;
+    left: 310px;
     /* right: 14px; */
     display: flex;
     gap: 6px;

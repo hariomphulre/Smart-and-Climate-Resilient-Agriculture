@@ -7,100 +7,36 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet"/>
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      font-family: 'Inter', sans-serif;
-      background-color: #f7f7f9;
-    }
-    .map-container {
-      padding: 30px 100px 40px;
-    }
-    .title {
-      margin-bottom: 20px;
-    }
-    #map {
-      width: 100%;
-      height: 400px;
-      border-radius: 0.5rem;
-      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
-      margin-bottom: 20px;
-    }
-    .map-btn {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    .map-btn input,
-    .map-btn button {
-      padding: 0.75rem 1rem;
-      font-size: 1rem;
-      border-radius: 0.5rem;
-    }
-    .map-btn input {
-      border: 1px solid #ccc;
-    }
-    .btn-primary {
-      background-color: #2563eb;
-      color: #fff;
-      border: none;
-      cursor: pointer;
-    }
-    .btn-primary:hover {
-      background-color: #1e40af;
-    }
-    .btn-red {
-      background-color: #ef4444;
-      color: #fff;
-      border: none;
-      cursor: pointer;
-    }
-    .btn-red:hover {
-      background-color: #dc2626;
-    }
-    #message-box {
-      position: fixed;
-      inset: 0;
-      background-color: rgba(17,24,39,0.5);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 100;
-    }
-    .message-box-content {
-      background-color: #fff;
-      padding: 1.5rem;
-      border-radius: 0.5rem;
-      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
-      max-width: 24rem;
-      width: 100%;
-      text-align: center;
-    }
-    .message-box-content p {
-      font-size: 1.125rem;
-      font-weight: 500;
-      color: #1f2937;
-      margin-bottom: 1rem;
-    }
-  </style>
+  <link rel="stylesheet" href="mapStyle.css">
 </head>
 <body>
-  <div class="map-container">
+  <div class="mapSection">
     <header class="title">
-      <h1>Plot Your Field</h1>
-      <p>Draw a polygon on the map, and save its coordinates.</p>
+      <h1>Plot New Field</h1>
+      <p id="heading-para">Draw a polygon on the map to mark a new field and save it with a unique name.</p>
     </header>
+    <div class="map-container">
 
-    <div id="map"></div>
+      <div id="map"></div>
+      <div class="map-btn">
+        <h2 id="map-field-details-h2">Field Details</h2>
+        <input type="text" id="fieldNameInput" placeholder="Enter Field Name"/>
+        <table id="coordTable" border="1">
+          <thead>
+            <tr>
+              <th style="color: blue" >Point</th>
+              <th style="color: blue">Latitude</th>
+              <th style="color: blue">Longitude</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <!-- <button id="saveJsonBtn" class="btn-primary">Save as JSON</button> -->
+        <button id="saveLocalBtn" class="btn-save">Save</button>
+        <button id="clearBtn" class="btn-clear">Clear All</button>
+        <!-- <button id="loadLocalBtn" class="btn-primary">Load from Local Storage</button> -->
+      </div>
 
-    <div class="map-btn">
-      <input type="text" id="fieldNameInput" placeholder="Enter polygon name"/>
-      <button id="saveJsonBtn" class="btn-primary">Save as JSON</button>
-      <button id="saveLocalBtn" class="btn-primary">Save to Local Storage</button>
-      <button id="loadLocalBtn" class="btn-primary">Load from Local Storage</button>
-      <button id="clearBtn" class="btn-red">Clear All</button>
     </div>
   </div>
 
@@ -130,6 +66,20 @@
         coordinates.push({ lat: latLng.lat(), lng: latLng.lng() });
       });
       return coordinates;
+    }
+
+    function updateCoordinateTable(coords) {
+      const tableBody = document.querySelector('#coordTable tbody');
+      tableBody.innerHTML = ''; // clear previous
+      coords.forEach((point, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${index + 1}</td>
+          <td>${point.lat.toFixed(6)}</td>
+          <td>${point.lng.toFixed(6)}</td>
+        `;
+        tableBody.appendChild(row);
+      });
     }
 
     function saveAsJson() {
@@ -237,6 +187,11 @@
         if (currentPolygon) currentPolygon.setMap(null);
         currentPolygon = polygon;
         drawingManager.setDrawingMode(null);
+
+        const coords = getPolygonCoordinates();
+        updateCoordinateTable(coords);
+        // const coords = getPolygonCoordinates();
+        // document.getElementById('coordinatesOutput').value = JSON.stringify(coords, null, 2);
       });
     }
 

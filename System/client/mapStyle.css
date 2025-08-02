@@ -1,0 +1,113 @@
+body {
+    /* position: relative; */
+    /* left: 70px; */
+    /* top: 60px; */
+    margin: 0;
+    padding: 0;
+    /* height: 100%; */
+    font-family: 'Inter', sans-serif;
+    background-color: #f7f7f9;
+}
+.map-container {
+    display: flex;
+    margin-left: 100px;
+    gap: 30px;
+    /* padding: 30px 100px 40px; */
+}
+.title{
+    margin-left: 100px;
+}
+#fieldNameInput{
+    border-radius: 4px;
+    height: 10px;
+}
+#map {
+    width: 70%;
+    height: 500px;
+    border-radius: 0.5rem;
+    box-shadow: 5px 5px 20px 3px rgba(0, 0, 0, 0.2);
+    margin-bottom: 20px;
+}
+.map-btn {
+    height: 500px;
+    width: 360px;
+    /* border: 1px solid black; */
+    border-radius: 0.5rem;
+    background-color: white;
+    box-shadow: 2px 2px 20px 3px rgba(0, 0, 0, 0.1);
+}
+
+#map-field-details-h2{
+    margin-left: 30%;
+}
+.map-btn input,.map-btn button {
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    border-radius: 0.5rem;
+}
+.map-btn input {
+    border: 1px solid #ccc;
+    margin-left: 30px;
+    margin-top: 20px;
+}
+#saveLocalBtn{
+    background-color: #2563eb;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    height: 30px;
+    border-radius: 0px;
+    font-size: 15px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+#clearBtn {
+    border-radius: 0px;
+    background-color: #ef4444;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    height: 30px;
+    font-size: 15px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+#message-box {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(17,24,39,0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+}
+.message-box-content {
+    background-color: #fff;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+    max-width: 24rem;
+    width: 100%;
+    text-align: center;
+}
+.message-box-content p {
+    font-size: 1.125rem;
+    font-weight: 500;
+    color: #1f2937;
+    margin-bottom: 1rem;
+}
+
+#coordTable{
+    margin-top: 10px; 
+    width: 70%; 
+    /* max-height: 20px; */
+    border-collapse: collapse;
+    /* flex: 1; */
+    overflow-y: auto;
+    overflow-x: hidden;
+}
