@@ -12,6 +12,9 @@
     background-color: #0c3c01;
 }
 
+body{
+    background-color: whitesmoke;
+}
 nav{
     display:flex;
     flex-wrap: wrap;
@@ -31,7 +34,7 @@ nav{
 
 .nav-buttons{
     margin-left: auto;
-    margin-right: 90px;
+    margin-right: 60px;
     margin-top: 8px;
     display:flex;
     gap: 10px;
@@ -110,8 +113,8 @@ nav{
 
 .search-container {
   position: relative;
-  width: 350px;
-  margin-left: 110px;
+  width: 300px;
+  margin-left: 90px;
   margin-top: 8px;
 }
 
@@ -126,7 +129,7 @@ nav{
 .icons {
     position: absolute;
     top: 7px;
-    left: 313px;
+    left: 265px;
     /* right: 14px; */
     display: flex;
     gap: 6px;
@@ -169,7 +172,7 @@ nav{
     color: black;
 }
 
-#left-bar-btn:hover, #left-bar-btn-fixed:hover{
+#left-bar-btn:hover, #left-bar-btn-fix:hover, #left-bar-ai:hover{
     background-color: rgb(220, 220, 220);
 }
 
@@ -212,3 +215,25 @@ nav{
     flex-wrap: wrap;
 }
 
+#left-bar-ai{
+    position: relative;
+    display: table;
+    text-decoration: none;
+    /* padding: 20px; */
+    /* padding-left: 25px; */
+    padding-top: 15px;
+    padding-bottom: 15px; 
+    width: 100%;
+    color: black;
+    border-top: 1px solid black;
+}
+#ai_logo{
+    padding-right: 22px; 
+    padding-left: 21.5px;
+    width: 21px;
+    height: auto;
+}
+
+#selectField{
+    width: 130px;
+}

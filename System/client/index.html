@@ -17,16 +17,17 @@
             <div class="search-container">
                 <input type="text" id="searchInput" placeholder="Search (/) for tools, and more" autocomplete="off">
                 <div class="icons">
-                <button id="voiceBtn" style="color: #0c3c01ea"><i class="fa-solid fa-microphone"></i></button>
-                <button id="searchBtn" style="color: #0c3c01ea"><i class="fa-solid fa-magnifying-glass"></i></button>
+                    <button id="voiceBtn" style="color: #0c3c01ea"><i class="fa-solid fa-microphone"></i></button>
+                    <button id="searchBtn" style="color: #0c3c01ea"><i class="fa-solid fa-magnifying-glass"></i></button>
                 </div>
             </div>
 
             <div class="nav-buttons">
-                <select name="Select Field" id="selectField">
-                    <option value="select Field">Select Field</option>
+                <select name="Select Field" id="selectField" onchange="createNewField(this.value)">
+                    <option onclick="createNewField()" id="create-new-field" style="color: #0000FF" value="new_field">Create New Field</option>
                     <option value="Field 1">Farm 1</option>
                     <option value="Field 1">Baramati</option>
+                    <option value="" disabled selected hidden>Select Field</option>
                 </select>
                 <button onclick="climateOptions()" id="climate">Climate Analysis</button>
                 <button onclick="consoleOptions()" id="console">Farm Console</button>
@@ -77,6 +78,120 @@
             document.getElementById("loadOptions").innerHTML = data;
             });
         }
+        function createNewField(value){
+            if(value=='Create New Field'){
+                const canvas = document.getElementById('drawing-canvas');
+                const ctx = canvas.getContext('2d');
+                const clearBtn = document.getElementById('clear-btn');
+                const saveBtn = document.getElementById('save-btn');
+                const fieldNameInput = document.getElementById('fieldNameInput');
+
+                let points = [];
+                let drawing = false;
+
+                // Set canvas dimensions to be square and responsive
+                const setCanvasSize = () => {
+                    const containerWidth = canvas.parentElement.clientWidth;
+                    canvas.width = containerWidth;
+                    canvas.height = containerWidth;
+                    redraw();
+                };
+
+                window.addEventListener('resize', setCanvasSize);
+                setCanvasSize();
+
+                // Function to draw a point on the canvas
+                const drawPoint = (x, y) => {
+                    ctx.beginPath();
+                    ctx.arc(x, y, 5, 0, 2 * Math.PI);
+                    ctx.fillStyle = '#1e40af';
+                    ctx.fill();
+                };
+
+                // Function to draw a line between two points
+                const drawLine = (p1, p2) => {
+                    ctx.beginPath();
+                    ctx.moveTo(p1.x, p1.y);
+                    ctx.lineTo(p2.x, p2.y);
+                    ctx.strokeStyle = '#1e40af';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                };
+
+                // Redraws the entire canvas with all current points and lines
+                const redraw = () => {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    if (points.length > 0) {
+                        points.forEach(point => drawPoint(point.x, point.y));
+                        for (let i = 0; i < points.length - 1; i++) {
+                            drawLine(points[i], points[i+1]);
+                        }
+                        // Draw closing line if we have a full polygon
+                        if (points.length > 2) {
+                            drawLine(points[points.length - 1], points[0]);
+                        }
+                    }
+                };
+
+                // Handle clicks on the canvas to add points
+                canvas.addEventListener('click', (e) => {
+                    const rect = canvas.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+
+                    points.push({ x: x, y: y });
+                    redraw();
+                });
+
+                // Clear the canvas and reset the points array
+                clearBtn.addEventListener('click', () => {
+                    points = [];
+                    fieldNameInput.value = '';
+                    redraw();
+                });
+
+                // Save the coordinates and field name as a JSON file
+                saveBtn.addEventListener('click', () => {
+                    const fieldName = fieldNameInput.value.trim();
+
+                    if (points.length < 3) {
+                        alert("Please draw a polygon with at least 3 points before saving.");
+                        return;
+                    }
+
+                    if (!fieldName) {
+                        alert("Please enter a field name before saving.");
+                        return;
+                    }
+
+                    // Create a data object
+                    const data = {
+                        fieldName: fieldName,
+                        coordinates: points
+                    };
+
+                    // Convert the object to a JSON string
+                    const jsonString = JSON.stringify(data, null, 2);
+
+                    // Create a Blob from the JSON string
+                    const blob = new Blob([jsonString], { type: 'application/json' });
+
+                    // Create a temporary URL and a link to download the file
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `${fieldName.replace(/ /g, '_')}.json`;
+                    
+                    // Append the link to the body, click it, and then remove it
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+
+                    // Clean up the temporary URL
+                    URL.revokeObjectURL(url);
+                });
+            }
+        }
     </script>
         
     <!-- <div class="nav-bar2">
@@ -126,8 +241,8 @@
             </div>
             <div class="left-bar-btn-fixed">
                 <li>
-                    <a id="left-bar-btn-fix" href="#">
-                        <i id="left-bar-icon" class="fa-solid fa-brain"></i>
+                    <a id="left-bar-ai" href="#">
+                        <img id="ai_logo" src="maple-leaf.png" alt="AI_logo">
                         <span>AI</span>
                     </a>
                 </li>
