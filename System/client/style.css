@@ -155,7 +155,7 @@ nav{
     height: 92.85vh;
     top: 50px;
     background-color: white;
-    border: 1px solid black;
+    border: 1px solid rgba(0,0,0,0.4);
     font-family: helvetica;
     overflow: hidden;
     transition: width 0.17s linear;
@@ -195,7 +195,7 @@ nav{
     padding-bottom: 15px; 
     width: 100%;
     color: black;
-    border-top: 1px solid black;
+    border-top: 1px solid rgba(0,0,0,0.4);
     /* justify-content: bottom; */
     
 }
@@ -225,7 +225,7 @@ nav{
     padding-bottom: 15px; 
     width: 100%;
     color: black;
-    border-top: 1px solid black;
+    border-top: 1px solid rgba(0,0,0,0.4);
 }
 #ai_logo{
     padding-right: 22px; 
@@ -238,15 +238,4 @@ nav{
     width: 140px;
 }
 
-#ndviChart{
-    margin-left:100px;
-    height: 50px;
-    max-width: 500px;
-}
 
-.chart{
-    background-color: white;
-    height: 500px;
-    width: 70%;
-    margin-left: 100px;
-}

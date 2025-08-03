@@ -1,0 +1,29 @@
+*{
+    font-family: 'Inter', sans-serif;
+}
+#ndviChart{
+    padding-top: 40px;
+    /* margin-left:30px; */
+    /* height: 200px; */
+    /* max-width: 300px; */
+}
+
+.chart{
+    margin-top: 20px;
+    border-radius: 0.5rem;
+    background-color: white;
+    height: 360px;
+    margin-left: 100px;
+    width: 400px;
+    box-shadow: 4px 4px 20px 2px rgba(0,0,0,0.2);
+}
+
+#vegetation_h1{
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 100px;
+}
+
+.title{
+    border-bottom: 1px solid rgba(0,0,0,0.3);
+}

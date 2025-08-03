@@ -6,7 +6,7 @@
     <title>Smart & Climate Resilient Agriculture</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 </head>
 <body>
     <div class="nav-bar">
@@ -55,53 +55,6 @@
 
     <div id="loadContent"></div>
 
-    <div class="chart">
-        <canvas id="ndviChart" width="500" height="200"></canvas>
-    </div>
-
-    <script>
-        Papa.parse("ndvi.csv", {
-        download: true,
-        header: true,
-        complete: function(results) {
-            const data = results.data;
-
-            const labels = data.map(row => row.date);
-            const ndviValues = data.map(row => parseFloat(row.ndvi));
-
-            const ctx = document.getElementById('ndviChart').getContext('2d');
-            new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: labels,
-                datasets: [{
-                label: 'NDVI',
-                data: ndviValues,
-                borderColor: 'green',
-                backgroundColor: 'rgba(0,128,0,0.1)',
-                fill: true,
-                tension: 0.2,
-                pointRadius: 4,
-                pointHoverRadius: 6
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                x: {
-                    title: { display: true, text: 'Date' }
-                },
-                y: {
-                    title: { display: true, text: 'NDVI' },
-                    min: 0,
-                    max: 1
-                }
-                }
-            }
-            });
-        }
-        });
-    </script>
     <script>
         document.getElementById("climate").style.color = "blue";
         fetch("climateOptions.html")
@@ -116,6 +69,11 @@
             .then(response => response.text())
             .then(data => {
                 document.getElementById("loadContent").innerHTML = data;
+
+                // Load the vegetation.js script
+                const script = document.createElement("script");
+                script.src = "analytics.js";
+                document.body.appendChild(script);
             });
         }
         function consoleOptions(){
