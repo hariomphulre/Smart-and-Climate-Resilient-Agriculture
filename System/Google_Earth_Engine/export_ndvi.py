@@ -134,41 +134,41 @@ else:
     exit() # Exit the script if the export failed
 
 # --- Data Visualization ---
-# try:
-#     # Read the downloaded CSV file into a pandas DataFrame
-#     df = pd.read_csv(file_path)
+try:
+    # Read the downloaded CSV file into a pandas DataFrame
+    df = pd.read_csv(file_path)
 
-#     # Convert the 'date' column to a proper datetime object
-#     df['date'] = pd.to_datetime(df['date'])
+    # Convert the 'date' column to a proper datetime object
+    df['date'] = pd.to_datetime(df['date'])
 
-#     # Drop any rows that might have null NDVI values (if any images had no data)
-#     df.dropna(subset=['ndvi'], inplace=True)
+    # Drop any rows that might have null NDVI values (if any images had no data)
+    df.dropna(subset=['ndvi'], inplace=True)
 
-#     # Sort the DataFrame by date, which is crucial for a time-series plot
-#     df.sort_values('date', inplace=True)
+    # Sort the DataFrame by date, which is crucial for a time-series plot
+    df.sort_values('date', inplace=True)
 
-#     print("\nData loaded successfully:")
-#     print(df)
+    print("\nData loaded successfully:")
+    print(df)
 
-#     # Plotting the Time Series
-#     plt.style.use('seaborn-v0_8-whitegrid')
-#     fig, ax = plt.subplots(figsize=(14, 7))
+    # Plotting the Time Series
+    plt.style.use('seaborn-v0_8-whitegrid')
+    fig, ax = plt.subplots(figsize=(14, 7))
 
-#     ax.plot(df['date'], df['ndvi'], marker='o', linestyle='-', color='green', label='Mean NDVI')
+    ax.plot(df['date'], df['ndvi'], marker='o', linestyle='-', color='green', label='Mean NDVI')
 
-#     # Formatting the plot
-#     ax.set_title('NDVI Time Series for Farm AOI (Oct 2024 - Apr 2025)', fontsize=16)
-#     ax.set_xlabel('Date', fontsize=12)
-#     ax.set_ylabel('NDVI (Normalized Difference Vegetation Index)', fontsize=12)
-#     ax.set_ylim(0, 1)
-#     ax.legend()
-#     ax.grid(True)
+    # Formatting the plot
+    ax.set_title('NDVI Time Series for Farm AOI (Oct 2024 - Apr 2025)', fontsize=16)
+    ax.set_xlabel('Date', fontsize=12)
+    ax.set_ylabel('NDVI (Normalized Difference Vegetation Index)', fontsize=12)
+    ax.set_ylim(0, 1)
+    ax.legend()
+    ax.grid(True)
 
-#     fig.autofmt_xdate()
+    fig.autofmt_xdate()
 
-#     plt.show()
+    plt.show()
 
-# except FileNotFoundError:
-#     print(f"Error: The file was not found at '{file_path}'")
-# except Exception as e:
-#     print(f"An error occurred during data visualization: {e}")
+except FileNotFoundError:
+    print(f"Error: The file was not found at '{file_path}'")
+except Exception as e:
+    print(f"An error occurred during data visualization: {e}")
