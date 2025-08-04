@@ -20,7 +20,95 @@ function water(){
             <i id="water" class="fa-solid fa-droplet"></i>
             <h2 id="water_head">Water & Irrigation</h2>
         </div>
+        <div class="waterSection">
+            <div class="water-container">
+                <div class="ndwiChartDiv">
+                    <h3 id="ndwi-chart-title">NDWI - Normalized Difference Water Index</h3>
+                    <canvas id="ndwiChart"></canvas>
+                </div>
+                <div class="ndmiChartDiv">
+                    <h3 id="ndmi-chart-title">NDMI - Normalized Difference Moisture Index</h3>
+                    <canvas id="ndmiChart"></canvas>
+                </div>
+                <div class="lswiChartDiv">
+                    <h3 id="lswi-chart-title">LSWI - Land Surface Water Index</h3>
+                    <canvas id="lswiChart"></canvas>
+                </div>
+            </div>
+            <div class="observ">
+                <h3 id="observ-head">Observations</h3>
+            </div>
+        </div>
     `;
+
+    Papa.parse("ndwi.csv", {
+        download: true,
+        header: true,
+        complete: function(results) {
+            const labels = results.data.map(row => row.date);
+            const ndwiValues = results.data.map(row => parseFloat(row.ndwi));
+
+            const ctx = document.getElementById('ndwiChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'NDWI',
+                        data: ndwiValues,
+                        borderColor: '#0080ffff',
+                        fill: true
+                    }]
+                }
+            });
+        }
+    });
+
+    Papa.parse("ndmi.csv", {
+        download: true,
+        header: true,
+        complete: function(results) {
+            const labels = results.data.map(row => row.date);
+            const ndmiValues = results.data.map(row => parseFloat(row.ndmi));
+
+            const ctx = document.getElementById('ndmiChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'NDMI',
+                        data: ndmiValues,
+                        borderColor: '#0080ffff',
+                        fill: true
+                    }]
+                }
+            });
+        }
+    });
+
+    Papa.parse("lswi.csv", {
+        download: true,
+        header: true,
+        complete: function(results) {
+            const labels = results.data.map(row => row.date);
+            const lswiValues = results.data.map(row => parseFloat(row.lswi));
+
+            const ctx = document.getElementById('lswiChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'LSWI',
+                        data: lswiValues,
+                        borderColor: '#0080ffff',
+                        fill: true
+                    }]
+                }
+            });
+        }
+    });
 }
 
 function vegetation() {
@@ -39,10 +127,11 @@ function vegetation() {
                     <h3 id="evi-chart-title">EVI - Enhanced Vegetation Index</h3>
                     <canvas id="eviChart"></canvas>
                 </div>
-                <div class="saviChartDiv">
-                    <h3 id="savi-chart-title">SAVI - Soil Adjusted Vegetation Index</h3>
-                    <canvas id="saviChart"></canvas>
+                <div class="gciChartDiv">
+                    <h3 id="gci-chart-title">GCI - Green Chlorophyll Index</h3>
+                    <canvas id="gciChart"></canvas>
                 </div>
+                
             </div>
             <div class="observ">
                 <h3 id="observ-head">Observations</h3>
@@ -96,21 +185,21 @@ function vegetation() {
         }
     });
 
-    Papa.parse("savi.csv", {
+    Papa.parse("gci.csv", {
         download: true,
         header: true,
         complete: function(results) {
             const labels = results.data.map(row => row.date);
-            const saviValues = results.data.map(row => parseFloat(row.savi));
+            const gciValues = results.data.map(row => parseFloat(row.gci));
 
-            const ctx = document.getElementById('saviChart').getContext('2d');
+            const ctx = document.getElementById('gciChart').getContext('2d');
             new Chart(ctx, {
                 type: 'line',
                 data: {
                     labels: labels,
                     datasets: [{
-                        label: 'SAVI',
-                        data: saviValues,
+                        label: 'GCI',
+                        data: gciValues,
                         borderColor: 'green',
                         fill: true
                     }]

@@ -8,6 +8,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="mapStyle.css">
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
 </head>
 <body>
   <div class="mapSection">
@@ -32,6 +34,7 @@
           <tbody></tbody>
         </table>
         <!-- <button id="saveJsonBtn" class="btn-primary">Save as JSON</button> -->
+        <button id="downloadImageBtn" class="btn-save">Download Map Image</button>
         <button id="saveLocalBtn" class="btn-save">Save</button>
         <button id="clearBtn" class="btn-clear">Clear All</button>
         <!-- <button id="loadLocalBtn" class="btn-primary">Load from Local Storage</button> -->
@@ -208,10 +211,27 @@
 
     // Attach button listeners after DOM is ready
     window.addEventListener('DOMContentLoaded', () => {
-      document.getElementById('saveJsonBtn').addEventListener('click', saveAsJson);
-      document.getElementById('saveLocalBtn').addEventListener('click', saveToLocalStorage);
-      document.getElementById('loadLocalBtn').addEventListener('click', loadFromLocalStorage);
+      // document.getElementById('saveJsonBtn').addEventListener('click', saveAsJson);
+      // document.getElementById('saveLocalBtn').addEventListener('click', saveToLocalStorage);
+      // document.getElementById('loadLocalBtn').addEventListener('click', loadFromLocalStorage);
       document.getElementById('clearBtn').addEventListener('click', clearAll);
+      document.getElementById('downloadImageBtn').addEventListener('click', () => {
+        const mapElement = document.getElementById('map');
+        const fieldName = document.getElementById('fieldNameInput').value.trim();
+
+        if (!fieldName) {
+          alert("Please enter a field name before downloading.");
+          return;
+        }
+
+        html2canvas(mapElement).then(canvas => {
+          const link = document.createElement('a');
+          const safeName = fieldName.replace(/[^a-z0-9_\-]/gi, '_').toLowerCase(); // sanitize filename
+          link.download = `${safeName}_map.png`;
+          link.href = canvas.toDataURL();
+          link.click();
+        });
+      });
     });
   </script>
 </body>
