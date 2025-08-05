@@ -34,7 +34,6 @@
           <tbody></tbody>
         </table>
         <!-- <button id="saveJsonBtn" class="btn-primary">Save as JSON</button> -->
-        <button id="downloadImageBtn" class="btn-save">Download Map Image</button>
         <button id="saveLocalBtn" class="btn-save">Save</button>
         <button id="clearBtn" class="btn-clear">Clear All</button>
         <!-- <button id="loadLocalBtn" class="btn-primary">Load from Local Storage</button> -->
@@ -85,26 +84,26 @@
       });
     }
 
-    function saveAsJson() {
-      const fieldName = document.getElementById('fieldNameInput').value.trim();
-      const coordinates = getPolygonCoordinates();
-      if (!coordinates || coordinates.length < 3) {
-        showMessage("Draw a polygon with at least 3 points.");
-        return;
-      }
-      if (!fieldName) {
-        showMessage("Enter a name before saving.");
-        return;
-      }
-      const data = { fieldName, coordinates };
-      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = `${fieldName.replace(/ /g, '_')}.json`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-    }
+    // function saveAsJson() {
+    //   const fieldName = document.getElementById('fieldNameInput').value.trim();
+    //   const coordinates = getPolygonCoordinates();
+    //   if (!coordinates || coordinates.length < 3) {
+    //     showMessage("Draw a polygon with at least 3 points.");
+    //     return;
+    //   }
+    //   if (!fieldName) {
+    //     showMessage("Enter a name before saving.");
+    //     return;
+    //   }
+    //   const data = { fieldName, coordinates };
+    //   const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    //   const a = document.createElement('a');
+    //   a.href = URL.createObjectURL(blob);
+    //   a.download = `${fieldName.replace(/ /g, '_')}.json`;
+    //   document.body.appendChild(a);
+    //   a.click();
+    //   document.body.removeChild(a);
+    // }
 
     function saveToLocalStorage() {
       if (!currentPolygon) {
@@ -115,29 +114,29 @@
       showMessage("Saved to local storage!");
     }
 
-    function loadFromLocalStorage() {
-      const saved = localStorage.getItem('savedPolygon');
-      if (!saved) {
-        showMessage("No saved polygon found.");
-        return;
-      }
-      const coords = JSON.parse(saved);
-      if (currentPolygon) currentPolygon.setMap(null);
-      currentPolygon = new google.maps.Polygon({
-        paths: coords,
-        strokeColor: '#2563eb',
-        strokeOpacity: 0.8,
-        strokeWeight: 2,
-        fillColor: '#2563eb',
-        fillOpacity: 0.35,
-        editable: true,
-        map: map,
-      });
-      const bounds = new google.maps.LatLngBounds();
-      currentPolygon.getPath().forEach(p => bounds.extend(p));
-      map.fitBounds(bounds);
-      showMessage("Polygon loaded.");
-    }
+    // function loadFromLocalStorage() {
+    //   const saved = localStorage.getItem('savedPolygon');
+    //   if (!saved) {
+    //     showMessage("No saved polygon found.");
+    //     return;
+    //   }
+    //   const coords = JSON.parse(saved);
+    //   if (currentPolygon) currentPolygon.setMap(null);
+    //   currentPolygon = new google.maps.Polygon({
+    //     paths: coords,
+    //     strokeColor: '#2563eb',
+    //     strokeOpacity: 0.8,
+    //     strokeWeight: 2,
+    //     fillColor: '#2563eb',
+    //     fillOpacity: 0.35,
+    //     editable: true,
+    //     map: map,
+    //   });
+    //   const bounds = new google.maps.LatLngBounds();
+    //   currentPolygon.getPath().forEach(p => bounds.extend(p));
+    //   map.fitBounds(bounds);
+    //   showMessage("Polygon loaded.");
+    // }
 
     function clearAll() {
       if (currentPolygon) {
@@ -215,13 +214,17 @@
       // document.getElementById('saveLocalBtn').addEventListener('click', saveToLocalStorage);
       // document.getElementById('loadLocalBtn').addEventListener('click', loadFromLocalStorage);
       document.getElementById('clearBtn').addEventListener('click', clearAll);
-      document.getElementById('downloadImageBtn').addEventListener('click', () => {
+      document.getElementById('saveLocalBtn').addEventListener('click', () => {
         const mapElement = document.getElementById('map');
         const fieldName = document.getElementById('fieldNameInput').value.trim();
 
         if (!fieldName) {
           alert("Please enter a field name before downloading.");
           return;
+        }
+        
+        if (window.parent && typeof window.parent.addFieldToDropdown === "function") {
+            window.parent.addFieldToDropdown(fieldName);
         }
 
         html2canvas(mapElement).then(canvas => {

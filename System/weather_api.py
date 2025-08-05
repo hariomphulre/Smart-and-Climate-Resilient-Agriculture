@@ -1,5 +1,6 @@
 import requests
-
+import os
+from dotenv import load_dotenv
 # Get public IP info
 response = requests.get("https://ipinfo.io/json")
 
@@ -10,7 +11,8 @@ if response.status_code == 200:
     region=data.get("region")
     pin_code=data.get("postal")
 
-API_KEY = "fde2fa13207350d532c8e55131f22bd3"
+load_dotenv()
+API_KEY = os.getenv('OPENWEATHER_API_KEY')
 URL = f"https://api.openweathermap.org/data/2.5/weather?q={city},{country_code}&appid={API_KEY}&units=metric"
 
 response = requests.get(URL)

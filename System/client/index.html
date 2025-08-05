@@ -107,6 +107,13 @@
                 `;
             }
         }
+        function addFieldToDropdown(fieldName) {
+            const select = document.getElementById("selectField");
+            const option = document.createElement("option");
+            option.value = fieldName;
+            option.textContent = fieldName;
+            select.insertBefore(option, select.firstChild); // add it before "Create New Field"
+        }
     </script>
         
     <!-- <div class="nav-bar2">
