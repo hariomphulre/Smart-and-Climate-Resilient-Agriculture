@@ -26,7 +26,7 @@
         <table id="coordTable" border="1">
           <thead>
             <tr>
-              <th style="color: blue" >Point</th>
+              <th style="color: blue">Point</th>
               <th style="color: blue">Longitude</th>
               <th style="color: blue">Latitude</th>
             </tr>
@@ -84,26 +84,39 @@
       });
     }
 
-    // function saveAsJson() {
-    //   const fieldName = document.getElementById('fieldNameInput').value.trim();
-    //   const coordinates = getPolygonCoordinates();
-    //   if (!coordinates || coordinates.length < 3) {
-    //     showMessage("Draw a polygon with at least 3 points.");
-    //     return;
-    //   }
-    //   if (!fieldName) {
-    //     showMessage("Enter a name before saving.");
-    //     return;
-    //   }
-    //   const data = { fieldName, coordinates };
-    //   const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-    //   const a = document.createElement('a');
-    //   a.href = URL.createObjectURL(blob);
-    //   a.download = `${fieldName.replace(/ /g, '_')}.json`;
-    //   document.body.appendChild(a);
-    //   a.click();
-    //   document.body.removeChild(a);
-    // }
+    function saveFieldAsJson() {
+      const fieldName = document.getElementById('fieldNameInput').value.trim();
+      const coordinates = getPolygonCoordinates();
+
+      if (!coordinates || coordinates.length < 3) {
+        alert("Draw a polygon with at least 3 points.");
+        return;
+      }
+
+      if (!fieldName) {
+        alert("Enter a name before saving.");
+        return;
+      }
+
+      const formattedCoords = coordinates.map(coord => ({ lat: coord.lat, lng: coord.lng }));
+
+      let existingFields = JSON.parse(localStorage.getItem('allFields')) || {};
+
+      existingFields[fieldName] = formattedCoords;
+
+      localStorage.setItem('allFields', JSON.stringify(existingFields, null, 2));
+
+      const blob = new Blob([JSON.stringify(existingFields, null, 2)], { type: 'application/json' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'fields_data.json';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      alert("Field saved and JSON downloaded.");
+    }
+
 
     function saveToLocalStorage() {
       if (!currentPolygon) {
@@ -160,7 +173,7 @@
       map = new google.maps.Map(document.getElementById('map'), {
         center: { lat: 20.5937, lng: 78.9629 },
         zoom: 5,
-        mapTypeId: 'satellite',
+        mapTypeId: 'hybrid',
         mapTypeControl: false,
         streetViewControl: false,
         fullscreenControl: false
@@ -215,6 +228,7 @@
       // document.getElementById('loadLocalBtn').addEventListener('click', loadFromLocalStorage);
       document.getElementById('clearBtn').addEventListener('click', clearAll);
       document.getElementById('saveLocalBtn').addEventListener('click', () => {
+        saveFieldAsJson();
         const mapElement = document.getElementById('map');
         const fieldName = document.getElementById('fieldNameInput').value.trim();
 

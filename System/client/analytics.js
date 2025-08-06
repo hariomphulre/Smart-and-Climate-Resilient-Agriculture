@@ -3,10 +3,12 @@ document.querySelector('.Analytics').innerHTML = `
     <div class="title">
         <i id="weather" class="fa-solid fa-cloud-sun-rain"></i>
         <h2 id="weather_head">Weather Forecast</h2>
-        <p id="Interval">Interval:</p>
-        <input type="date" id="startDate">
-        <p id="to">to</p>
-        <input type="date" id="endDate">
+        <div class="IntervalRange">
+            <p id="Interval">Interval:</p>
+            <input type="date" id="startDate">
+            <p id="to">to</p>
+            <input type="date" id="endDate">
+        </div>
     </div>
 `;
 function weather(){
@@ -14,10 +16,12 @@ function weather(){
         <div class="title">
             <i id="weather" class="fa-solid fa-cloud-sun-rain"></i>
             <h2 id="weather_head">Weather Forecast</h2>
-            <p id="Interval">Interval:</p>
-            <input type="date" id="startDate">
-            <p id="to">to</p>
-            <input type="date" id="endDate">
+            <div class="IntervalRange">
+                <p id="Interval">Interval:</p>
+                <input type="date" id="startDate">
+                <p id="to">to</p>
+                <input type="date" id="endDate">
+            </div>
         </div>
     `;
 }
@@ -27,10 +31,12 @@ function water(){
         <div class="title">
             <i id="water" class="fa-solid fa-droplet"></i>
             <h2 id="water_head">Water & Irrigation</h2>
-            <p id="Interval">Interval:</p>
-            <input type="date" id="startDate">
-            <p id="to">to</p>
-            <input type="date" id="endDate">
+            <div class="IntervalRange">
+                <p id="Interval">Interval:</p>
+                <input type="date" id="startDate">
+                <p id="to">to</p>
+                <input type="date" id="endDate">
+            </div>
         </div>
         <div class="waterSection">
             <div class="water-container">
@@ -128,10 +134,12 @@ function vegetation() {
         <div class="title">
             <i id="carrot" class="fa-solid fa-carrot"></i>
             <h2 id="vegetation_head">Vegetation & Crop Health</h2>
-            <p id="Interval">Interval:</p>
-            <input type="date" id="startDate">
-            <p id="to">to</p>
-            <input type="date" id="endDate">
+            <div class="IntervalRange">
+                <p id="Interval">Interval:</p>
+                <input type="date" id="startDate">
+                <p id="to">to</p>
+                <input type="date" id="endDate">
+            </div>
         </div>
         <div class="vegSection">
             <div class="veg-container">
@@ -230,9 +238,12 @@ function fire(){
         <div class="title">
             <i id="fire" class="fa-solid fa-fire"></i>
             <h2 id="fire_head">Fire & Hazards</h2>
-            <input type="date" id="startDate">
-            <p id="to">to</p>
-            <input type="date" id="endDate">
+            <div class="IntervalRange">
+                <p id="Interval">Interval:</p>
+                <input type="date" id="startDate">
+                <p id="to">to</p>
+                <input type="date" id="endDate">
+            </div>
         </div>
     `;
 }
@@ -242,10 +253,12 @@ function rain(){
         <div class="title">
             <i id="rain" class="fa-solid fa-cloud-rain"></i>
             <h2 id="rain_head">Rainfall & Monsoon</h2>
-            <p id="Interval">Interval:</p>
-            <input type="date" id="startDate">
-            <p id="to">to</p>
-            <input type="date" id="endDate">
+            <div class="IntervalRange">
+                <p id="Interval">Interval:</p>
+                <input type="date" id="startDate">
+                <p id="to">to</p>
+                <input type="date" id="endDate">
+            </div>
         </div>
     `;
 }
@@ -255,10 +268,12 @@ function soil(){
         <div class="title">
             <i id="soil" class="fa-solid fa-seedling"></i>
             <h2 id="soil_head">Soil & Land</h2>
-            <p id="Interval">Interval:</p>
-            <input type="date" id="startDate">
-            <p id="to">to</p>
-            <input type="date" id="endDate">
+            <div class="IntervalRange">
+                <p id="Interval">Interval:</p>
+                <input type="date" id="startDate">
+                <p id="to">to</p>
+                <input type="date" id="endDate">
+            </div>
         </div>
     `;
 }
