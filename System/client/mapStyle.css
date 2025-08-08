@@ -1,13 +1,13 @@
 body {
-    /* position: relative; */
+    /* position: fixed; */
     /* left: 70px; */
     /* top: 60px; */
     margin: 0;
     padding: 0;
-    /* height: 100%; */
     font-family: 'Inter', sans-serif;
     background-color: #f7f7f9;
 }
+
 .map-container {
     display: flex;
     margin-left: 100px;
@@ -48,9 +48,10 @@ body {
 .map-btn input {
     border: 1px solid #ccc;
     margin-left: 30px;
-    margin-top: 20px;
+    margin-top: 10px;
 }
 #saveLocalBtn{
+    margin-top: 250px;
     background-color: #2563eb;
     color: #fff;
     border: none;
@@ -62,6 +63,11 @@ body {
     padding-right: 20px;
     padding-top: 5px;
     padding-bottom: 5px;
+}
+#fieldLocation{
+    margin-top: 10px;
+    border-radius: 4px;
+    height: 10px;
 }
 
 #clearBtn {

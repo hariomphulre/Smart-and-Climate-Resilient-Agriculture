@@ -1,4 +1,3 @@
-
 document.querySelector('.Analytics').innerHTML = `
     <div class="title">
         <i id="weather" class="fa-solid fa-cloud-sun-rain"></i>
@@ -11,6 +10,19 @@ document.querySelector('.Analytics').innerHTML = `
         </div>
     </div>
 `;
+
+//////////////////////////////// left bar///////////////////////////////////////
+
+function dashboard(){
+    document.querySelector('#loadContent').innerHTML = `
+        <div class="title">
+            <i id="dashboard" class="fa-solid fa-tractor"></i>
+            <h2 id="dashboard_head">Dashboard</h2>
+        </div>
+    `;
+}
+
+///////////////////////////// Climate Analysis ////////////////////////////////////
 function weather(){
     document.querySelector('.Analytics').innerHTML = `
         <div class="title">
@@ -41,16 +53,46 @@ function water(){
         <div class="waterSection">
             <div class="water-container">
                 <div class="ndwiChartDiv">
-                    <h3 id="ndwi-chart-title">NDWI - Normalized Difference Water Index</h3>
+                    <div class="chart-info">
+                        <h3 id="ndwi-chart-title">
+                            NDWI - Normalized Difference Water Index 
+                        </h3>
+                        <p class="chart-info-content">
+                            NDWI helps detect water content in vegetation and identify water bodies.
+                            NDWI helps detect water content in vegetation and identify water bodies.
+                        </p>
+                    </div>
                     <canvas id="ndwiChart"></canvas>
                 </div>
                 <div class="ndmiChartDiv">
-                    <h3 id="ndmi-chart-title">NDMI - Normalized Difference Moisture Index</h3>
+                    <div class="chart-info">
+                        <h3 id="ndmi-chart-title">NDMI - Normalized Difference Moisture Index</h3>
+                        <p class="chart-info-content">
+                            NDWI helps detect water content in vegetation and identify water bodies.
+                            NDWI helps detect water content in vegetation and identify water bodies.
+                        </p>
+                    </div>
                     <canvas id="ndmiChart"></canvas>
                 </div>
                 <div class="lswiChartDiv">
-                    <h3 id="lswi-chart-title">LSWI - Land Surface Water Index</h3>
+                    <div class="chart-info">
+                        <h3 id="lswi-chart-title">LSWI - Land Surface Water Index</h3>
+                        <p class="chart-info-content">
+                            NDWI helps detect water content in vegetation and identify water bodies.
+                            NDWI helps detect water content in vegetation and identify water bodies.
+                        </p>
+                    </div>
                     <canvas id="lswiChart"></canvas>
+                </div>
+                <div class="aweiChartDiv">
+                    <div class="chart-info">
+                        <h3 id="awei-chart-title">AWEI - Automated Water Extraction Index</h3>
+                        <p class="chart-info-content">
+                            NDWI helps detect water content in vegetation and identify water bodies.
+                            NDWI helps detect water content in vegetation and identify water bodies.
+                        </p>
+                    </div>
+                    <canvas id="aweiChart"></canvas>
                 </div>
             </div>
             <div class="observ">
@@ -127,6 +169,29 @@ function water(){
             });
         }
     });
+
+    Papa.parse("awei.csv", {
+        download: true,
+        header: true,
+        complete: function(results) {
+            const labels = results.data.map(row => row.date);
+            const aweiValues = results.data.map(row => parseFloat(row.awei));
+
+            const ctx = document.getElementById('aweiChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'AWEI',
+                        data: aweiValues,
+                        borderColor: '#0080ffff',
+                        fill: true
+                    }]
+                }
+            });
+        }
+    });
 }
 
 function vegetation() {
@@ -144,16 +209,64 @@ function vegetation() {
         <div class="vegSection">
             <div class="veg-container">
                 <div class="ndviChartDiv">
-                    <h3 id="ndvi-chart-title">NDVI - Normalized Difference Vegetation Index</h3>
+                    <div class="chart-info">
+                        <h3 id="ndvi-chart-title">NDVI - Normalized Difference Vegetation Index</h3>
+                        <p class="chart-info-content">
+                            NDWI helps detect water content in vegetation and identify water bodies.
+                            NDWI helps detect water content in vegetation and identify water bodies.
+                        </p>
+                    </div>
                     <canvas id="ndviChart"></canvas>
                 </div>
                 <div class="eviChartDiv">
-                    <h3 id="evi-chart-title">EVI - Enhanced Vegetation Index</h3>
+                    <div class="chart-info">
+                        <h3 id="evi-chart-title">EVI - Enhanced Vegetation Index</h3>
+                        <p class="chart-info-content">
+                            NDWI helps detect water content in vegetation and identify water bodies.
+                            NDWI helps detect water content in vegetation and identify water bodies.
+                        </p>
+                    </div>
                     <canvas id="eviChart"></canvas>
                 </div>
                 <div class="gciChartDiv">
-                    <h3 id="gci-chart-title">GCI - Green Chlorophyll Index</h3>
+                    <div class="chart-info">
+                        <h3 id="gci-chart-title">GCI - Green Chlorophyll Index</h3>
+                        <p class="chart-info-content">
+                            NDWI helps detect water content in vegetation and identify water bodies.
+                            NDWI helps detect water content in vegetation and identify water bodies.
+                        </p>
+                    </div>
                     <canvas id="gciChart"></canvas>
+                </div>
+                <div class="psriChartDiv">
+                    <div class="chart-info">
+                        <h3 id="psri-chart-title">PSRI - Plant Senescence Reflectance Index</h3>
+                        <p class="chart-info-content">
+                            NDWI helps detect water content in vegetation and identify water bodies.
+                            NDWI helps detect water content in vegetation and identify water bodies.
+                        </p>
+                    </div>
+                    <canvas id="psriChart"></canvas>
+                </div>
+                <div class="ndreChartDiv">
+                    <div class="chart-info">
+                        <h3 id="ndre-chart-title">NDRE - Normalized Difference Red Edge Index</h3>
+                        <p class="chart-info-content">
+                            NDWI helps detect water content in vegetation and identify water bodies.
+                            NDWI helps detect water content in vegetation and identify water bodies.
+                        </p>
+                    </div>
+                    <canvas id="ndreChart"></canvas>
+                </div>
+                <div class="cri1ChartDiv">
+                    <div class="chart-info">
+                        <h3 id="cri1-chart-title">CRI1 - Carotenoid Reflectance Index 1</h3>
+                        <p class="chart-info-content">
+                            NDWI helps detect water content in vegetation and identify water bodies.
+                            NDWI helps detect water content in vegetation and identify water bodies.
+                        </p>
+                    </div>
+                    <canvas id="cri1Chart"></canvas>
                 </div>
                 
             </div>
@@ -231,6 +344,74 @@ function vegetation() {
             });
         }
     });
+
+    Papa.parse("psri.csv", {
+        download: true,
+        header: true,
+        complete: function(results) {
+            const labels = results.data.map(row => row.date);
+            const psriValues = results.data.map(row => parseFloat(row.psri));
+
+            const ctx = document.getElementById('psriChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'PSRI',
+                        data: psriValues,
+                        borderColor: 'green',
+                        fill: true
+                    }]
+                }
+            });
+        }
+    });
+
+    Papa.parse("ndre.csv", {
+        download: true,
+        header: true,
+        complete: function(results) {
+            const labels = results.data.map(row => row.date);
+            const ndreValues = results.data.map(row => parseFloat(row.ndre));
+
+            const ctx = document.getElementById('ndreChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'NDRE',
+                        data: ndreValues,
+                        borderColor: 'green',
+                        fill: true
+                    }]
+                }
+            });
+        }
+    });
+    Papa.parse("cri1.csv", {
+        download: true,
+        header: true,
+        complete: function(results) {
+            const labels = results.data.map(row => row.date);
+            const cri1Values = results.data.map(row => parseFloat(row.cri1));
+
+            const ctx = document.getElementById('cri1Chart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'CRI1',
+                        data: cri1Values,
+                        borderColor: 'green',
+                        fill: true
+                    }]
+                }
+            });
+        }
+    });
 }
 
 function fire(){
@@ -243,6 +424,11 @@ function fire(){
                 <input type="date" id="startDate">
                 <p id="to">to</p>
                 <input type="date" id="endDate">
+            </div>
+        </div>
+        <div class="fireSection">
+            <div class="observ">
+                <h3 id="observ-head">Observations</h3>
             </div>
         </div>
     `;
@@ -260,6 +446,11 @@ function rain(){
                 <input type="date" id="endDate">
             </div>
         </div>
+        <div class="rainSection">
+            <div class="observ">
+                <h3 id="observ-head">Observations</h3>
+            </div>
+        </div>
     `;
 }
 
@@ -273,6 +464,11 @@ function soil(){
                 <input type="date" id="startDate">
                 <p id="to">to</p>
                 <input type="date" id="endDate">
+            </div>
+        </div>
+        <div class="soilSection">
+            <div class="observ">
+                <h3 id="observ-head">Observations</h3>
             </div>
         </div>
     `;

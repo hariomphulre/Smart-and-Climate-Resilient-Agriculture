@@ -1,6 +1,20 @@
 *{
     font-family: 'Inter', sans-serif;
 }
+
+
+#dashboard{
+    margin-left: 78px;
+    border-right: 1px solid rgba(0,0,0,0.3);
+    padding-right: 12px;
+    padding-top:6px;
+    font-size: 23px;
+}
+#dashboard_head{
+    padding-left: 9px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
 /* ////////////// Title Bar for each Climate Options ///////////////////////// */
 
 .title{
@@ -121,19 +135,43 @@
     font-size: 23px;
 }
 
+.chart-info{
+    overflow-y: hidden;
+    height: 30px;
+    transition-duration: 200ms;
+    transition-timing-function: linear;
+    transition-property: all;
+}
+.chart-info:hover{
+    /* height: 12.5vh; */
+    height: auto;
+}
+
+.info-content{
+    padding-left: 10px;
+}
+
+.chart-info-content{
+    padding-left: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-right: 5px;
+}
+
+
 /* /////////////////////////// Vegetation Section //////////////////////////////// */
 
 .vegSection{
-    display: flex;
+    display:flex;
     /* flex-wrap: wrap; */
     gap: 20px;
     position: fixed;
     overflow-y: auto;
     width: 100%;
-    /* flex: 1; */
+    flex: 1;
     background-color: white;
     flex-direction: column;
-    height: 100vh;
+    height: 575px;
     /* overflow: hidden; */
     box-sizing: border-box;
 
@@ -155,6 +193,7 @@
     border-bottom: 1px solid rgba(0,0,0,0.2);
 }
 #ndviChart{
+    border-top: 1px solid rgba(0,0,0,0.2);
     padding-left: 10px;
     /* margin-left:30px; */
     min-height: 300px;
@@ -178,6 +217,7 @@
     border-bottom: 1px solid rgba(0,0,0,0.2);
 }
 #eviChart{
+    border-top: 1px solid rgba(0,0,0,0.2);
     padding-left: 10px;
     /* margin-left:30px; */
     min-height: 300px;
@@ -201,6 +241,7 @@
     border-bottom: 1px solid rgba(0,0,0,0.2);
 }
 #gciChart{
+    border-top: 1px solid rgba(0,0,0,0.2);
     padding-left: 10px;
     /* margin-left:30px; */
     min-height: 300px;
@@ -217,6 +258,78 @@
     box-shadow: 4px 4px 20px 2px rgba(0,0,0,0.15);
 }
 
+#psri-chart-title{
+    padding-left: 10px;
+    padding-top: 5px;
+    padding-bottom: 3px;
+    border-bottom: 1px solid rgba(0,0,0,0.2);
+}
+#psriChart{
+    border-top: 1px solid rgba(0,0,0,0.2);
+    padding-left: 10px;
+    /* margin-left:30px; */
+    min-height: 300px;
+    width: auto;
+}
+
+.psriChartDiv{
+    /* margin-top: 10px; */
+    border-radius: 0.5rem;
+    background-color: white;
+    height: 340px;;
+    margin-left: 90px;
+    width: 450px;
+    box-shadow: 4px 4px 20px 2px rgba(0,0,0,0.15);
+}
+
+#ndre-chart-title{
+    padding-left: 10px;
+    padding-top: 5px;
+    padding-bottom: 3px;
+    border-bottom: 1px solid rgba(0,0,0,0.2);
+}
+#ndreChart{
+    border-top: 1px solid rgba(0,0,0,0.2);
+    padding-left: 10px;
+    /* margin-left:30px; */
+    min-height: 300px;
+    width: auto;
+}
+
+.ndreChartDiv{
+    /* margin-top: 10px; */
+    border-radius: 0.5rem;
+    background-color: white;
+    height: 340px;
+    /* margin-left: 10px; */
+    width: 450px;
+    box-shadow: 4px 4px 20px 2px rgba(0,0,0,0.15);
+}
+
+#cri1-chart-title{
+    padding-left: 10px;
+    padding-top: 5px;
+    padding-bottom: 3px;
+    border-bottom: 1px solid rgba(0,0,0,0.2);
+}
+#cri1Chart{
+    border-top: 1px solid rgba(0,0,0,0.2);
+    padding-left: 10px;
+    /* margin-left:30px; */
+    min-height: 300px;
+    width: auto;
+}
+
+.cri1ChartDiv{
+    /* margin-top: 10px; */
+    border-radius: 0.5rem;
+    background-color: white;
+    height: 340px;
+    /* margin-left: 10px; */
+    width: 450px;
+    box-shadow: 4px 4px 20px 2px rgba(0,0,0,0.15);
+}
+
 .observ{
     /* position: relative; */
     /* margin-top: 20px; */
@@ -224,7 +337,7 @@
     /* flex-direction: row; */
     margin-left: 90px;
     background-color: white;
-    height: 500px;
+    min-height: 400px;
     width: 91.2%;
     border-radius: 0.5rem;
     box-shadow: 4px 4px 20px 2px rgba(0,0,0,0.15);
@@ -241,16 +354,16 @@
 /* ///////////////////// Water Section ////////////////////////////// */
 
 .waterSection{
-    display: flex;
+    display:flex;
     /* flex-wrap: wrap; */
     gap: 20px;
     position: fixed;
     overflow-y: auto;
     width: 100%;
-    /* flex: 1; */
+    flex: 1;
     background-color: white;
     flex-direction: column;
-    height: 100vh;
+    height: 575px;
     /* overflow: hidden; */
     box-sizing: border-box;
 
@@ -270,6 +383,7 @@
     border-bottom: 1px solid rgba(0,0,0,0.2);
 }
 #ndwiChart{
+    border-top: 1px solid rgba(0,0,0,0.2);
     padding-left: 10px;
     /* margin-left:30px; */
     min-height: 300px;
@@ -293,6 +407,7 @@
     border-bottom: 1px solid rgba(0,0,0,0.2);
 }
 #ndmiChart{
+    border-top: 1px solid rgba(0,0,0,0.2);
     padding-left: 10px;
     /* margin-left:30px; */
     min-height: 300px;
@@ -317,6 +432,7 @@
     border-bottom: 1px solid rgba(0,0,0,0.2);
 }
 #lswiChart{
+    border-top: 1px solid rgba(0,0,0,0.2);
     padding-left: 10px;
     /* margin-left:30px; */
     min-height: 300px;
@@ -331,4 +447,106 @@
     /* margin-left: 90px; */
     width: 450px;
     box-shadow: 4px 4px 20px 2px rgba(0,0,0,0.15);
+}
+
+#awei-chart-title{
+    padding-left: 10px;
+    padding-top: 5px;
+    padding-bottom: 3px;
+    border-bottom: 1px solid rgba(0,0,0,0.2);
+}
+#aweiChart{
+    border-top: 1px solid rgba(0,0,0,0.2);
+    padding-left: 10px;
+    /* margin-left:30px; */
+    min-height: 300px;
+    width: auto;
+}
+
+.aweiChartDiv{
+    /* margin-top: 20px; */
+    border-radius: 0.5rem;
+    background-color: white;
+    height: 340px;;
+    margin-left: 90px;
+    width: 450px;
+    box-shadow: 4px 4px 20px 2px rgba(0,0,0,0.15);
+}
+
+
+/* ///////////////////// Fire section //////////////////// */
+
+.fireSection{
+    display:flex;
+    /* flex-wrap: wrap; */
+    gap: 20px;
+    position: fixed;
+    overflow-y: auto;
+    width: 100%;
+    flex: 1;
+    background-color: white;
+    flex-direction: column;
+    height: 575px;
+    /* overflow: hidden; */
+    box-sizing: border-box;
+
+}
+.fire-container{
+    /* position: relative; */
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 25px;
+}
+
+
+/* /////////////////////////// Rain Section ////////////////////// */
+
+.rainSection{
+    display:flex;
+    /* flex-wrap: wrap; */
+    gap: 20px;
+    position: fixed;
+    overflow-y: auto;
+    width: 100%;
+    flex: 1;
+    background-color: white;
+    flex-direction: column;
+    height: 575px;
+    /* overflow: hidden; */
+    box-sizing: border-box;
+
+}
+.rain-container{
+    /* position: relative; */
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 25px;
+}
+
+
+/* ////////////////////////////// soil section //////////////////////////// */
+
+.soilSection{
+    display:flex;
+    /* flex-wrap: wrap; */
+    gap: 20px;
+    position: fixed;
+    overflow-y: auto;
+    width: 100%;
+    flex: 1;
+    background-color: white;
+    flex-direction: column;
+    height: 575px;
+    /* overflow: hidden; */
+    box-sizing: border-box;
+
+}
+.soil-container{
+    /* position: relative; */
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 25px;
 }
