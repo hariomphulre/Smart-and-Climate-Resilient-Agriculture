@@ -153,9 +153,13 @@
 
 .chart-info-content{
     padding-left: 10px;
-    padding-top: 5px;
-    padding-bottom: 5px;
+    padding-top: 4px;
+    padding-bottom: 4px;
     padding-right: 5px;
+}
+
+#scale-range{
+    padding-top: 5px;
 }
 
 
@@ -204,7 +208,7 @@
     margin-top: 20px;
     border-radius: 0.5rem;
     background-color: white;
-    height: 340px;;
+    height: auto;
     margin-left: 90px;
     width: 450px;
     box-shadow: 4px 4px 20px 2px rgba(0,0,0,0.15);
@@ -228,7 +232,7 @@
     margin-top: 20px;
     border-radius: 0.5rem;
     background-color: white;
-    height: 340px;
+    height: auto;
     /* margin-left: 100px; */
     width: 450px;
     box-shadow: 4px 4px 20px 2px rgba(0,0,0,0.15);
@@ -252,7 +256,7 @@
     margin-top: 20px;
     border-radius: 0.5rem;
     background-color: white;
-    height: 340px;
+    height: auto;
     /* margin-left: 100px; */
     width: 450px;
     box-shadow: 4px 4px 20px 2px rgba(0,0,0,0.15);
@@ -276,7 +280,7 @@
     /* margin-top: 10px; */
     border-radius: 0.5rem;
     background-color: white;
-    height: 340px;;
+    height: auto;
     margin-left: 90px;
     width: 450px;
     box-shadow: 4px 4px 20px 2px rgba(0,0,0,0.15);
@@ -300,7 +304,7 @@
     /* margin-top: 10px; */
     border-radius: 0.5rem;
     background-color: white;
-    height: 340px;
+    height: auto;
     /* margin-left: 10px; */
     width: 450px;
     box-shadow: 4px 4px 20px 2px rgba(0,0,0,0.15);
@@ -324,32 +328,115 @@
     /* margin-top: 10px; */
     border-radius: 0.5rem;
     background-color: white;
-    height: 340px;
+    height: auto;
     /* margin-left: 10px; */
     width: 450px;
     box-shadow: 4px 4px 20px 2px rgba(0,0,0,0.15);
 }
 
-.observ{
+.observ-sec{
+    display: flex;
+    flex-direction: row;
+    flex-wrap:wrap;
+    gap: 200px;
+    margin-bottom: 20px;
+    /* background-color: blue; */
+}
+.content1{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    margin-left: 90px;
+    gap: 15px;
+    width: 600px;
+
+}
+.content2{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    margin-right: 10px;
+    width: 600px;
+}
+#observ-table, #recomm-table, #nutrients-table{
+    border-collapse: collapse;
+    width: 100%;
+}
+td{
+    text-align: center;
+    border: 1px solid #ccc;
+    padding: 7px;
+}
+th{
+    font-size: 18px;
+    text-align: center;
+    border: 1px solid #ccc;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+.conclusion{
     /* position: relative; */
     /* margin-top: 20px; */
     /* display: flex; */
     /* flex-direction: row; */
-    margin-left: 90px;
     background-color: white;
-    min-height: 400px;
-    width: 91.2%;
+    min-height: auto;
+    width: 100%;
     border-radius: 0.5rem;
     box-shadow: 4px 4px 20px 2px rgba(0,0,0,0.15);
-    margin-bottom: 20px;
 }
-#observ-head{
+#conclusion-head{
     font-size: 23px;
     border-bottom: 1px solid rgba(0,0,0,0.2);
     padding-top: 5px;
     padding-left: 10px;
 }
 
+.action{
+    background-color: white;
+    height: 500px;
+    border-radius: 0.5rem;
+    box-shadow: 4px 4px 20px 2px rgba(0,0,0,0.15);
+}
+
+.recomm-crops{
+    /* position: relative; */
+    /* margin-top: 20px; */
+    /* display: flex; */
+    /* flex-direction: row; */
+    /* margin-left: 90px; */
+    background-color: white;
+    min-height: auto;
+    width: 100%;
+    border-radius: 0.5rem;
+    box-shadow: 4px 4px 20px 2px rgba(0,0,0,0.15);
+}
+#recomm-crops-head, #action-head{
+    font-size: 23px;
+    border-bottom: 1px solid rgba(0,0,0,0.2);
+    padding-top: 5px;
+    padding-left: 10px;
+}
+
+.nutrients{
+    /* position: relative; */
+    /* margin-top: 20px; */
+    /* display: flex; */
+    /* flex-direction: row; */
+    /* margin-left: 90px; */
+    background-color: white;
+    min-height: auto;
+    width: 100%;
+    border-radius: 0.5rem;
+    box-shadow: 4px 4px 20px 2px rgba(0,0,0,0.15);
+}
+#nutrients-head{
+    font-size: 23px;
+    border-bottom: 1px solid rgba(0,0,0,0.2);
+    padding-top: 5px;
+    padding-left: 10px;
+
+}
 
 /* ///////////////////// Water Section ////////////////////////////// */
 
@@ -394,7 +481,7 @@
     margin-top: 20px;
     border-radius: 0.5rem;
     background-color: white;
-    height: 340px;;
+    height: auto;
     margin-left: 90px;
     width: 450px;
     box-shadow: 4px 4px 20px 2px rgba(0,0,0,0.15);
@@ -418,7 +505,7 @@
     margin-top: 20px;
     border-radius: 0.5rem;
     background-color: white;
-    height: 340px;;
+    height: auto;
     /* margin-left: 90px; */
     width: 450px;
     box-shadow: 4px 4px 20px 2px rgba(0,0,0,0.15);
@@ -443,7 +530,7 @@
     margin-top: 20px;
     border-radius: 0.5rem;
     background-color: white;
-    height: 340px;;
+    height: auto;
     /* margin-left: 90px; */
     width: 450px;
     box-shadow: 4px 4px 20px 2px rgba(0,0,0,0.15);
@@ -467,7 +554,7 @@
     /* margin-top: 20px; */
     border-radius: 0.5rem;
     background-color: white;
-    height: 340px;;
+    height: auto;
     margin-left: 90px;
     width: 450px;
     box-shadow: 4px 4px 20px 2px rgba(0,0,0,0.15);

@@ -39,6 +39,19 @@ i{
     margin-right: 5px;
 }
 #alert_icon{
+    position: relative;
+    top: 2px;
     width: 14px;
     height: auto;
+    padding-right: 5px;
+}
+#alerts-btn{
+    position: relative;
+    left: 233px;
+    /* margin-left: 500px; */
+    border: 1px soild rgba(0,0,0,0.3);
+    width: auto;
+    padding-left: 5px;
+    padding-right: 5px;
+    border-radius: 10px;
 }

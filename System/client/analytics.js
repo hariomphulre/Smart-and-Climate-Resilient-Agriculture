@@ -11,6 +11,15 @@ document.querySelector('.Analytics').innerHTML = `
     </div>
 `;
 
+function getStatus(value) {
+    if (value >= 90) return "Excellent";
+    if (value >= 75) return "Good";
+    if (value >= 50) return "Moderate";
+    if (value >= 30) return "Bad";
+    return "Poor";
+}
+
+
 //////////////////////////////// left bar///////////////////////////////////////
 
 function dashboard(){
@@ -57,46 +66,164 @@ function water(){
                         <h3 id="ndwi-chart-title">
                             NDWI - Normalized Difference Water Index 
                         </h3>
-                        <p class="chart-info-content">
-                            NDWI helps detect water content in vegetation and identify water bodies.
-                            NDWI helps detect water content in vegetation and identify water bodies.
-                        </p>
+                        <div class="chart-info-content">
+                            <p id="defination">It measures the <b>amount and health of green vegetation</b> by comparing how plants reflect near-infrared (NIR) light and absorb red light.</p>
+                            <p id="scale-range">Range: -1 to +1</p>
+                            <p id="scale-increase"><b>Increase</b>: Vigorous plant growth, high leaf area.</p>
+                            <p id="scale-decrease"><b>Decrease</b>: Sparse or stressed vegetation.</p>
+                        </div>
                     </div>
                     <canvas id="ndwiChart"></canvas>
                 </div>
                 <div class="ndmiChartDiv">
                     <div class="chart-info">
                         <h3 id="ndmi-chart-title">NDMI - Normalized Difference Moisture Index</h3>
-                        <p class="chart-info-content">
-                            NDWI helps detect water content in vegetation and identify water bodies.
-                            NDWI helps detect water content in vegetation and identify water bodies.
-                        </p>
+                        <div class="chart-info-content">
+                            <p id="defination">It measures the <b>amount and health of green vegetation</b> by comparing how plants reflect near-infrared (NIR) light and absorb red light.</p>
+                            <p id="scale-range">Range: -1 to +1</p>
+                            <p id="scale-increase"><b>Increase</b>: Vigorous plant growth, high leaf area.</p>
+                            <p id="scale-decrease"><b>Decrease</b>: Sparse or stressed vegetation.</p>
+                        </div>
                     </div>
                     <canvas id="ndmiChart"></canvas>
                 </div>
                 <div class="lswiChartDiv">
                     <div class="chart-info">
                         <h3 id="lswi-chart-title">LSWI - Land Surface Water Index</h3>
-                        <p class="chart-info-content">
-                            NDWI helps detect water content in vegetation and identify water bodies.
-                            NDWI helps detect water content in vegetation and identify water bodies.
-                        </p>
+                        <div class="chart-info-content">
+                            <p id="defination">It measures the <b>amount and health of green vegetation</b> by comparing how plants reflect near-infrared (NIR) light and absorb red light.</p>
+                            <p id="scale-range">Range: -1 to +1</p>
+                            <p id="scale-increase"><b>Increase</b>: Vigorous plant growth, high leaf area.</p>
+                            <p id="scale-decrease"><b>Decrease</b>: Sparse or stressed vegetation.</p>
+                        </div>
                     </div>
                     <canvas id="lswiChart"></canvas>
                 </div>
                 <div class="aweiChartDiv">
                     <div class="chart-info">
                         <h3 id="awei-chart-title">AWEI - Automated Water Extraction Index</h3>
-                        <p class="chart-info-content">
-                            NDWI helps detect water content in vegetation and identify water bodies.
-                            NDWI helps detect water content in vegetation and identify water bodies.
-                        </p>
+                        <div class="chart-info-content">
+                            <p id="defination">It measures the <b>amount and health of green vegetation</b> by comparing how plants reflect near-infrared (NIR) light and absorb red light.</p>
+                            <p id="scale-range">Range: -1 to +1</p>
+                            <p id="scale-increase"><b>Increase</b>: Vigorous plant growth, high leaf area.</p>
+                            <p id="scale-decrease"><b>Decrease</b>: Sparse or stressed vegetation.</p>
+                        </div>
                     </div>
                     <canvas id="aweiChart"></canvas>
                 </div>
             </div>
-            <div class="observ">
-                <h3 id="observ-head">Observations</h3>
+            <div class="observ-sec">
+                <div class="content1">
+                    <div class="conclusion">
+                        <h3 id="conclusion-head">Key Observations</h3>
+                        <table id="observ-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Value</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Health</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Stress</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Aging</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Chlorophyll</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="nutrients">
+                        <h3 id="nutrients-head">Nutrients Content</h3>
+                        <table id="nutrients-table">
+                            <thead>
+                                <tr>
+                                    <th>Nutrients</th>
+                                    <th>Value</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Nitrogen</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Phosphorus</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Potassium</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Magnesium</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="recomm-crops">
+                        <h3 id="recomm-crops-head">Recommended Crops</h3>
+                        <table id="recomm-table">
+                            <thead>
+                                <th>Crop Type</th>
+                                <th>Suitable Options</th>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Leafy Green</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Vegetables</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Fruits</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Grains</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Pulses</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Herbs/Spices</td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="content2">
+                    <div class="action">
+                        <h3 id="action-head">Action Needed</h3>
+                    </div>
+                </div>
             </div>
         </div>
     `;
@@ -192,6 +319,78 @@ function water(){
             });
         }
     });
+
+    fetch("Climate_Data/water/conclusion/observ.json?cache=" + Date.now())
+    .then(res => res.json())
+    .then(data => {
+        const table = document.getElementById("observ-table");
+        const rows = table.querySelectorAll("tbody tr");
+
+        rows.forEach(row => {
+            const paramCell = row.cells[0];
+            const valueCell = row.cells[1];
+            const statusCell = row.cells[2];
+
+            if (paramCell && valueCell && statusCell) {
+                const param = paramCell.textContent.trim();
+                const value = data[param];
+
+                if (value !== undefined) {
+                    valueCell.textContent = value + "%";
+                    statusCell.textContent = getStatus(value);
+                }
+            }
+        });
+    })
+    .catch(err => console.error("Error loading Conclusion JSON:", err));
+
+    fetch("Climate_Data/water/conclusion/nutrients.json?cache=" + Date.now())
+    .then(res => res.json())
+    .then(data => {
+        const table = document.getElementById("nutrients-table");
+        const rows = table.querySelectorAll("tbody tr");
+
+        rows.forEach(row => {
+            const paramCell = row.cells[0];
+            const valueCell = row.cells[1];
+            const statusCell = row.cells[2];
+
+            if (paramCell && valueCell && statusCell) {
+                const param = paramCell.textContent.trim();
+                const value = data[param];
+
+                if (value !== undefined) {
+                    valueCell.textContent = value + "%";
+                    statusCell.textContent = getStatus(value);
+                }
+            }
+        });
+    })
+    .catch(err => console.error("Error loading Conclusion JSON:", err));
+
+    fetch("Climate_Data/water/conclusion/recomm.json?cache=" + Date.now())
+    .then(res => res.json())
+    .then(data => {
+        const table = document.getElementById("recomm-table");
+        const rows = table.querySelectorAll("tbody tr");
+
+        rows.forEach(row => {
+            const paramCell = row.cells[0];
+            const valueCell = row.cells[1];
+            // const statusCell = row.cells[2];
+
+            if (paramCell && valueCell ) {
+                const param = paramCell.textContent.trim();
+                const value = data[param];
+
+                if (value !== undefined) {
+                    valueCell.textContent = value;
+                    // statusCell.textContent = getStatus(value);
+                }
+            }
+        });
+    })
+    .catch(err => console.error("Error loading Conclusion JSON:", err));
 }
 
 function vegetation() {
@@ -211,68 +410,193 @@ function vegetation() {
                 <div class="ndviChartDiv">
                     <div class="chart-info">
                         <h3 id="ndvi-chart-title">NDVI - Normalized Difference Vegetation Index</h3>
-                        <p class="chart-info-content">
-                            NDWI helps detect water content in vegetation and identify water bodies.
-                            NDWI helps detect water content in vegetation and identify water bodies.
-                        </p>
+                        <div class="chart-info-content">
+                            <p id="defination">Measures <b>green vegetation amount & health</b> using NIR and red light reflectance.</p>
+                            <p id="scale-range"><b>Range</b>: -1 to +1</p>
+                            <p id="scale-increase"><b>Increase</b>: Greener, healthier, and growing plants.</p>
+                            <p id="scale-decrease"><b>Decrease</b>: Less green vegetation, possible water stress, nutrient deficiency, disease, or nearing harvest.</p>
+                        </div>
                     </div>
                     <canvas id="ndviChart"></canvas>
                 </div>
                 <div class="eviChartDiv">
                     <div class="chart-info">
                         <h3 id="evi-chart-title">EVI - Enhanced Vegetation Index</h3>
-                        <p class="chart-info-content">
-                            NDWI helps detect water content in vegetation and identify water bodies.
-                            NDWI helps detect water content in vegetation and identify water bodies.
-                        </p>
+                        <div class="chart-info-content">
+                            <p id="defination">Improves vegetation detection by reducing atmospheric effects and soil background influence.</p>
+                            <p id="scale-range"><b>Range</b>: -1 to +1</p>
+                            <p id="scale-increase"><b>Increase</b>: Vigorous plant growth, high leaf area.</p>
+                            <p id="scale-decrease"><b>Decrease</b>: Sparse or stressed vegetation.</p>
+                        </div>
                     </div>
                     <canvas id="eviChart"></canvas>
                 </div>
                 <div class="gciChartDiv">
                     <div class="chart-info">
                         <h3 id="gci-chart-title">GCI - Green Chlorophyll Index</h3>
-                        <p class="chart-info-content">
-                            NDWI helps detect water content in vegetation and identify water bodies.
-                            NDWI helps detect water content in vegetation and identify water bodies.
-                        </p>
+                        <div class="chart-info-content">
+                            <p id="defination">GCI estimates <b>chlorophyll content</b> in leaves, which is linked to <b>nitrogen levels</b> and overall plant health.</p>
+                            <p id="scale-range"><b>Range</b>: >0 (varies with crop type)</p>
+                            <p id="scale-increase"><b>Increase</b>: Higher chlorophyll, active photosynthesis.</p>
+                            <p id="scale-decrease"><b>Decrease</b>: Lower chlorophyll, nutrient deficiency or senescence.</p>
+                        </div>
                     </div>
                     <canvas id="gciChart"></canvas>
                 </div>
                 <div class="psriChartDiv">
                     <div class="chart-info">
                         <h3 id="psri-chart-title">PSRI - Plant Senescence Reflectance Index</h3>
-                        <p class="chart-info-content">
-                            NDWI helps detect water content in vegetation and identify water bodies.
-                            NDWI helps detect water content in vegetation and identify water bodies.
-                        </p>
+                        <div class="chart-info-content">
+                            <p id="defination">Tracks plant <b>aging, stress, and fruit ripening</b> by measuring the ratio of carotenoid (yellow/orange) to chlorophyll (green) pigments.</p>
+                            <p id="scale-range"><b>Typical Range</b>: 0 to 0.4 for crops</p>
+                            <p id="scale-increase"><b>Increase</b>: Plants moving towards maturity or experiencing stress (drought, pests, nutrient lack).</p>
+                            <p id="scale-decrease"><b>Decrease</b>: Plants are younger, healthy, actively growing.</p>
+                        </div>
                     </div>
                     <canvas id="psriChart"></canvas>
                 </div>
                 <div class="ndreChartDiv">
                     <div class="chart-info">
                         <h3 id="ndre-chart-title">NDRE - Normalized Difference Red Edge Index</h3>
-                        <p class="chart-info-content">
-                            NDWI helps detect water content in vegetation and identify water bodies.
-                            NDWI helps detect water content in vegetation and identify water bodies.
-                        </p>
+                        <div class="chart-info-content">
+                            <p id="defination">Measures plant <b>nitrogen and chlorophyll content</b> by using the red-edge light band, making it ideal for monitoring health in dense, mature crops.</p>
+                            <p id="scale-range"><b>Range</b>: 0 to 1</p>
+                            <p id="scale-increase"><b>Increase</b>: Healthy canopy, high nitrogen content, good biomass.</p>
+                            <p id="scale-decrease"><b>Decrease</b>: Low nitrogen, stress, or canopy thinning.</p>
+                        </div>
                     </div>
                     <canvas id="ndreChart"></canvas>
                 </div>
                 <div class="cri1ChartDiv">
                     <div class="chart-info">
                         <h3 id="cri1-chart-title">CRI1 - Carotenoid Reflectance Index 1</h3>
-                        <p class="chart-info-content">
-                            NDWI helps detect water content in vegetation and identify water bodies.
-                            NDWI helps detect water content in vegetation and identify water bodies.
-                        </p>
+                        <div class="chart-info-content">
+                            <p id="defination">CRI1 measures <b>carotenoid pigments</b> in leaves. These pigments increase when plants are stressed or naturally aging.</p>
+                            <p id="scale-range"><b>Range</b>: >0 (No fixed range)</p>
+                            <p id="scale-increase"><b>Increase</b>: Higher carotenoid content, possible stress</p>
+                            <p id="scale-decrease"><b>Decrease</b>: Lower carotenoids, healthy green leaves</p>
+                        </div>
                     </div>
                     <canvas id="cri1Chart"></canvas>
                 </div>
                 
             </div>
-            <div class="observ">
-                <h3 id="observ-head">Observations</h3>
+            <div class="observ-sec">
+                <div class="content1">
+                    <div class="conclusion">
+                        <h3 id="conclusion-head">Key Observations</h3>
+                        <table id="observ-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Value</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Health</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Stress</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Aging</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Chlorophyll</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="nutrients">
+                        <h3 id="nutrients-head">Nutrients Content</h3>
+                        <table id="nutrients-table">
+                            <thead>
+                                <tr>
+                                    <th>Nutrients</th>
+                                    <th>Value</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Nitrogen</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Phosphorus</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Potassium</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Magnesium</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="recomm-crops">
+                        <h3 id="recomm-crops-head">Recommended Crops</h3>
+                        <table id="recomm-table">
+                            <thead>
+                                <th>Crop Type</th>
+                                <th>Suitable Options</th>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Leafy Green</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Vegetables</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Fruits</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Grains</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Pulses</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Herbs/Spices</td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="content2">
+                    <div class="action">
+                        <h3 id="action-head">Action Needed</h3>
+                    </div>
+                </div>
+                
             </div>
+            
+            
         </div>
     `;
 
@@ -412,6 +736,80 @@ function vegetation() {
             });
         }
     });
+    
+    fetch("Climate_Data/vegetation/conclusion/observ.json?cache=" + Date.now())
+    .then(res => res.json())
+    .then(data => {
+        const table = document.getElementById("observ-table");
+        const rows = table.querySelectorAll("tbody tr");
+
+        rows.forEach(row => {
+            const paramCell = row.cells[0];
+            const valueCell = row.cells[1];
+            const statusCell = row.cells[2];
+
+            if (paramCell && valueCell && statusCell) {
+                const param = paramCell.textContent.trim();
+                const value = data[param];
+
+                if (value !== undefined) {
+                    valueCell.textContent = value + "%";
+                    statusCell.textContent = getStatus(value);
+                }
+            }
+        });
+    })
+    .catch(err => console.error("Error loading Conclusion JSON:", err));
+
+    fetch("Climate_Data/vegetation/conclusion/nutrients.json?cache=" + Date.now())
+    .then(res => res.json())
+    .then(data => {
+        const table = document.getElementById("nutrients-table");
+        const rows = table.querySelectorAll("tbody tr");
+
+        rows.forEach(row => {
+            const paramCell = row.cells[0];
+            const valueCell = row.cells[1];
+            const statusCell = row.cells[2];
+
+            if (paramCell && valueCell && statusCell) {
+                const param = paramCell.textContent.trim();
+                const value = data[param];
+
+                if (value !== undefined) {
+                    valueCell.textContent = value + "%";
+                    statusCell.textContent = getStatus(value);
+                }
+            }
+        });
+    })
+    .catch(err => console.error("Error loading Conclusion JSON:", err));
+
+    fetch("Climate_Data/vegetation/conclusion/recomm.json?cache=" + Date.now())
+    .then(res => res.json())
+    .then(data => {
+        const table = document.getElementById("recomm-table");
+        const rows = table.querySelectorAll("tbody tr");
+
+        rows.forEach(row => {
+            const paramCell = row.cells[0];
+            const valueCell = row.cells[1];
+            // const statusCell = row.cells[2];
+
+            if (paramCell && valueCell ) {
+                const param = paramCell.textContent.trim();
+                const value = data[param];
+
+                if (value !== undefined) {
+                    valueCell.textContent = value;
+                    // statusCell.textContent = getStatus(value);
+                }
+            }
+        });
+    })
+    .catch(err => console.error("Error loading Conclusion JSON:", err));
+
+
 }
 
 function fire(){
