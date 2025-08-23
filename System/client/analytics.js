@@ -111,6 +111,43 @@ function water(){
                     </div>
                     <canvas id="aweiChart"></canvas>
                 </div>
+                <div class="mndwiChartDiv">
+                    <div class="chart-info">
+                        <h3 id="mndwi-chart-title">MNDWI - Modified Normalized Difference Moisture Index</h3>
+                        <div class="chart-info-content">
+                            <p id="defination">It measures the <b>amount and health of green vegetation</b> by comparing how plants reflect near-infrared (NIR) light and absorb red light.</p>
+                            <p id="scale-range">Range: -1 to +1</p>
+                            <p id="scale-increase"><b>Increase</b>: Vigorous plant growth, high leaf area.</p>
+                            <p id="scale-decrease"><b>Decrease</b>: Sparse or stressed vegetation.</p>
+                        </div>
+                    </div>
+                    <canvas id="mndwiChart"></canvas>
+                </div>
+                <div class="sarwiChartDiv">
+                    <div class="chart-info">
+                        <h3 id="sarwi-chart-title">SARWI - Modified Normalized Difference... Moisture Index</h3>
+                        <div class="chart-info-content">
+                            <p id="defination">It measures the <b>amount and health of green vegetation</b> by comparing how plants reflect near-infrared (NIR) light and absorb red light.</p>
+                            <p id="scale-range">Range: -1 to +1</p>
+                            <p id="scale-increase"><b>Increase</b>: Vigorous plant growth, high leaf area.</p>
+                            <p id="scale-decrease"><b>Decrease</b>: Sparse or stressed vegetation.</p>
+                        </div>
+                    </div>
+                    <canvas id="sarwiChart"></canvas>
+                </div>
+                <div class="ewiChartDiv">
+                    <div class="chart-info">
+                        <h3 id="ewi-chart-title">EWI - Modified Normalized Difference... Moisture Index</h3>
+                        <div class="chart-info-content">
+                            <p id="defination">It measures the <b>amount and health of green vegetation</b> by comparing how plants reflect near-infrared (NIR) light and absorb red light.</p>
+                            <p id="scale-range">Range: -1 to +1</p>
+                            <p id="scale-increase"><b>Increase</b>: Vigorous plant growth, high leaf area.</p>
+                            <p id="scale-decrease"><b>Decrease</b>: Sparse or stressed vegetation.</p>
+                        </div>
+                    </div>
+                    <canvas id="ewiChart"></canvas>
+                </div>
+                
             </div>
             <div class="observ-sec">
                 <div class="content1">
@@ -228,97 +265,33 @@ function water(){
         </div>
     `;
 
-    Papa.parse("ndwi.csv", {
-        download: true,
-        header: true,
-        complete: function(results) {
-            const labels = results.data.map(row => row.date);
-            const ndwiValues = results.data.map(row => parseFloat(row.ndwi));
+    let index_list=["ewi","sarwi","mndwi","awei","lswi","ndmi","ndwi"];
+    for(let i=0;i<index_list.length;i++){
 
-            const ctx = document.getElementById('ndwiChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'NDWI',
-                        data: ndwiValues,
-                        borderColor: '#0080ffff',
-                        fill: true
-                    }]
-                }
-            });
-        }
-    });
+        let name=index_list[i];
+        Papa.parse(name+".csv", {
+            download: true,
+            header: true,
+            complete: function(results) {
+                const labels = results.data.map(row => row.date);
+                const nameValues = results.data.map(row => parseFloat(row[name]));
 
-    Papa.parse("ndmi.csv", {
-        download: true,
-        header: true,
-        complete: function(results) {
-            const labels = results.data.map(row => row.date);
-            const ndmiValues = results.data.map(row => parseFloat(row.ndmi));
-
-            const ctx = document.getElementById('ndmiChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'NDMI',
-                        data: ndmiValues,
-                        borderColor: '#0080ffff',
-                        fill: true
-                    }]
-                }
-            });
-        }
-    });
-
-    Papa.parse("lswi.csv", {
-        download: true,
-        header: true,
-        complete: function(results) {
-            const labels = results.data.map(row => row.date);
-            const lswiValues = results.data.map(row => parseFloat(row.lswi));
-
-            const ctx = document.getElementById('lswiChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'LSWI',
-                        data: lswiValues,
-                        borderColor: '#0080ffff',
-                        fill: true
-                    }]
-                }
-            });
-        }
-    });
-
-    Papa.parse("awei.csv", {
-        download: true,
-        header: true,
-        complete: function(results) {
-            const labels = results.data.map(row => row.date);
-            const aweiValues = results.data.map(row => parseFloat(row.awei));
-
-            const ctx = document.getElementById('aweiChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'AWEI',
-                        data: aweiValues,
-                        borderColor: '#0080ffff',
-                        fill: true
-                    }]
-                }
-            });
-        }
-    });
+                const ctx = document.getElementById(name+'Chart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: name,
+                            data: nameValues,
+                            borderColor: '#0080ffff',
+                            fill: true
+                        }]
+                    }
+                });
+            }
+        });
+    }
 
     fetch("Climate_Data/water/conclusion/observ.json?cache=" + Date.now())
     .then(res => res.json())
@@ -600,142 +573,34 @@ function vegetation() {
         </div>
     `;
 
-    Papa.parse("ndvi.csv", {
-        download: true,
-        header: true,
-        complete: function(results) {
-            const labels = results.data.map(row => row.date);
-            const ndviValues = results.data.map(row => parseFloat(row.ndvi));
 
-            const ctx = document.getElementById('ndviChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'NDVI',
-                        data: ndviValues,
-                        borderColor: 'green',
-                        fill: true
-                    }]
-                }
-            });
-        }
-    });
+    let index_list=["evi","ndvi","gci","psri","ndre","cri1"];
+    for(let i=0;i<index_list.length;i++){
 
-    Papa.parse("evi.csv", {
-        download: true,
-        header: true,
-        complete: function(results) {
-            const labels = results.data.map(row => row.date);
-            const eviValues = results.data.map(row => parseFloat(row.evi));
+        let name=index_list[i];
+        Papa.parse(name+".csv", {
+            download: true,
+            header: true,
+            complete: function(results) {
+                const labels = results.data.map(row => row.date);
+                const nameValues = results.data.map(row => parseFloat(row[name]));
 
-            const ctx = document.getElementById('eviChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'EVI',
-                        data: eviValues,
-                        borderColor: 'green',
-                        fill: true
-                    }]
-                }
-            });
-        }
-    });
-
-    Papa.parse("gci.csv", {
-        download: true,
-        header: true,
-        complete: function(results) {
-            const labels = results.data.map(row => row.date);
-            const gciValues = results.data.map(row => parseFloat(row.gci));
-
-            const ctx = document.getElementById('gciChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'GCI',
-                        data: gciValues,
-                        borderColor: 'green',
-                        fill: true
-                    }]
-                }
-            });
-        }
-    });
-
-    Papa.parse("psri.csv", {
-        download: true,
-        header: true,
-        complete: function(results) {
-            const labels = results.data.map(row => row.date);
-            const psriValues = results.data.map(row => parseFloat(row.psri));
-
-            const ctx = document.getElementById('psriChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'PSRI',
-                        data: psriValues,
-                        borderColor: 'green',
-                        fill: true
-                    }]
-                }
-            });
-        }
-    });
-
-    Papa.parse("ndre.csv", {
-        download: true,
-        header: true,
-        complete: function(results) {
-            const labels = results.data.map(row => row.date);
-            const ndreValues = results.data.map(row => parseFloat(row.ndre));
-
-            const ctx = document.getElementById('ndreChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'NDRE',
-                        data: ndreValues,
-                        borderColor: 'green',
-                        fill: true
-                    }]
-                }
-            });
-        }
-    });
-    Papa.parse("cri1.csv", {
-        download: true,
-        header: true,
-        complete: function(results) {
-            const labels = results.data.map(row => row.date);
-            const cri1Values = results.data.map(row => parseFloat(row.cri1));
-
-            const ctx = document.getElementById('cri1Chart').getContext('2d');
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'CRI1',
-                        data: cri1Values,
-                        borderColor: 'green',
-                        fill: true
-                    }]
-                }
-            });
-        }
-    });
+                const ctx = document.getElementById(name+'Chart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: name,
+                            data: nameValues,
+                            borderColor: 'green',
+                            fill: true
+                        }]
+                    }
+                });
+            }
+        });
+    }
     
     fetch("Climate_Data/vegetation/conclusion/observ.json?cache=" + Date.now())
     .then(res => res.json())
@@ -869,5 +734,279 @@ function soil(){
                 <h3 id="observ-head">Observations</h3>
             </div>
         </div>
+
+        <div class="soilSection">
+            <div class="soil-container">
+                <div class="bsiChartDiv">
+                    <div class="chart-info">
+                        <h3 id="bsi-chart-title">BSI - Normalized Difference Vegetation Index</h3>
+                        <div class="chart-info-content">
+                            <p id="defination">Measures <b>green vegetation amount & health</b> using NIR and red light reflectance.</p>
+                            <p id="scale-range"><b>Range</b>: -1 to +1</p>
+                            <p id="scale-increase"><b>Increase</b>: Greener, healthier, and growing plants.</p>
+                            <p id="scale-decrease"><b>Decrease</b>: Less green vegetation, possible water stress, nutrient deficiency, disease, or nearing harvest.</p>
+                        </div>
+                    </div>
+                    <canvas id="bsiChart"></canvas>
+                </div>
+                <div class="ndtiChartDiv">
+                    <div class="chart-info">
+                        <h3 id="ndti-chart-title">NDTI - Normalized Difference Vegetation Index</h3>
+                        <div class="chart-info-content">
+                            <p id="defination">Measures <b>green vegetation amount & health</b> using NIR and red light reflectance.</p>
+                            <p id="scale-range"><b>Range</b>: -1 to +1</p>
+                            <p id="scale-increase"><b>Increase</b>: Greener, healthier, and growing plants.</p>
+                            <p id="scale-decrease"><b>Decrease</b>: Less green vegetation, possible water stress, nutrient deficiency, disease, or nearing harvest.</p>
+                        </div>
+                    </div>
+                    <canvas id="ndtiChart"></canvas>
+                </div>
+                <div class="siChartDiv">
+                    <div class="chart-info">
+                        <h3 id="si-chart-title">SI - Normalized Difference Vegetation Index</h3>
+                        <div class="chart-info-content">
+                            <p id="defination">Measures <b>green vegetation amount & health</b> using NIR and red light reflectance.</p>
+                            <p id="scale-range"><b>Range</b>: -1 to +1</p>
+                            <p id="scale-increase"><b>Increase</b>: Greener, healthier, and growing plants.</p>
+                            <p id="scale-decrease"><b>Decrease</b>: Less green vegetation, possible water stress, nutrient deficiency, disease, or nearing harvest.</p>
+                        </div>
+                    </div>
+                    <canvas id="siChart"></canvas>
+                </div>
+                <div class="smiChartDiv">
+                    <div class="chart-info">
+                        <h3 id="smi-chart-title">SMI - Normalized Difference Vegetation Index</h3>
+                        <div class="chart-info-content">
+                            <p id="defination">Measures <b>green vegetation amount & health</b> using NIR and red light reflectance.</p>
+                            <p id="scale-range"><b>Range</b>: -1 to +1</p>
+                            <p id="scale-increase"><b>Increase</b>: Greener, healthier, and growing plants.</p>
+                            <p id="scale-decrease"><b>Decrease</b>: Less green vegetation, possible water stress, nutrient deficiency, disease, or nearing harvest.</p>
+                        </div>
+                    </div>
+                    <canvas id="smiChart"></canvas>
+                </div>
+                
+            </div>
+            <div class="observ-sec">
+                <div class="content1">
+                    <div class="conclusion">
+                        <h3 id="conclusion-head">Key Observations</h3>
+                        <table id="observ-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Value</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Health</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Stress</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Aging</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Chlorophyll</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="nutrients">
+                        <h3 id="nutrients-head">Nutrients Content</h3>
+                        <table id="nutrients-table">
+                            <thead>
+                                <tr>
+                                    <th>Nutrients</th>
+                                    <th>Value</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Nitrogen</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Phosphorus</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Potassium</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Magnesium</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="recomm-crops">
+                        <h3 id="recomm-crops-head">Recommended Crops</h3>
+                        <table id="recomm-table">
+                            <thead>
+                                <th>Crop Type</th>
+                                <th>Suitable Options</th>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Leafy Green</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Vegetables</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Fruits</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Grains</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Pulses</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Herbs/Spices</td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="content2">
+                    <div class="action">
+                        <h3 id="action-head">Action Needed</h3>
+                    </div>
+                </div>
+                
+            </div>
+            
+            
+        </div>
     `;
+   
+    let index_list=["ndti","si","smi"];
+    for(let i=0;i<index_list.length;i++){
+
+        let name=index_list[i];
+        Papa.parse(name+".csv", {
+            download: true,
+            header: true,
+            complete: function(results) {
+                const labels = results.data.map(row => row.date);
+                const nameValues = results.data.map(row => parseFloat(row[name]));
+
+                const ctx = document.getElementById(name+'Chart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: name,
+                            data: nameValues,
+                            borderColor: '#573000ff',
+                            fill: true
+                        }]
+                    }
+                });
+            }
+        });
+    }
+
+    
+    fetch("Climate_Data/vegetation/conclusion/observ.json?cache=" + Date.now())
+    .then(res => res.json())
+    .then(data => {
+        const table = document.getElementById("observ-table");
+        const rows = table.querySelectorAll("tbody tr");
+
+        rows.forEach(row => {
+            const paramCell = row.cells[0];
+            const valueCell = row.cells[1];
+            const statusCell = row.cells[2];
+
+            if (paramCell && valueCell && statusCell) {
+                const param = paramCell.textContent.trim();
+                const value = data[param];
+
+                if (value !== undefined) {
+                    valueCell.textContent = value + "%";
+                    statusCell.textContent = getStatus(value);
+                }
+            }
+        });
+    })
+    .catch(err => console.error("Error loading Conclusion JSON:", err));
+
+    fetch("Climate_Data/vegetation/conclusion/nutrients.json?cache=" + Date.now())
+    .then(res => res.json())
+    .then(data => {
+        const table = document.getElementById("nutrients-table");
+        const rows = table.querySelectorAll("tbody tr");
+
+        rows.forEach(row => {
+            const paramCell = row.cells[0];
+            const valueCell = row.cells[1];
+            const statusCell = row.cells[2];
+
+            if (paramCell && valueCell && statusCell) {
+                const param = paramCell.textContent.trim();
+                const value = data[param];
+
+                if (value !== undefined) {
+                    valueCell.textContent = value + "%";
+                    statusCell.textContent = getStatus(value);
+                }
+            }
+        });
+    })
+    .catch(err => console.error("Error loading Conclusion JSON:", err));
+
+    fetch("Climate_Data/vegetation/conclusion/recomm.json?cache=" + Date.now())
+    .then(res => res.json())
+    .then(data => {
+        const table = document.getElementById("recomm-table");
+        const rows = table.querySelectorAll("tbody tr");
+
+        rows.forEach(row => {
+            const paramCell = row.cells[0];
+            const valueCell = row.cells[1];
+            // const statusCell = row.cells[2];
+
+            if (paramCell && valueCell ) {
+                const param = paramCell.textContent.trim();
+                const value = data[param];
+
+                if (value !== undefined) {
+                    valueCell.textContent = value;
+                    // statusCell.textContent = getStatus(value);
+                }
+            }
+        });
+    })
+    .catch(err => console.error("Error loading Conclusion JSON:", err));
+        
+    
+
 }

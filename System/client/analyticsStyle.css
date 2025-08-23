@@ -487,13 +487,13 @@ th{
     box-shadow: 4px 4px 20px 2px rgba(0,0,0,0.15);
 }
 
-#ndmi-chart-title{
+#mndwi-chart-title{
     padding-left: 10px;
     padding-top: 5px;
     padding-bottom: 3px;
     border-bottom: 1px solid rgba(0,0,0,0.2);
 }
-#ndmiChart{
+#mndwiChart{
     border-top: 1px solid rgba(0,0,0,0.2);
     padding-left: 10px;
     /* margin-left:30px; */
@@ -501,8 +501,7 @@ th{
     width: auto;
 }
 
-.ndmiChartDiv{
-    margin-top: 20px;
+.mndwiChartDiv{
     border-radius: 0.5rem;
     background-color: white;
     height: auto;
@@ -560,6 +559,75 @@ th{
     box-shadow: 4px 4px 20px 2px rgba(0,0,0,0.15);
 }
 
+#ndmi-chart-title{
+    padding-left: 10px;
+    padding-top: 5px;
+    padding-bottom: 3px;
+    border-bottom: 1px solid rgba(0,0,0,0.2);
+}
+#ndmiChart{
+    border-top: 1px solid rgba(0,0,0,0.2);
+    padding-left: 10px;
+    /* margin-left:30px; */
+    min-height: 300px;
+    width: auto;
+}
+
+.ndmiChartDiv{
+    margin-top: 20px;
+    border-radius: 0.5rem;
+    background-color: white;
+    height: auto;
+    /* margin-left: 90px; */
+    width: 450px;
+    box-shadow: 4px 4px 20px 2px rgba(0,0,0,0.15);
+}
+
+#sarwi-chart-title{
+    padding-left: 10px;
+    padding-top: 5px;
+    padding-bottom: 3px;
+    border-bottom: 1px solid rgba(0,0,0,0.2);
+}
+#sarwiChart{
+    border-top: 1px solid rgba(0,0,0,0.2);
+    padding-left: 10px;
+    /* margin-left:30px; */
+    min-height: 300px;
+    width: auto;
+}
+
+.sarwiChartDiv{
+    border-radius: 0.5rem;
+    background-color: white;
+    height: auto;
+    /* margin-left: 90px; */
+    width: 450px;
+    box-shadow: 4px 4px 20px 2px rgba(0,0,0,0.15);
+}
+
+#ewi-chart-title{
+    padding-left: 10px;
+    padding-top: 5px;
+    padding-bottom: 3px;
+    border-bottom: 1px solid rgba(0,0,0,0.2);
+}
+#ewiChart{
+    border-top: 1px solid rgba(0,0,0,0.2);
+    padding-left: 10px;
+    /* margin-left:30px; */
+    min-height: 300px;
+    width: auto;
+}
+
+.ewiChartDiv{
+    border-radius: 0.5rem;
+    background-color: white;
+    height: auto;
+    margin-left: 90px;
+    width: 450px;
+    box-shadow: 4px 4px 20px 2px rgba(0,0,0,0.15);
+}
 
 /* ///////////////////// Fire section //////////////////// */
 
@@ -636,4 +704,99 @@ th{
     flex-direction: row;
     flex-wrap: wrap;
     gap: 25px;
+}
+
+#bsi-chart-title{
+    padding-left: 10px;
+    padding-top: 5px;
+    padding-bottom: 3px;
+    border-bottom: 1px solid rgba(0,0,0,0.2);
+}
+#bsiChart{
+    border-top: 1px solid rgba(0,0,0,0.2);
+    padding-left: 10px;
+    /* margin-left:30px; */
+    min-height: 300px;
+    width: auto;
+}
+
+.bsiChartDiv{
+    margin-top: 20px;
+    border-radius: 0.5rem;
+    background-color: white;
+    height: auto;
+    margin-left: 90px;
+    width: 450px;
+    box-shadow: 4px 4px 20px 2px rgba(0,0,0,0.15);
+}
+
+#ndti-chart-title{
+    padding-left: 10px;
+    padding-top: 5px;
+    padding-bottom: 3px;
+    border-bottom: 1px solid rgba(0,0,0,0.2);
+}
+#ndtiChart{
+    border-top: 1px solid rgba(0,0,0,0.2);
+    padding-left: 10px;
+    /* margin-left:30px; */
+    min-height: 300px;
+    width: auto;
+}
+
+.ndtiChartDiv{
+    margin-top: 20px;
+    border-radius: 0.5rem;
+    background-color: white;
+    height: auto;
+    /* margin-left: 90px; */
+    width: 450px;
+    box-shadow: 4px 4px 20px 2px rgba(0,0,0,0.15);
+}
+
+#si-chart-title{
+    padding-left: 10px;
+    padding-top: 5px;
+    padding-bottom: 3px;
+    border-bottom: 1px solid rgba(0,0,0,0.2);
+}
+#siChart{
+    border-top: 1px solid rgba(0,0,0,0.2);
+    padding-left: 10px;
+    /* margin-left:30px; */
+    min-height: 300px;
+    width: auto;
+}
+
+.siChartDiv{
+    margin-top: 20px;
+    border-radius: 0.5rem;
+    background-color: white;
+    height: auto;
+    /* margin-left: 90px; */
+    width: 450px;
+    box-shadow: 4px 4px 20px 2px rgba(0,0,0,0.15);
+}
+
+#smi-chart-title{
+    padding-left: 10px;
+    padding-top: 5px;
+    padding-bottom: 3px;
+    border-bottom: 1px solid rgba(0,0,0,0.2);
+}
+#smiChart{
+    border-top: 1px solid rgba(0,0,0,0.2);
+    padding-left: 10px;
+    /* margin-left:30px; */
+    min-height: 300px;
+    width: auto;
+}
+
+.smiChartDiv{
+    border-radius: 0.5rem;
+    background-color: white;
+    height: auto;
+    margin-left: 90px;
+    width: 450px;
+    box-shadow: 4px 4px 20px 2px rgba(0,0,0,0.15);
 }

@@ -1,3 +1,4 @@
+# export_mndwi.py
 import ee
 import time
 import os
@@ -10,57 +11,57 @@ try:
     print("Google Earth Engine initialized successfully.")
 except ee.EEException as e:
     print(f"Error initializing Earth Engine: {e}")
+    print("Please make sure you have authenticated via 'earthengine authenticate'.")
     exit()
 
 # --- Configuration ---
 GCS_BUCKET_NAME = 'earth-engine-climate-data'
-GCS_FILE_NAME = 'Farm_SAVI_TimeSeries'
+GCS_FILE_NAME = 'Farm_MNDWI_TimeSeries_with_LatLon'
 file_path = f'./{GCS_FILE_NAME}-00000-of-00001.csv'
 
-# --- Area of Interest (Polygon or Rectangle) ---
+# AOI
 aoi = ee.Geometry.Rectangle([73.70, 18.65, 73.71, 18.66])
 
-# --- 1. Filter Sentinel-2 SR Image Collection ---
+# 1. Filter Sentinel-2 Collection
 s2 = ee.ImageCollection('COPERNICUS/S2_SR_HARMONIZED') \
     .filterBounds(aoi) \
     .filterDate('2025-01-01', '2025-04-01') \
     .filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 20))
 
-# --- 2. SAVI calculation function ---
-def getSAVI(image):
-    nir = image.select('B8')
-    red = image.select('B4')
-    L = 0.5
-    savi = nir.subtract(red) \
-        .multiply(1 + L) \
-        .divide(nir.add(red).add(L)) \
-        .rename('SAVI')
-    return image.addBands(savi).copyProperties(image, ['system:time_start'])
+# 2. Function to calculate MNDWI
+def getMNDWI(image):
+    mndwi = image.normalizedDifference(['B3', 'B11']).rename('mndwi')
+    return mndwi.copyProperties(image, ['system:time_start'])
 
-# --- 3. Map SAVI calculation ---
-savi_series = s2.map(getSAVI).select('SAVI')
+# 3. Map MNDWI function
+mndwi_series = s2.map(getMNDWI)
 
-# --- 4. Convert to FeatureCollection with date + mean SAVI ---
-def create_savi_feature(img):
+def create_feature(img):
     mean_dict = img.reduceRegion(
         reducer=ee.Reducer.mean(),
         geometry=aoi,
         scale=10,
         maxPixels=1e9
     )
-    savi_value = ee.Number(mean_dict.get('SAVI'))
+    centroid = aoi.centroid().coordinates()
+    lon = ee.Number(centroid.get(0))
+    lat = ee.Number(centroid.get(1))
+    mndwi_value = ee.Number(mean_dict.get('mndwi'))
+
     return ee.Feature(None, {
         'date': img.date().format('YYYY-MM-dd'),
-        'savi': savi_value
+        'mndwi': mndwi_value,
+        'longitude': lon,
+        'latitude': lat
     })
 
-feature_collection = ee.FeatureCollection(savi_series.map(create_savi_feature))
+feature_collection = ee.FeatureCollection(mndwi_series.map(create_feature))
 
-# --- 5. Export to GCS ---
-print(f"\nStarting export to GCS bucket: '{GCS_BUCKET_NAME}'...")
+# 4. Export to GCS
+print(f"\nStarting export to Google Cloud Storage bucket: '{GCS_BUCKET_NAME}'...")
 task_gcs = ee.batch.Export.table.toCloudStorage(
     collection=feature_collection,
-    description='Export_SAVI_to_GCS',
+    description='Export_MNDWI_to_GCS',
     bucket=GCS_BUCKET_NAME,
     fileNamePrefix=GCS_FILE_NAME,
     fileFormat='CSV'
@@ -69,20 +70,22 @@ task_gcs.start()
 
 print("Task started. Monitoring status...")
 while task_gcs.active():
-    print(f"Polling for task status... (Current: {task_gcs.status()['state']})")
+    print(f"Polling for task status... (Current status: {task_gcs.status()['state']})")
     time.sleep(30)
 
 status = task_gcs.status()
 if status['state'] == 'COMPLETED':
-    print("✅ Export task completed successfully!")
-
-    # --- 6. Download CSV file from GCS ---
+    print("Export completed!")
     try:
         from google.cloud import storage
         storage_client = storage.Client()
         bucket = storage_client.bucket(GCS_BUCKET_NAME)
 
         blobs = list(bucket.list_blobs(prefix=GCS_FILE_NAME))
+        if not blobs:
+            print(f"❌ No files found in bucket with prefix: {GCS_FILE_NAME}")
+            exit()
+
         for blob in blobs:
             if blob.name.endswith(".csv"):
                 destination_file_name = f"./{os.path.basename(blob.name)}"
@@ -92,32 +95,41 @@ if status['state'] == 'COMPLETED':
                 break
         else:
             print("❌ No CSV file found.")
+
+    except ImportError:
+        print("\nPlease install the GCS client library:")
+        print("pip install google-cloud-storage")
     except Exception as e:
-        print(f"Error downloading file: {e}")
+        print(f"\nAn error occurred: {e}")
+
 else:
-    print(f"❌ Task failed: {status['state']} - {status.get('error_message', '')}")
+    print(f"Export task failed. Status: {status['state']}")
+    print(f"Error: {status.get('error_message', 'No message')}")
     exit()
 
-# --- 7. Plot SAVI Time Series ---
+# 5. Visualization
 try:
     df = pd.read_csv(file_path)
     df['date'] = pd.to_datetime(df['date'])
-    df.dropna(subset=['savi'], inplace=True)
+    df.dropna(subset=['mndwi'], inplace=True)
     df.sort_values('date', inplace=True)
+
+    print("\nData loaded:")
+    print(df)
 
     plt.style.use('seaborn-v0_8-whitegrid')
     fig, ax = plt.subplots(figsize=(14, 7))
-
-    ax.plot(df['date'], df['savi'], marker='o', linestyle='-', color='green', label='Mean SAVI')
-    ax.set_title('Mean SAVI Time Series (Oct 2024 - Apr 2025)', fontsize=16)
-    ax.set_xlabel('Date', fontsize=12)
-    ax.set_ylabel('SAVI', fontsize=12)
-    ax.set_ylim(0, 1)
+    ax.plot(df['date'], df['mndwi'], marker='o', linestyle='-', color='blue', label='Mean MNDWI')
+    ax.set_title('MNDWI Time Series for Farm AOI (Jan - Apr 2025)', fontsize=16)
+    ax.set_xlabel('Date')
+    ax.set_ylabel('MNDWI')
+    ax.set_ylim(-1, 1)
     ax.legend()
     ax.grid(True)
-
     fig.autofmt_xdate()
     plt.show()
 
+except FileNotFoundError:
+    print(f"❌ File not found at '{file_path}'")
 except Exception as e:
-    print(f"Plotting failed: {e}")
+    print(f"An error occurred during visualization: {e}")
