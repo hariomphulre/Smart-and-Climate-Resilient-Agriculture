@@ -285,7 +285,7 @@ function water(){
                             label: name,
                             data: nameValues,
                             borderColor: '#0080ffff',
-                            fill: true
+                            fill: true,
                         }]
                     }
                 });
@@ -906,7 +906,7 @@ function soil(){
         </div>
     `;
    
-    let index_list=["ndti","si","smi"];
+    let index_list=["bsi","ndti","si","smi"];
     for(let i=0;i<index_list.length;i++){
 
         let name=index_list[i];

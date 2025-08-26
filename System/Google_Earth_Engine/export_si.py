@@ -5,10 +5,12 @@ import os
 import pandas as pd
 import matplotlib.pyplot as plt
 import math
+from google.cloud import storage
 
 # --- GEE Initialization ---
 try:
-    ee.Initialize(opt_url='https://earthengine-highvolume.googleapis.com')
+    # ee.Initialize(opt_url='https://earthengine-highvolume.googleapis.com')
+    ee.Initialize(project='climate-resilient-agriculture',opt_url='https://earthengine-highvolume.googleapis.com')
     print("Google Earth Engine initialized successfully.")
 except ee.EEException as e:
     print(f"Error initializing Earth Engine: {e}")
