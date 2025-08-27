@@ -6,7 +6,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import io
-import base64
 import firebase_admin
 from google.cloud import storage
 from google.oauth2 import service_account
@@ -14,8 +13,6 @@ from firebase_admin import credentials
 from firebase_admin import db
 from dotenv import load_dotenv
 from datetime import datetime, timedelta, timezone
-
-load_dotenv()
 
 try:
     ee.Initialize(project='climate-resilient-agriculture',opt_url='https://earthengine-highvolume.googleapis.com')
@@ -52,54 +49,50 @@ s2 = ee.ImageCollection('COPERNICUS/S2_SR_HARMONIZED') \
     .filterDate('2025-01-01', '2025-04-01') \
     .filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 20))
 
-parameters=["ndvi","evi","gci","psri","ndre","cri1"]
+parameters=["ndwi","ndmi","lswi","awei","mndwi","sarwi","ewi"]
 
 ################################   INDEX FUNCTIONS   ###################################
 
-def getNDVI(image):
-    ndvi = image.normalizedDifference(['B8', 'B4']).rename('ndvi')
-    return ndvi.copyProperties(image, ['system:time_start'])
-
-def getEVI(image):
-    nir = image.select('B8')
-    red = image.select('B4')
-    blue = image.select('B2')
-
-    evi = nir.subtract(red) \
-        .multiply(2.5) \
-        .divide(nir.add(red.multiply(6)).subtract(blue.multiply(7.5)).add(1)) \
-        .rename('evi')
-
-    return evi.copyProperties(image, ['system:time_start'])
-
-def getCRI1(image):
-    blue = image.select('B2').divide(10000)
-    green = image.select('B3').divide(10000)
-    
-    cri1 = ee.Image(1).divide(blue).subtract(ee.Image(1).divide(green)).rename('cri1')
-    return cri1.copyProperties(image, ['system:time_start'])
-
-def getGCI(image):
-    nir = image.select('B8')
+def getNDWI(image):
     green = image.select('B3')
-
-    gci = nir.divide(green).subtract(1).rename('gci')
-    return gci.copyProperties(image, ['system:time_start'])
-
-def getPSRI(image):
-    red = image.select('B4')
-    blue = image.select('B2')
-    red_edge = image.select('B5')
-    
-    psri = red.subtract(blue).divide(red_edge).rename('psri')
-    return psri.copyProperties(image, ['system:time_start'])
-
-def getNDRE(image):
     nir = image.select('B8')
-    red_edge = image.select('B5')
+    ndwi = green.subtract(nir).divide(green.add(nir)).rename('ndwi')
+    return ndwi.copyProperties(image, ['system:time_start'])
 
-    ndre = nir.subtract(red_edge).divide(nir.add(red_edge)).rename('ndre')
-    return ndre.copyProperties(image, ['system:time_start'])
+def getNDMI(image):
+    nir = image.select('B8')
+    swir = image.select('B11')
+    ndmi = nir.subtract(swir).divide(nir.add(swir)).rename('ndmi')
+    return ndmi.copyProperties(image, ['system:time_start'])
+
+def getLSWI(image):
+    nir = image.select('B8')
+    swir = image.select('B12')
+
+    lswi = nir.subtract(swir).divide(nir.add(swir)).rename('lswi')
+    return lswi.copyProperties(image, ['system:time_start'])
+
+def getAWEIsh(image):
+    awei = image.expression(
+        '4 * (GREEN - SWIR1) - (0.25 * NIR + 2.75 * SWIR2)', {
+            'GREEN': image.select('B3'),
+            'SWIR1': image.select('B11'),
+            'NIR': image.select('B8'),
+            'SWIR2': image.select('B12')
+        }).rename('awei')
+    return awei.copyProperties(image, ['system:time_start'])
+
+def getMNDWI(image):
+    mndwi = image.normalizedDifference(['B3', 'B11']).rename('mndwi')
+    return mndwi.copyProperties(image, ['system:time_start'])
+
+def getSARWI(image):
+    sarwi = image.normalizedDifference(['B3', 'B8A']).rename('sarwi')
+    return sarwi.copyProperties(image, ['system:time_start'])
+
+def getWI2015(image):
+    wi2015 = image.normalizedDifference(['B3', 'B5']).rename('ewi')
+    return wi2015.copyProperties(image, ['system:time_start'])
 
 #######################################  Save to firebase DB #########################################
 
@@ -135,7 +128,7 @@ def upload_csv_blob_to_firebase(bucket_name, blob_name, index_name):
         "time": time
     }
 
-    ref = db.reference("climate-data/vegetation/").child(index_name)
+    ref = db.reference("climate-data/water/").child(index_name)
     ref.set(metadata)
 
     print(f"✅ Stored metadata for {index_name} in Firebase")
@@ -166,18 +159,20 @@ def create_feature_factory(index_name):
 
 series=None
 for index in parameters:
-    if(index=="ndvi"):
-        series=s2.map(getNDVI)
-    if(index=="evi"):
-        series=s2.map(getEVI)
-    if(index=="gci"):
-        series=s2.map(getGCI)
-    if(index=="psri"):
-        series=s2.map(getPSRI)
-    if(index=="ndre"):
-        series=s2.map(getNDRE)
-    if(index=="cri1"):
-        series=s2.map(getCRI1)
+    if(index=="ndwi"):
+        series=s2.map(getNDWI)
+    if(index=="ndmi"):
+        series=s2.map(getNDMI)
+    if(index=="lswi"):
+        series=s2.map(getLSWI)
+    if(index=="awei"):
+        series=s2.map(getAWEIsh)
+    if(index=="mndwi"):
+        series=s2.map(getMNDWI)
+    if(index=="sarwi"):
+        series=s2.map(getSARWI)
+    if(index=="ewi"):
+        series=s2.map(getWI2015)
     
     if(series is None):
         print("Series not found")
@@ -186,14 +181,14 @@ for index in parameters:
     feature_collection = ee.FeatureCollection(series.map(create_feature_factory(index)))
 
     GCS_FILE_NAME = index
-    file_path = f'vegetation/{GCS_FILE_NAME}-00000-of-00001.csv' 
+    file_path = f'water/{GCS_FILE_NAME}-00000-of-00001.csv' 
 
     print(f"\nStarting export to Google Cloud Storage bucket: '{GCS_BUCKET_NAME}'...")
     task_gcs = ee.batch.Export.table.toCloudStorage(
         collection=feature_collection,
         description='Export_Index_to_GCS',
         bucket=GCS_BUCKET_NAME,
-        fileNamePrefix=f"vegetation/{GCS_FILE_NAME}",
+        fileNamePrefix=f"water/{GCS_FILE_NAME}",
         fileFormat='CSV'
     )
     task_gcs.start()
@@ -213,7 +208,7 @@ for index in parameters:
             #     print(f"❌ No files found in bucket with prefix: vegetation/{GCS_FILE_NAME}")
             #     # exit()
 
-            blobs = list(storage_client.list_blobs(GCS_BUCKET_NAME, prefix=f"vegetation/{GCS_FILE_NAME}"))
+            blobs = list(storage_client.list_blobs(GCS_BUCKET_NAME, prefix=f"water/{GCS_FILE_NAME}"))
             for blob in blobs:
                 if blob.name.endswith(".csv"):
                     upload_csv_blob_to_firebase(GCS_BUCKET_NAME, blob.name, index)
