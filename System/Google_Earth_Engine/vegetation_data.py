@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import io
 import base64
+import json
 import firebase_admin
 from google.cloud import storage
 from google.oauth2 import service_account
@@ -14,31 +15,45 @@ from firebase_admin import credentials
 from firebase_admin import db
 from dotenv import load_dotenv
 from datetime import datetime, timedelta, timezone
-
 load_dotenv()
 
 try:
-    ee.Initialize(project='climate-resilient-agriculture',opt_url='https://earthengine-highvolume.googleapis.com')
+    ee.Initialize(project=os.getenv("EE_PROJECT"),opt_url=os.getenv("EE_OPT_URL"))
     print("Google Earth Engine initialized successfully.")
 except ee.EEException as e:
     print(f"Error initializing Earth Engine: {e}")
     print("Please make sure you have authenticated via 'earthengine authenticate'.")
     exit()
 
-load_dotenv()
 
-firebase_cred = credentials.Certificate(
-    "C:/Users/hario/OneDrive/Coding - Workspace/Service Account KEYs/Firebase/climate-resilient-agriculture-firebase-adminsdk-fbsvc-44b4271bbf.json"
-)
+firebase_key_b64 = os.getenv("FIREBASE_KEY_BASE64")
+firebase_key_json = base64.b64decode(firebase_key_b64).decode('utf-8')
+firebase_cred_dict = json.loads(firebase_key_json)
+
+firebase_cred = credentials.Certificate(firebase_cred_dict)
 firebase_admin.initialize_app(firebase_cred, {
     'databaseURL': os.getenv("FIREBASE_REALTIME_DB")
 })
 
-# GCS creds (for Cloud Storage)
-gcs_credentials = service_account.Credentials.from_service_account_file(
-    "C:/Users/hario/OneDrive/Coding - Workspace/Service Account KEYs/GCP Service acc keys/climate-resilient-agriculture-918f7e7e1952.json"
-)
-storage_client = storage.Client(credentials=gcs_credentials, project="climate-resilient-agriculture")
+
+# firebase_cred = credentials.Certificate(
+#     "C:/Users/hario/OneDrive/Coding - Workspace/Service Account KEYs/Firebase/climate-resilient-agriculture-firebase-adminsdk-fbsvc-44b4271bbf.json"
+# )
+# firebase_admin.initialize_app(firebase_cred, {
+#     'databaseURL': os.getenv("FIREBASE_REALTIME_DB")
+# })
+
+gcs_key_b64 = os.getenv("GCS_KEY_BASE64")
+gcs_key_json = base64.b64decode(gcs_key_b64).decode('utf-8')
+gcs_cred_dict = json.loads(gcs_key_json)
+
+gcs_credentials = service_account.Credentials.from_service_account_info(gcs_cred_dict)
+storage_client = storage.Client(credentials=gcs_credentials, project=os.getenv("EE_PROJECT"))
+
+# gcs_credentials = service_account.Credentials.from_service_account_file(
+#     "C:/Users/hario/OneDrive/Coding - Workspace/Service Account KEYs/GCP Service acc keys/climate-resilient-agriculture-918f7e7e1952.json"
+# )
+# storage_client = storage.Client(credentials=gcs_credentials, project="climate-resilient-agriculture")
 
 GCS_BUCKET_NAME = 'earth-engine-climate-data'
 # storage_client = storage.Client()

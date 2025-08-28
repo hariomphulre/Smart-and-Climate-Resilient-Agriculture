@@ -14,7 +14,7 @@ exports.helloWorld = onRequest((request, response) => {
 });
 
 exports.trigger=onValueUpdated("/climate-data/vegetation/", async(event)=>{
-  logger.info(id, " New Data Triggered");
+  logger.info(" New Data Triggered");
   const db=getDatabase();
   const index=["ndvi","evi","gci","psri","ndre","cri1"];
   for(let i of index){
