@@ -4,19 +4,17 @@ const { onValueUpdated } = require("firebase-functions/database");
 const { getDatabase } = require("firebase-admin/database");
 const logger = require("firebase-functions/logger");
 const admin = require("firebase-admin");
-const fetch = require("node-fetch"); // To fetch CSV
-const Papa = require("papaparse");   // CSV parser
+const fetch = require("node-fetch");
+const Papa = require("papaparse"); 
 
 setGlobalOptions({ maxInstances: 10 });
 admin.initializeApp();
 
-// Hello World Test Function
 exports.helloWorld = onRequest((req, res) => {
   logger.info("Hello logs!", { structuredData: true });
   res.send("Hello from Firebase!");
 });
 
-// Trigger Function
 exports.trigger = onValueUpdated("/climate-data/vegetation/", async (event) => {
   const db = getDatabase();
   const indexList = ["ndvi", "evi", "gci", "psri", "ndre", "cri1"];
@@ -80,7 +78,7 @@ exports.trigger = onValueUpdated("/climate-data/vegetation/", async (event) => {
   };
 
   // Save to Firebase
-  await db.ref("/climate-data/vegetation/key-observations").set(keyObservations);
+  await db.ref("GEE/climate-data/vegetation/key-observations").set(keyObservations);
 
   logger.info("Updated Key Observations:", keyObservations);
 });

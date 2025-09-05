@@ -128,7 +128,7 @@ def upload_csv_blob_to_firebase(bucket_name, blob_name, index_name):
         "time": time
     }
 
-    ref = db.reference("climate-data/water/").child(index_name)
+    ref = db.reference("GEE/climate-data/water/").child(index_name)
     ref.set(metadata)
 
     print(f"✅ Stored metadata for {index_name} in Firebase")

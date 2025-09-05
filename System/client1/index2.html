@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart & Climate Resilient Agriculture</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+    <script src="analytics.js" defer></script>
+    <link rel="stylesheet" href="analyticsStyle.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="nav-bar">
+        <nav style="display: flex">
+            <span id="topic">Smart and Climate Resilient Agriculture</span>
+            <!-- <div class="search">
+                <input type="text" placeholder="Search..." id="search-bar">
+            </div> -->
+
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Search (/) for tools, and more" autocomplete="off">
+                <div class="icons">
+                    <button id="voiceBtn" style="color: #0c3c01ea"><i class="fa-solid fa-microphone"></i></button>
+                    <button id="searchBtn" style="color: #0c3c01ea"><i class="fa-solid fa-magnifying-glass"></i></button>
+                </div>
+            </div>
+    
+            <div class="nav-buttons">
+                <select name="Select Field" id="selectField" onchange="createNewField(this.value)">
+                    <option id="create-new-field" style="color: #0000FF" value="new_field">Create New Field</option>
+                    <option value="Field 1">Farm 1</option>
+                    <option value="Field 1">Baramati</option>
+                    <option value="" disabled selected hidden>Select Field</option>
+                </select>
+                <button onclick="climateOptions()" id="climate">Climate Analysis</button>
+                <button onclick="consoleOptions()" id="console">Farm Console</button>
+            </div>
+
+            <!-- <input list="language-options" id="language" name="language" placeholder="Select Language">
+            <datalist id="language-options">
+                <option value="English">
+                <option value="Hindi">
+                <option value="Marathi">
+            </datalist> -->
+
+            <input list="location-options" id="location" name="location" placeholder="Location &#128205 ">
+            <datalist id="location-options">
+                <option value="DIT Pune">
+                <option value="Baramati">
+                <option value="Sterling Castle Bhopal">
+            </datalist>
+
+
+        </nav>
+    </div>
+    <div id="loadContent"></div>
+
+    <div class="left-bar">
+        <ul>
+            <div class="left-bar-top">
+                <div class="nav-items">
+                    <div class="overview">Overview</div>
+                    <div class="climate-analysis">Climate Analysis</div>
+                    <div class="farm-console">Farm Console</div>
+                </div>
+                <li>
+                    <a id="left-bar-btn" href="#" onclick="leftbarContent()">
+                        <i id="left-bar-icon" class="fa-solid fa-tractor"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a id="left-bar-btn" href="#">
+                        <i id="left-bar-icon" class="fa-solid fa-database"></i>
+                        <span>Reports</span>
+                    </a>
+                </li>
+                <li>
+                    <a id="left-bar-btn" href="#">
+                        <i id="left-bar-icon" class="fa-solid fa-database"></i>
+                        <span>Data</span>
+                    </a>
+                </li>
+                <li>
+                    <a id="left-bar-btn" href="#">
+                        <i id="left-bar-icon" class="fa-solid fa-database"></i>
+                        <span>Data</span>
+                    </a>
+                </li>
+                <li>
+                    <a id="left-bar-btn" href="#">
+                        <i id="left-bar-icon" class="fa-solid fa-database"></i>
+                        <span>Data</span>
+                    </a>
+                </li>
+                <li>
+                    <a id="left-bar-btn" href="#">
+                        <i id="left-bar-icon" class="fa-solid fa-database"></i>
+                        <span>Data</span>
+                    </a>
+                </li>
+            </div>
+            <div class="left-bar-btn-fixed">
+                <li>
+                    <a id="left-bar-ai" href="#">
+                        <img id="ai_logo" src="maple-leaf.png" alt="AI_logo">
+                        <span>AI</span>
+                    </a>
+                </li>
+                <li>
+                    <a id="left-bar-btn-fix" href="#">
+                        <i id="left-bar-icon" class="fa-solid fa-user"></i>
+                        <span>Account</span>
+                    </a>
+                </li>
+                <li>
+                    <a id="left-bar-btn-fix" href="#">
+                        <i id="left-bar-icon" class="fa-solid fa-gear"></i>
+                        <span>Settings</span>
+                    </a>
+                </li>
+                <li>
+                    <a id="left-bar-btn-fix" href="#">
+                        <i id="left-bar-icon" class="fa-solid fa-arrow-right-from-bracket"></i>
+                        <span>Logout</span>
+                    </a>
+                </li>
+            </div>
+        </ul>
+    </div>
+
+    <script>
+        document.querySelector('#loadContent').innerHTML = `
+            <div class="title">
+                <i id="dashboard" class="fa-solid fa-tractor"></i>
+                <h2 id="dashboard_head">Dashboard</h2>
+            </div>
+        `;
+            // document.getElementById("climate").style.color = "blue";
+            // fetch("climateOptions.html")
+            // .then(response => response.text())
+            // .then(data => {
+                //     document.getElementById("loadContent").innerHTML = data;
+                //     const script = document.createElement("script");
+                //     script.src = "analytics.js";
+                //     document.body.appendChild(script);
+                // });
+        function leftbarContent(){
+            document.getElementById("climate").style.color = "black";
+            document.getElementById("console").style.color = "black";
+            dashboard();
+        }
+        function climateOptions(){
+            document.getElementById("climate").style.color = "blue";
+            document.getElementById("console").style.color = "black";
+            fetch("climateOptions.html")
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById("loadContent").innerHTML = data;
+
+                // Load the analytics.js script
+                const script = document.createElement("script");
+                script.src = "analytics.js";
+                document.body.appendChild(script);
+            });
+        }
+        function consoleOptions(){
+            document.getElementById("console").style.color = "blue";
+            document.getElementById("climate").style.color = "black";
+            fetch("consoleOptions.html")
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById("loadContent").innerHTML = data;
+            });
+        }
+        function createNewField(value){
+            // document.getElementById("console").style.color = "black";
+            // document.getElementById("climate").style.color = "black";
+            // if(value=='new_field'){
+            //     fetch("map.html")
+            //     .then(response => response.text())
+            //     .then(data => {
+            //         document.getElementById("loadContent").innerHTML = data;
+            //     });
+            // }
+            document.getElementById("console").style.color = "black";
+            document.getElementById("climate").style.color = "black";
+            if (value === 'new_field') {
+                document.getElementById("loadContent").innerHTML = `
+                    <iframe src="map.html" style= "width: 100%; height: 100vh; border: none;"></iframe>
+                `;
+            }
+        }
+        function addFieldToDropdown(fieldName) {
+            const select = document.getElementById("selectField");
+            const option = document.createElement("option");
+            option.value = fieldName;
+            option.textContent = fieldName;
+            select.insertBefore(option, select.firstChild); // add it before "Create New Field"
+        }
+    </script>
+        
+    <!-- <div class="nav-bar2">
+        <button id="ai">AI</button>
+        <button id="menu">Menu</button>
+    </div>         -->
+
+
+</body>
+</html>

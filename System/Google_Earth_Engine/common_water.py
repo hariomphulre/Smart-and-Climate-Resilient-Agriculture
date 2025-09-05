@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 
 try:
-    ee.Initialize(project='climate-resilient-agriculture',opt_url='https://earthengine-highvolume.googleapis.com')
+    ee.Initialize(project='climate-resilient-agriculture')
     print("Google Earth Engine initialized successfully.")
 except ee.EEException as e:
     print(f"Error initializing Earth Engine: {e}")
