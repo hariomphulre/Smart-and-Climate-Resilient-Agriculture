@@ -15,14 +15,14 @@ exports.helloWorld = onRequest((req, res) => {
   res.send("Hello from Firebase!");
 });
 
-exports.trigger = onValueUpdated("/climate-data/vegetation/", async (event) => {
+exports.trigger = onValueUpdated("GEE/climate-data/vegetation/", async (event) => {
   const db = getDatabase();
   const indexList = ["ndvi", "evi", "gci", "psri", "ndre", "cri1"];
   let values = {};
 
   // Fetch latest value for each index
   for (let i of indexList) {
-    const snapshot = await db.ref(`/climate-data/vegetation/${i}`).get();
+    const snapshot = await db.ref(`GEE/climate-data/vegetation/${i}`).get();
     if (snapshot.exists()) {
       const url = snapshot.val().url;
       logger.info(`Fetching ${i} CSV from ${url}`);

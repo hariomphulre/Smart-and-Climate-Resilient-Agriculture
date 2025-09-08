@@ -122,6 +122,7 @@ const Navbar = () => {
                   <option id="create-new-field" className="text-blue-600" value="new_field">Create New Field</option>
                   {fields.map(field => (
                     <option key={field.id} value={field.name}>{field.name}</option>
+                    
                   ))}
                 </select>
                 <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">

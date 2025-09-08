@@ -67,7 +67,7 @@ const Sidebar = ({ isSidebarOpen, isCollapsed, toggleSidebar }) => {
       } ${isMobile ? 'w-72' : ''} ${!isMobile && isCollapsed ? 'md:w-15.5' : 'md:w-63'}` }
       aria-label="Sidebar"
     >
-      <div className="h-100% px-0 overflow-y-auto">
+      <div className="h-118.5 px-0 overflow-y-auto">
         <div className="flex items-center justify-between py-0 px-0 h-7">      
           {/* Toggle button - only visible on desktop */}
           <button 
@@ -84,6 +84,7 @@ const Sidebar = ({ isSidebarOpen, isCollapsed, toggleSidebar }) => {
         {/* <div style={{marginTop: "16px", width: "100%"}} className="border-t border-gray-500"></div> */}
         
         {/* Navigation Links */}
+        
         <ul className="space-y-0">
           <li>
             <Link
@@ -176,7 +177,7 @@ const Sidebar = ({ isSidebarOpen, isCollapsed, toggleSidebar }) => {
                 </li>
                 <li>
                   <Link
-                    to="/water"
+                    to="/irrigation"
                     className={`flex items-center ${isCollapsed ? 'justify-center' : 'pl-5'} w-full text-base transition duration-75 ${
                       isActive('/water') ? 'bg-green-100 text-green-800' : 'text-gray-900 hover:bg-gray-100'
                     } group`}
@@ -190,7 +191,7 @@ const Sidebar = ({ isSidebarOpen, isCollapsed, toggleSidebar }) => {
                 </li>
                 <li>
                   <Link
-                    to="/water"
+                    to="/hazard_activities"
                     className={`flex items-center ${isCollapsed ? 'justify-center' : 'pl-5'} w-full text-base transition duration-75 ${
                       isActive('/water') ? 'bg-green-100 text-green-800' : 'text-gray-900 hover:bg-gray-100'
                     } group`}
@@ -204,7 +205,7 @@ const Sidebar = ({ isSidebarOpen, isCollapsed, toggleSidebar }) => {
                 </li>
                 <li>
                   <Link
-                    to="/water"
+                    to="/monsoon"
                     className={`flex items-center ${isCollapsed ? 'justify-center' : 'pl-5'} w-full text-base transition duration-75 ${
                       isActive('/water') ? 'bg-green-100 text-green-800' : 'text-gray-900 hover:bg-gray-100'
                     } group`}
@@ -334,56 +335,70 @@ const Sidebar = ({ isSidebarOpen, isCollapsed, toggleSidebar }) => {
                     {!isCollapsed && <span>Govt. Schemes</span>}
                   </Link>
                 </li>
+                <li>
+                  <Link
+                    to="/govt-schemes"
+                    className={`flex items-center pl-5 w-full text-base transition duration-75 ${
+                      isActive('/govt-schemes') 
+                        ? 'bg-green-100 text-green-800' 
+                        : 'text-gray-900 hover:bg-gray-100'
+                    } group`}
+                  >
+                    <FontAwesomeIcon icon={faDroplet} className={`w-4 h-4 mr-5.5 ${isActive('/govt-schemes') ? 'text-green-700 ' : 'text-gray-500 group-hover:text-gray-900'}`} />
+                    {!isCollapsed && <span>Govt. Schemes</span>}
+                  </Link>
+                </li>
+                
               </ul>
             )}
           </li>
         </ul>
+      </div>
 
-        <div style={{display: "flex", flexDirection: "column"}} className="sidebar-bttom mt-38">
+      <div style={{display: "flex", flexDirection: "column"}} className={`sidebar-bttom mt-0 ${isCollapsed ? '' : ''}`}>
 
-          <div className="border-t border-gray-300 pt-2 pb-2">
-            <Link
-              to="/ai-assistant"
-              className={`flex items-center px-3 ${isCollapsed ? 'justify-center' : ''} ${
-                isActive('/ai-assistant') 
-                  ? 'bg-green-100 text-green-800' 
-                  : 'text-gray-900 hover:bg-gray-100'
-              } group`}
-            >
-              <FontAwesomeIcon icon={faRobot} className={`w-5 h-5 text-gray-500 transition ${isActive('/ai-assistant') ? 'text-gray-900' : 'group-hover:text-gray-900'}`} />
-              {!isCollapsed && <span className="ml-3 whitespace-nowrap">AI Assistant</span>}
-            </Link>
-          </div>
+        <div className="border-t border-gray-300 pt-2 pb-2">
+          <Link
+            to="/ai-assistant"
+            className={`flex items-center h-6 px-5 ${isCollapsed ? '' : 'w-63'} ${
+              isActive('/ai-assistant') 
+                ? 'bg-green-100 text-green-800' 
+                : 'text-gray-900 hover:bg-gray-100'
+            } group`}
+          >
+            <FontAwesomeIcon icon={faRobot} className={`w-5 h-5 text-gray-500 transition ${isActive('/ai-assistant') ? 'text-gray-900' : 'group-hover:text-gray-900'}`} />
+            {!isCollapsed && <span className="ml-3 whitespace-nowrap">AI Assistant</span>}
+          </Link>
+        </div>
 
-          <div className="border-t border-gray-300 pt-2 pb-2">
-            <Link
-              to="/profile"
-              className={`flex items-center px-3 ${isCollapsed ? 'justify-center' : ''} text-gray-900 hover:bg-gray-50 hover:text-gray-900 group transition-colors`}
-            >
-              <FontAwesomeIcon icon={faUser} className="w-5 h-5 text-gray-500 transition group-hover:text-gray-900" />
-              {!isCollapsed && <span className="ml-3">Admin</span>}
-              {/* <div className="text-xs text-gray-500">admin@example.com</div> */}
-            </Link>
-          </div>
-          <div className="border-t border-gray-300 pt-2 pb-2">
-            <Link
-              to="/profile"
-              className={`flex items-center px-3 ${isCollapsed ? 'justify-center' : ''} text-gray-900 hover:bg-gray-50 hover:text-gray-900 group transition-colors`}
-            >
-              <FontAwesomeIcon icon={faCog} className="w-5 h-5 text-gray-500 transition group-hover:text-gray-900" />
-              {!isCollapsed && <span className="ml-3">Settings</span>}
-            </Link>
-          </div>
+        <div className="border-t border-gray-300 pt-2 pb-2">
+          <Link
+            to="/profile"
+            className={`flex items-center h-6 px-5 ${isCollapsed ? '' : 'w-63'} text-gray-900 hover:bg-gray-50 hover:text-gray-900 group transition-colors`}
+          >
+            <FontAwesomeIcon icon={faUser} className="w-5 h-5 text-gray-500 transition group-hover:text-gray-900" />
+            {!isCollapsed && <span className="ml-3">Admin</span>}
+            {/* <div className="text-xs text-gray-500">admin@example.com</div> */}
+          </Link>
+        </div>
+        <div className="border-t border-gray-300 pt-2 pb-2">
+          <Link
+            to="/profile"
+            className={`flex items-center h-6 px-5 ${isCollapsed ? '' : 'w-63'} text-gray-900 hover:bg-gray-50 hover:text-gray-900 group transition-colors`}
+          >
+            <FontAwesomeIcon icon={faCog} className="w-5 h-5 text-gray-500 transition group-hover:text-gray-900" />
+            {!isCollapsed && <span className="ml-3">Settings</span>}
+          </Link>
+        </div>
 
-          <div className="border-t border-gray-300 pt-2 pb-2">
-            <Link
-              to="/logout"
-              className={`flex items-center px-3 ${isCollapsed ? 'justify-center' : ''} text-gray-900 hover:bg-red-50 hover:text-red-700 group transition-colors`}
-            >
-              <FontAwesomeIcon icon={faArrowRightFromBracket} className="w-5 h-5 text-gray-500 transition group-hover:text-red-900"></FontAwesomeIcon>
-              {!isCollapsed && <span className="ml-3">Logout</span>}
-            </Link>
-          </div>
+        <div className="border-t border-gray-300 pt-2 pb-2">
+          <Link
+            to="/logout"
+            className={`flex items-center h-6 px-5 ${isCollapsed ? '' : 'w-63'} text-gray-900 hover:bg-red-50 hover:text-red-700 group transition-colors`}
+          >
+            <FontAwesomeIcon icon={faArrowRightFromBracket} className="w-5 h-5 text-gray-500 transition group-hover:text-red-900"></FontAwesomeIcon>
+            {!isCollapsed && <span className="ml-3">Logout</span>}
+          </Link>
         </div>
       </div>
     </aside>
