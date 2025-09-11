@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
@@ -6,24 +6,86 @@ import {
   faMagnifyingGlass, 
   faBars, 
   faXmark,
-  faChevronDown
+  faChevronDown,
+  faPlus,
+  faMap,
+  faLeaf,
+  faCloudSunRain
 } from '@fortawesome/free-solid-svg-icons';
+import './Navbar.css';
 import { useAppContext } from '../../context/AppContext';
 
 const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { selectedField, setSelectedField, selectedLocation, setSelectedLocation, fields, addField } = useAppContext();
+  const mobileMenuRef = useRef(null);
+  const menuButtonRef = useRef(null);
+  
+  // Safely use context with default values if context is undefined
+  const contextValue = useAppContext() || {};
+  const { 
+    selectedField = '', 
+    setSelectedField = () => {}, 
+    selectedLocation = '', 
+    setSelectedLocation = () => {}, 
+    fields = [], 
+    addField = () => {} 
+  } = contextValue;
   
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [showNewFieldDialog, setShowNewFieldDialog] = useState(false);
   const [newFieldName, setNewFieldName] = useState('');
   
+  // State to track screen size
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  
+  // Update window width when resized
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+      if (window.innerWidth >= 768 && mobileMenuOpen) {
+        setMobileMenuOpen(false);
+      }
+    };
+    
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [mobileMenuOpen]);
+  
   // Close mobile menu on route change
   useEffect(() => {
     setMobileMenuOpen(false);
   }, [location.pathname]);
+  
+  // Click outside to close mobile menu
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (mobileMenuOpen && 
+          mobileMenuRef.current && 
+          !mobileMenuRef.current.contains(event.target) &&
+          menuButtonRef.current && 
+          !menuButtonRef.current.contains(event.target)) {
+        setMobileMenuOpen(false);
+      }
+    };
+    
+    // Handle Escape key to close menu
+    const handleEscape = (event) => {
+      if (event.key === 'Escape' && mobileMenuOpen) {
+        setMobileMenuOpen(false);
+        menuButtonRef.current?.focus();
+      }
+    };
+    
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleEscape);
+    
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleEscape);
+    };
+  }, [mobileMenuOpen]);
   
   const handleFieldChange = (e) => {
     const value = e.target.value;
@@ -66,67 +128,86 @@ const Navbar = () => {
 
   return (
     <>
-      <nav style={{height: "50px", alignContent: "center"}} className="fixed top-0 z-50 w-full bg-[#192a06] border-b border-gray-200">
-        <div className="lg:px-3">
-          <div className="flex items-center justify-between">
+      <nav id="top-bar" className="fixed top-0 z-50 w-full border-b border-green-800 shadow-lg">
+        <div className="container mx-auto px-3 sm:px-4 py-2">
+          <div className="flex items-center">            
             <img style={{ paddingRight: "10px" }} width="45px" src="logo.png" alt="logo" />
-            <Link to="/" style={{fontSize: "25px"}} className="text-xl  text-white whitespace-nowrap">
-              Climate Resilient Agriculture
+            <Link to="/" style={{fontSize: "25px", }} className="text-xl  text-white whitespace-nowrap">
+              {windowWidth < 480 ? "Smart Agri" : "Climate Resilient Agriculture"}
             </Link> 
             
             {/* Mobile menu button */}
             <button 
-              className="md:hidden text-gray-700 hover:bg-gray-100 p-2 rounded-md"
+              ref={menuButtonRef}
+              style={{marginLeft: "auto", marginRight: "0px"}}
+              className="md:hidden text-white hover:bg-green-700 active:bg-green-800 p-2 rounded-lg transition duration-200 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-70"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+              aria-expanded={mobileMenuOpen}
             >
-              <FontAwesomeIcon icon={mobileMenuOpen ? faXmark : faBars} />
+              <FontAwesomeIcon icon={mobileMenuOpen ? faXmark : faBars} className="text-lg" />
             </button>
             
             {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center space-x-4 flex-grow mx-4">
+            <div className="hidden md:flex items-center space-x-4 lg:space-x-6 flex-grow mx-4 lg:mx-6">
               {/* Search Bar */}
-              <div className="flex-grow max-w-md">
-                <form onSubmit={handleSearch} style={{borderRadius: "4px", height: "35px", fontSize: "20px", marginLeft: "50px", width: "500px"}} className="relative flex items-center px-3 bg-white">
+              <div className="flex-grow max-w-sm lg:max-w-md">
+                <form style={{borderRadius: "0.4rem"}} onSubmit={handleSearch} className="relative flex items-center overflow-hidden bg-white border border-green-200 shadow-sm h-9 md:h-10 focus-within:ring-2 focus-within:ring-green-400 focus-within:border-transparent transition-all duration-200">
                   <input 
                     type="text" 
                     id="searchInput" 
-                    placeholder="Search (/) for tools, and more" 
-                    className="outline-none text-base"
-                    style={{ width: "100%"}}
+                    style={{fontSize: "17px"}}
+                    placeholder="Search (/) for tools, and more..." 
+                    className="w-full pl-3 pr-2 md:px-4 py-1.5 md:py-2 outline-none text-gray-700 bg-white text-sm"
                     autoComplete="off"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                   />
-                  <div style={{marginLeft: "auto"}} className="flex space-x-1 text-sm">
-                    <button type="button" style={{cursor: "pointer", fontSize: "18px"}} className="text-green-700 hover:text-[#192a06]">
-                      <FontAwesomeIcon icon={faMicrophone} />
+                  <div className="flex md:px-2 md:space-x-0 bg-white">
+                    <button 
+                      type="button" 
+                      className="text-green-600 hover:text-green-800 transition duration-200 pr-1 rounded-full hover:bg-green-50"
+                      aria-label="Voice search"
+                    >
+                      <FontAwesomeIcon icon={faMicrophone} style={{fontSize: "18px"}} className="text-xs md:text-sm" />
                     </button>
-                    <button type="submit" style={{cursor: "pointer", fontSize: "18px"}} className="text-green-700 hover:text-[#192a06]">
-                      <FontAwesomeIcon icon={faMagnifyingGlass} />
+                    <button 
+                      type="submit" 
+                      className="text-green-600 hover:text-green-800 transition duration-200 pr-1 rounded-full hover:bg-green-50"
+                      aria-label="Search"
+                    >
+                      <FontAwesomeIcon icon={faMagnifyingGlass} style={{fontSize: "18px"}} className="text-xs md:text-sm" />
                     </button>
                   </div>
                 </form>
               </div>
               
+              {/* Create Field Button */}
+              <button 
+                onClick={() => navigate('/create-field')}
+                className="flex items-center px-3 md:px-4 py-1.5 md:py-2 bg-gradient-to-br from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white rounded-md font-medium transition-all duration-200 shadow-sm hover:shadow active:shadow-inner text-sm whitespace-nowrap"
+              >
+                <FontAwesomeIcon icon={faPlus} className="mr-1.5 md:mr-2 text-xs md:text-sm" />
+                <span>Create Field</span>
+              </button>
+              
               {/* Field Selection */}
-              <div style={{marginRight: "auto", marginLeft: "110px"}} className="relative">
+              <div className="relative min-w-[140px] lg:min-w-[160px]">
                 <select
                   name="Select Field"
                   id="selectField"
-                  style={{height: "37px"}}
-                  className="border rounded px-3 bg-white text-gray-700 appearance-none cursor-pointer"
+                  className="w-full h-9 md:h-10 border border-green-200 rounded-md px-2.5 md:px-4 py-0 md:py-2 bg-white/90 text-gray-700 appearance-none cursor-pointer shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 text-sm"
                   onChange={handleFieldChange}
                   value={selectedField || ''}
                 >
                   <option value="" disabled hidden>Select Field</option>
-                  <option id="create-new-field" className="text-blue-600" value="new_field">Create New Field</option>
+                  
                   {fields.map(field => (
-                    <option key={field.id} value={field.name}>{field.name}</option>
-                    
+                    <option key={field.id} value={field.id}>{field.name}</option>
                   ))}
                 </select>
-                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                  <FontAwesomeIcon icon={faChevronDown} className="w-4 h-4" />
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 md:px-3 text-gray-700">
+                  <FontAwesomeIcon icon={faChevronDown} className="w-3 h-3 md:w-4 md:h-4" />
                 </div>
               </div>
               
@@ -148,69 +229,97 @@ const Navbar = () => {
             
             {/* Location Selector - Desktop */}
             <div className="hidden md:block relative">
-              <input 
-                list="location-options" 
-                id="location" 
-                name="location" 
-                placeholder="Location 📍" 
-                style={{height: "37px"}}
-                className="border rounded px-3 py-1.5 bg-white pr-0"
-                value={selectedLocation}
-                onChange={handleLocationChange}
-              />
-              <datalist id="location-options">
-                <option value="DIT Pune" />
-                <option value="Baramati" />
-                <option value="Sterling Castle Bhopal" />
-              </datalist>
+              <div className="relative">
+                <input 
+                  list="location-options" 
+                  id="location" 
+                  name="location" 
+                  placeholder="📍 Location" 
+                  className="h-9 md:h-10 w-32 md:w-40 border border-green-200 rounded-md px-2.5 md:px-4 py-0 md:py-2 bg-white/90 text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 shadow-sm text-sm transition-all duration-200"
+                  value={selectedLocation}
+                  onChange={handleLocationChange}
+                />
+                <datalist id="location-options">
+                  <option value="DIT Pune" />
+                  <option value="Baramati" />
+                  <option value="Sterling Castle Bhopal" />
+                </datalist>
+              </div>
             </div>
           </div>
           
           {/* Mobile Navigation Menu */}
-          {mobileMenuOpen && (
-            <div className="md:hidden mt-2 py-3 border-t">
+          <div 
+            ref={mobileMenuRef} 
+            className={`md:hidden mt-1.5 py-4 border-t border-green-800 bg-gradient-to-b from-[#192a06] to-green-900 rounded-b-lg shadow-lg fixed top-[52px] sm:top-[60px] left-0 right-0 max-h-[calc(100vh-52px)] sm:max-h-[calc(100vh-60px)] overflow-y-auto z-50 transition-all duration-300 transform ${
+              mobileMenuOpen ? 'opacity-100 translate-y-0 mobile-menu-enter' : 'opacity-0 -translate-y-5 pointer-events-none'
+            }`}
+          >
               {/* Mobile Search */}
-              <form onSubmit={handleSearch} className="mb-3">
-                <div className="flex border rounded-md overflow-hidden">
+              <form onSubmit={handleSearch} className="mb-4 px-4">
+                <div className="flex rounded-md overflow-hidden shadow-sm">
                   <input
                     type="text"
-                    placeholder="Search..."
-                    className="flex-1 px-3 py-2 outline-none"
+                    
+                    className="text-white flex-1 px-4 py-2.5 outline-none border-2 border-green-100 focus:border-green-300 text-sm"
+                    placeholder="Search for tools, analytics..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                   />
-                  <button type="submit" className="bg-green-700 text-white px-3">
+                  <button type="submit" className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white px-4 transition duration-200 active:from-green-800 active:to-green-900">
                     <FontAwesomeIcon icon={faMagnifyingGlass} />
                   </button>
                 </div>
               </form>
               
-              {/* Mobile Field Selection */}
-              <div className="mb-3">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Select Field</label>
-                <select
-                  className="w-full border rounded px-3 py-2"
-                  onChange={handleFieldChange}
-                  value={selectedField || ''}
+              {/* Create Field Button - Mobile */}
+              <div className="px-4 mb-4">
+                <button 
+                  onClick={() => {
+                    navigate('/create-field');
+                    setMobileMenuOpen(false);
+                  }}
+                  className="w-full flex items-center justify-center px-4 py-2.5 bg-gradient-to-br from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white rounded-md font-medium transition duration-200 text-sm shadow-sm active:shadow-inner"
                 >
-                  <option value="" disabled hidden>Select Field</option>
-                  <option value="new_field">Create New Field</option>
-                  {fields.map(field => (
-                    <option key={field.id} value={field.name}>{field.name}</option>
-                  ))}
-                </select>
+                  <FontAwesomeIcon icon={faPlus} className="mr-2" />
+                  <span>Create Field</span>
+                </button>
+              </div>
+              
+              {/* Mobile Field Selection */}
+              <div className="mb-4 px-4">
+                <label className="block text-sm font-medium text-green-50 mb-1.5">Select Field</label>
+                <div className="relative">
+                  <select
+                    className="w-full border border-green-100 rounded-md px-3 py-2.5 bg-white text-gray-700 appearance-none focus:outline-none focus:ring-2 focus:ring-green-400 text-sm shadow-sm"
+                    onChange={handleFieldChange}
+                    value={selectedField || ''}
+                  >
+                    <option value="" disabled hidden>Select Field</option>
+                    <option value="new_field">Create New Field</option>
+                    {fields.map(field => (
+                      <option key={field.id} value={field.id}>{field.name}</option>
+                    ))}
+                  </select>
+                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-700">
+                    <FontAwesomeIcon icon={faChevronDown} className="w-4 h-4" />
+                  </div>
+                </div>
               </div>
               
               {/* Mobile Location */}
-              <div className="mb-3">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
-                <input 
-                  list="mobile-location-options" 
-                  className="w-full border rounded px-3 py-2"
-                  placeholder="Select Location"
-                  value={selectedLocation}
-                  onChange={handleLocationChange}
-                />
+              <div className="mb-4 px-4">
+                <label className="block text-sm font-medium text-green-50 mb-1.5">Location</label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm">📍</span>
+                  <input 
+                    list="mobile-location-options" 
+                    className="w-full border border-green-100 rounded-md pl-9 pr-3 py-2.5 bg-white text-gray-700 text-sm focus:outline-none focus:ring-2 focus:ring-green-400 shadow-sm"
+                    placeholder="Select Location"
+                    value={selectedLocation}
+                    onChange={handleLocationChange}
+                  />
+                </div>
                 <datalist id="mobile-location-options">
                   <option value="DIT Pune" />
                   <option value="Baramati" />
@@ -219,59 +328,94 @@ const Navbar = () => {
               </div>
               
               {/* Mobile Navigation Buttons */}
-              <div className="space-y-2">
+              <div className="space-y-0 divide-y divide-green-800/50 mt-2">
+                <div className="px-4 py-2">
+                  <p className="text-xs font-semibold text-green-300 uppercase tracking-wide mb-1">Quick Navigation</p>
+                </div>
                 <button 
-                  onClick={navigateToClimateAnalysis}
-                  className="w-full text-left px-3 py-2 rounded hover:bg-gray-100 block"
+                  onClick={() => {
+                    navigateToClimateAnalysis();
+                    setMobileMenuOpen(false);
+                  }}
+                  className="w-full text-left px-5 py-3 text-white hover:bg-green-800/50 active:bg-green-800/70 block transition-colors text-sm font-medium flex items-center mobile-nav-item smooth-transition"
                 >
+                  <FontAwesomeIcon icon={faCloudSunRain} className="mr-3 text-green-300 w-4 h-4" />
                   Climate Analysis
                 </button>
                 <button 
-                  onClick={navigateToFarmConsole}
-                  className="w-full text-left px-3 py-2 rounded hover:bg-gray-100 block"
+                  onClick={() => {
+                    navigateToFarmConsole();
+                    setMobileMenuOpen(false);
+                  }}
+                  className="w-full text-left px-5 py-3 text-white hover:bg-green-800/50 active:bg-green-800/70 block transition-colors text-sm font-medium flex items-center mobile-nav-item smooth-transition"
                 >
+                  <FontAwesomeIcon icon={faLeaf} className="mr-3 text-green-300 w-4 h-4" />
                   Farm Console
                 </button>
                 <Link 
                   to="/reports"
-                  className="w-full text-left px-3 py-2 rounded hover:bg-gray-100 block"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="w-full text-left px-5 py-3 text-white hover:bg-green-800/50 active:bg-green-800/70 block transition-colors text-sm font-medium flex items-center mobile-nav-item smooth-transition"
                 >
+                  <FontAwesomeIcon icon={faMap} className="mr-3 text-green-300 w-4 h-4" />
                   Reports
+                </Link>
+                <Link 
+                  to="/ai-assistant"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="w-full text-left px-5 py-3 text-white hover:bg-green-800/50 active:bg-green-800/70 block transition-colors text-sm font-medium flex items-center mobile-nav-item smooth-transition"
+                >
+                  <FontAwesomeIcon icon={faMicrophone} className="mr-3 text-green-300 w-4 h-4" />
+                  AI Assistant
                 </Link>
               </div>
             </div>
-          )}
         </div>
       </nav>
         
       {/* New Field Dialog */}
       {showNewFieldDialog && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
-            <h3 className="text-lg font-semibold mb-4">Create New Field</h3>
+        <div className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg shadow-xl p-5 w-full max-w-md border border-gray-200">
+            <div className="flex items-center justify-between mb-4 pb-2 border-b">
+              <h3 className="text-lg font-semibold text-gray-800 flex items-center">
+                <FontAwesomeIcon icon={faPlus} className="mr-2 text-green-600 text-sm" />
+                Create New Field
+              </h3>
+              <button 
+                type="button"
+                onClick={() => setShowNewFieldDialog(false)}
+                className="text-gray-400 hover:text-gray-600 transition-colors focus:outline-none p-1"
+                aria-label="Close dialog"
+              >
+                <FontAwesomeIcon icon={faXmark} className="text-lg" />
+              </button>
+            </div>
             <form onSubmit={handleNewFieldSubmit}>
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Field Name</label>
+              <div className="mb-5">
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">Field Name</label>
                 <input
                   type="text"
-                  className="w-full border rounded px-3 py-2"
+                  className="w-full border border-gray-300 rounded-md px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all shadow-sm"
                   placeholder="Enter field name"
                   value={newFieldName}
                   onChange={(e) => setNewFieldName(e.target.value)}
                   autoFocus
                 />
+                <p className="text-xs text-gray-500 mt-1">Give your field a descriptive name</p>
               </div>
               <div className="flex justify-end space-x-2">
                 <button
                   type="button"
-                  className="px-4 py-2 border rounded hover:bg-gray-100"
+                  className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-100 active:bg-gray-200 transition-colors shadow-sm text-sm font-medium"
                   onClick={() => setShowNewFieldDialog(false)}
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+                  className="px-4 py-2 bg-gradient-to-r from-green-600 to-green-500 text-white rounded-md hover:from-green-700 hover:to-green-600 transition-all shadow-sm active:shadow-inner disabled:opacity-70 text-sm font-medium"
+                  disabled={!newFieldName.trim()}
                 >
                   Create Field
                 </button>

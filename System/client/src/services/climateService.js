@@ -238,37 +238,164 @@ export const fetchRainfallData = (fieldId, location, dateRange) => {
  * @param {Object} dateRange - Date range object with startDate and endDate
  * @returns {Promise} Promise resolving to soil data
  */
-export const fetchSoilData = (fieldId, location, dateRange) => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
+export const fetchSoilData = async (fieldId, location, dateRange) => {
+  try {
+    // Import the API_URLS dynamically to avoid circular dependencies
+    const { API_URLS } = await import('../config');
+    
+    // Use the API endpoint if we have a fieldId
+    if (fieldId) {
       try {
-        const soilData = {
-          soilType: 'Clay Loam',
-          ph: parseFloat((6.5 + Math.random() * 1.0).toFixed(1)),
-          nitrogen: parseFloat((Math.random() * 20 + 40).toFixed(1)),
-          phosphorus: parseFloat((Math.random() * 15 + 25).toFixed(1)),
-          potassium: parseFloat((Math.random() * 50 + 150).toFixed(1)),
-          organicMatter: parseFloat((Math.random() * 1.5 + 2.0).toFixed(1)),
-          recommendations: [
-            {
-              nutrient: 'Nitrogen',
-              current: 'Moderate',
-              recommendation: 'Apply 40kg/ha before next planting'
-            },
-            {
-              nutrient: 'Phosphorus',
-              current: 'Low',
-              recommendation: 'Apply 30kg/ha of phosphatic fertilizer'
-            }
-          ]
-        };
+        const response = await fetch(`${API_URLS.SOIL_DATA}/${fieldId}`);
         
-        resolve(soilData);
-      } catch (error) {
-        reject(error);
+        if (!response.ok) {
+          console.error(`Error fetching soil data for field ${fieldId}: ${response.status}`);
+          throw new Error(`Error fetching soil data: ${response.status}`);
+        }
+        
+        const result = await response.json();
+        
+        if (result.success && result.data) {
+          console.log('Soil data fetched successfully from backend:', result.data);
+          return result.data;
+        } else {
+          throw new Error('Invalid soil data response format');
+        }
+      } catch (apiError) {
+        console.error('API error when fetching soil data:', apiError);
+        // Fall back to mock data on API error
+        console.warn('Falling back to mock soil data due to API error');
+        return generateMockSoilData(fieldId, location);
       }
-    }, 1000);
-  });
+    } else {
+      // If no fieldId provided, use mock data
+      console.log('No fieldId provided, using mock soil data');
+      return generateMockSoilData(null, location);
+    }
+  } catch (error) {
+    console.error('Error in fetchSoilData:', error);
+    return generateMockSoilData(fieldId, location);
+  }
+};
+
+// Helper function to generate mock soil data if API call fails
+function generateMockSoilData(fieldId, location) {
+  // Generate mock values with some consistency if fieldId is provided
+  const fieldSeed = fieldId ? 
+    fieldId.toString().split('').reduce((a, b) => a + b.charCodeAt(0), 0) : 
+    Math.floor(Math.random() * 1000);
+    
+  const randomWithSeed = (min, max, seed = fieldSeed) => {
+    const x = Math.sin(seed++) * 10000;
+    const r = x - Math.floor(x);
+    return min + (max - min) * r;
+  };
+  
+  // Generate values based on the field seed for consistency
+  const phValue = parseFloat((6.5 + randomWithSeed(-0.5, 1.0)).toFixed(1));
+  const nitrogenValue = parseFloat((randomWithSeed(40, 60)).toFixed(1));
+  const phosphorusValue = parseFloat((randomWithSeed(25, 40)).toFixed(1));
+  const potassiumValue = parseFloat((randomWithSeed(150, 200)).toFixed(1));
+  const organicMatterValue = parseFloat((randomWithSeed(2.0, 3.5)).toFixed(1));
+  
+  return {
+    soilType: ['Clay Loam', 'Sandy Loam', 'Silt Loam', 'Loamy Sand', 'Clay'][Math.floor(randomWithSeed(0, 5))],
+    ph: phValue,
+    // Primary macronutrients (NPK)
+    nitrogen: nitrogenValue,
+    phosphorus: phosphorusValue,
+    potassium: potassiumValue,
+    // Secondary macronutrients
+    calcium: parseFloat((randomWithSeed(1000, 1500)).toFixed(1)),
+    magnesium: parseFloat((randomWithSeed(45, 65)).toFixed(1)),
+    sulfur: parseFloat((randomWithSeed(10, 20)).toFixed(1)),
+    // Micronutrients
+    zinc: parseFloat((randomWithSeed(1, 3)).toFixed(1)),
+    iron: parseFloat((randomWithSeed(15, 25)).toFixed(1)),
+    manganese: parseFloat((randomWithSeed(5, 10)).toFixed(1)),
+    copper: parseFloat((randomWithSeed(1, 2)).toFixed(1)),
+    boron: parseFloat((randomWithSeed(0.5, 1.0)).toFixed(2)),
+    molybdenum: parseFloat((randomWithSeed(0.1, 0.2)).toFixed(2)),
+    // Physical properties
+    organicMatter: organicMatterValue,
+    cec: parseFloat((randomWithSeed(12, 17)).toFixed(1)), // Cation Exchange Capacity
+    waterCapacity: parseFloat((randomWithSeed(0.15, 0.25)).toFixed(2)),
+    soilTemperature: parseFloat((randomWithSeed(20, 25)).toFixed(1)),
+    soilCompaction: parseFloat((randomWithSeed(1.1, 1.3)).toFixed(1)),
+    // Soil composition
+    sandPercentage: Math.floor(randomWithSeed(30, 40)),
+    siltPercentage: Math.floor(randomWithSeed(35, 45)),
+    clayPercentage: Math.floor(randomWithSeed(20, 30)),
+    // Historical data
+    history: [
+      {
+        date: '2025-02-15',
+        ph: parseFloat((phValue - 0.2).toFixed(1)),
+        organicMatter: parseFloat((organicMatterValue - 0.3).toFixed(1)),
+        nitrogen: parseFloat((nitrogenValue - 5).toFixed(1))
+      },
+      {
+        date: '2024-08-10',
+        ph: parseFloat((phValue - 0.4).toFixed(1)),
+        organicMatter: parseFloat((organicMatterValue - 0.6).toFixed(1)),
+        nitrogen: parseFloat((nitrogenValue - 8).toFixed(1))
+      }
+    ],
+    // Recommendations based on soil test
+    recommendations: [
+      {
+        nutrient: 'Nitrogen',
+        current: `${nitrogenValue} kg/ha`,
+        recommendation: `Apply ${Math.max(0, Math.round(60 - nitrogenValue))} kg/ha of nitrogen-rich fertilizer before next planting`,
+        fertilizers: ['Urea (46-0-0)', 'Ammonium Nitrate (34-0-0)']
+      },
+      {
+        nutrient: 'Phosphorus',
+        current: `${phosphorusValue} kg/ha`,
+        recommendation: `Apply ${Math.max(0, Math.round(40 - phosphorusValue))} kg/ha of phosphatic fertilizer to improve root development`,
+        fertilizers: ['Triple Superphosphate (0-46-0)', 'DAP (18-46-0)']
+      },
+      {
+        nutrient: 'Potassium',
+        current: `${potassiumValue} kg/ha`,
+        recommendation: `Apply ${Math.max(0, Math.round(200 - potassiumValue))} kg/ha of potassium fertilizer for drought resistance`,
+        fertilizers: ['Potassium Chloride (0-0-60)', 'Potassium Sulfate (0-0-50)']
+      }
+    ],
+    // pH management
+    phManagement: phValue < 5.5 ? {
+      action: 'Increase pH',
+      amount: '50 kg/ha',
+      material: 'agricultural lime',
+      benefit: 'Improve nutrient availability and microbial activity'
+    } : phValue > 7.5 ? {
+      action: 'Decrease pH',
+      amount: '30 kg/ha',
+      material: 'elemental sulfur',
+      benefit: 'Improve nutrient availability, especially phosphorus and micronutrients'
+    } : null,
+    // Soil management practices
+    managementPractices: [
+      {
+        practice: 'Apply Organic Matter',
+        description: 'Add compost or manure to improve soil structure and water retention',
+        priority: 'high',
+        schedule: 'Fall 2025'
+      },
+      {
+        practice: 'Implement Crop Rotation',
+        description: 'Alternate different crop families to prevent nutrient depletion',
+        priority: 'medium',
+        schedule: 'Next planting season'
+      },
+      {
+        practice: 'Use Cover Crops',
+        description: 'Plant legumes or grasses during off-seasons to prevent erosion',
+        priority: 'high',
+        schedule: 'After harvest'
+      }
+    ]
+  };
 };
 
 export default {

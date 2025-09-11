@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import Navbar from './Navbar';
 import Sidebar from './Sidebar';
+import ChatbotButton from '../common/ChatbotButton';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faXmark } from '@fortawesome/free-solid-svg-icons';
 
@@ -8,6 +9,7 @@ const Layout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [isPageTransitioning, setIsPageTransitioning] = useState(false);
   
   // Check screen size
   useEffect(() => {
@@ -47,6 +49,16 @@ const Layout = ({ children }) => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [isMobile, sidebarOpen]);
   
+  // Page transition effect
+  useEffect(() => {
+    setIsPageTransitioning(true);
+    const timer = setTimeout(() => {
+      setIsPageTransitioning(false);
+    }, 300);
+    
+    return () => clearTimeout(timer);
+  }, [children]); // Trigger on route change through children props
+
   // Toggle sidebar visibility on mobile or desktop
   const toggleSidebar = () => {
     if (isMobile) {
@@ -57,26 +69,30 @@ const Layout = ({ children }) => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-50 overflow-hidden">
+    <div className="flex flex-col min-h-screen bg-gradient-to-b from-gray-100 to-gray-100 border-r border-green-200 shadow-sm overflow-hidden">
       <Navbar />
       
       {/* Mobile Menu Button */}
       <button
         onClick={() => setSidebarOpen(!sidebarOpen)}
         type="button"
-        className="md:hidden fixed bottom-4 right-4 z-50 inline-flex items-center p-2 text-sm rounded-lg bg-green-600 text-white hover:bg-green-700 w-12 h-12 justify-center shadow-lg"
+        className="md:hidden fixed bottom-6 left-6 z-50 inline-flex items-center p-2 text-sm rounded-full bg-green-600 text-white hover:bg-green-700 w-14 h-14 justify-center shadow-xl"
         aria-controls="sidebar"
         aria-expanded={sidebarOpen}
+        aria-label="Toggle sidebar"
       >
         <span className="sr-only">Toggle sidebar</span>
         <FontAwesomeIcon icon={sidebarOpen ? faXmark : faBars} className="text-xl" />
       </button>
       
+      {/* Chatbot Button - available on all screen sizes */}
+      <ChatbotButton />
+      
       {/* Dark Overlay - visible when mobile sidebar is open */}
       {sidebarOpen && isMobile && (
         <div 
           onClick={() => setSidebarOpen(false)} 
-          className="fixed inset-0 z-30 bg-gray-900 bg-opacity-50 transition-opacity md:hidden"
+          className="fixed inset-0 z-30 bg-gray-900 bg-opacity-70 backdrop-blur-sm transition-opacity md:hidden"
           aria-hidden="true"
         ></div>
       )}
@@ -85,11 +101,11 @@ const Layout = ({ children }) => {
       <Sidebar isSidebarOpen={sidebarOpen} isCollapsed={isCollapsed} toggleSidebar={toggleSidebar} />
       
       {/* Main Content */}
-      <div className={`flex-1 transition-all duration-300 mt-16 ${
+      <div className={`flex-1 transition-all duration-300 mt-[60px] ${
         isMobile ? 'ml-0' : (isCollapsed ? 'md:ml-20' : 'md:ml-64')
       }`}>
-        <main className="p-4 md:p-6">
-          <div className="mx-auto">
+        <main className="p-3 sm:p-4 md:p-6">
+          <div className={`mx-auto transition-opacity duration-300 ${isPageTransitioning ? 'opacity-80' : 'opacity-100'}`}>
             {children}
           </div>
         </main>

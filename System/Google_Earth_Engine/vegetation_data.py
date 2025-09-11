@@ -233,6 +233,17 @@ for index in parameters:
                 if blob.name.endswith(".csv"):
                     upload_csv_blob_to_firebase(GCS_BUCKET_NAME, blob.name, index)
 
+                    LOCAL_DIR = r"I:\Projects\SmartAgri\client\local_csv"   # 🔹 change this to your preferred folder
+
+                    os.makedirs(LOCAL_DIR, exist_ok=True)   
+
+                    local_filename = os.path.basename(blob.name)
+                    destination_file_path = os.path.join(LOCAL_DIR, local_filename)
+
+                    blob.download_to_filename(destination_file_path)
+
+                    print(f"✅ File downloaded locally: {destination_file_path}")
+
                     # filename = os.path.basename(blob.name)
                     # destination_file_name = os.path.join(r"I:\Projects\Climate-Resilient-Agriculture\System\server",filename)
 
