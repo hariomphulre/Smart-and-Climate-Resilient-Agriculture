@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Layout from './components/layout/Layout';
+import Auth from './pages/Auth';
 import Dashboard from './pages/Dashboard';
 import ClimateAnalysis from './pages/ClimateAnalysis';
 import FarmConsole from './pages/FarmConsole';
@@ -15,6 +16,7 @@ import { AppProvider } from './context/AppContext';
 import VegetationAnalysis from './components/climate/VegetationAnalysis'
 import SoilLandAnalysis from './components/climate/SoilLandAnalysis'
 import WaterIrrigationAnalysis from './components/climate/WaterIrrigationAnalysis'
+import RainfallAnalysis from './components/climate/RainfallAnalysis'
 
 function App() {
   return (
@@ -22,7 +24,7 @@ function App() {
       <Router>
         <Layout>
           <Routes>
-            <Route path="/" element={<Dashboard />} />
+            <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/climate" element={<ClimateAnalysis />} />
             <Route path="/farm-console" element={<FarmConsole />} />
             <Route path="/crop-management" element={<CropManagement />} />
@@ -35,7 +37,8 @@ function App() {
             <Route path="/ai-assistant" element={<AIAssistant />} />
             <Route path="/soil" element={<SoilLandAnalysis />} />
             <Route path="/vegetation" element={<VegetationAnalysis />} />
-            <Route path="/monsoon" element={<WaterIrrigationAnalysis dateRange={{startDate: '2025-01-01', endDate: '2025-09-01'}} />} />
+            <Route path="/water" element={<WaterIrrigationAnalysis dateRange={{startDate: '2025-01-01', endDate: '2025-09-01'}} />} />
+            <Route path="/rainfall" element={<RainfallAnalysis dateRange={{startDate: '2025-01-01', endDate: '2025-09-01'}} />} />
             <Route path="/create-field" element={<CreateField />} />
             <Route path="/field-list" element={<Fields />} />
             <Route path="/field-detail/:id" element={<FieldDetail />} />

@@ -4,6 +4,7 @@ import {
   faCloudSunRain, 
   faDroplet, 
   faLeaf, 
+  faCarrot,
   faFire, 
   faCloudRain, 
   faSeedling,
@@ -560,6 +561,7 @@ const ClimateAnalysis = () => {
             <div className="mb-6">
               <h2 className="text-2xl font-bold flex items-center">
                 <FontAwesomeIcon icon={faLeaf} className="text-green-600 mr-2" />
+                {/* <FontAwesomeIcon icon={faCarrot} className="mr-2"/> */}
                 Vegetation & Crop Health
               </h2>
               <p className="text-gray-600">
@@ -720,7 +722,7 @@ const ClimateAnalysis = () => {
   
   return (
     <div>
-      <div className="mb-6 max-w-screen">
+      {/* <div className="mb-6 max-w-screen">
         <h1 className="text-2xl font-bold mb-2 flex items-center">
           <FontAwesomeIcon icon={faChartLine} className="text-gray-700 mr-2" />
           Climate Analysis
@@ -728,10 +730,10 @@ const ClimateAnalysis = () => {
         <p className="text-gray-600">
           Analyze climate and environmental data to make informed farming decisions.
         </p>
-      </div>
+      </div> */}
 
       {/* Enhanced Tab Navigation */}
-      <div className="mb-6 border-b border-gray-200">
+      {/* <div className="mb-6 border-b border-gray-200">
         <nav className="-mb-px flex space-x-6 overflow-x-auto">
           <button
             onClick={() => setActiveTab('weather')}
@@ -805,7 +807,7 @@ const ClimateAnalysis = () => {
             Fire & Hazards
           </button>
         </nav>
-      </div>
+      </div> */}
 
       {/* Render analysis component based on selected tab */}
       <div className="analysis-container">

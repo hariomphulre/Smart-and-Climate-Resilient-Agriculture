@@ -129,9 +129,9 @@ const Sidebar = ({ isSidebarOpen, isCollapsed, toggleSidebar }) => {
               <ul className="mt-1 space-y-1">
                 <li>
                   <Link
-                    to="/"
+                    to="/dashboard"
                     className={`flex items-center px-3 py-3 rounded-lg ${isCollapsed ? 'justify-center' : ''} ${
-                      isActive('/') 
+                      isActive('/dashboard') 
                         ? 'bg-green-100 text-green-800 font-medium shadow-sm border-l-4 border-green-600' 
                         : 'text-gray-700 hover:bg-green-100 hover:text-green-700'
                     } group transition-all duration-200 ${isMobile ? 'active:bg-green-100' : ''}`}
@@ -333,7 +333,7 @@ const Sidebar = ({ isSidebarOpen, isCollapsed, toggleSidebar }) => {
 
                   {expandedMenus.analytics && !isCollapsed && (
                     <ul className="mt-1 pl-7 space-y-1">
-                      {/* <li>
+                      <li>
                         <Link
                           to="/climate"
                           className={`flex items-center px-3 py-2.5 rounded-md ${
@@ -348,7 +348,7 @@ const Sidebar = ({ isSidebarOpen, isCollapsed, toggleSidebar }) => {
                           />
                           <span>Weather Forecast</span>
                         </Link>
-                      </li> */}
+                      </li>
                       <li>
                         <Link
                           to="/vegetation"
@@ -362,10 +362,42 @@ const Sidebar = ({ isSidebarOpen, isCollapsed, toggleSidebar }) => {
                             icon={faLeaf}
                             className={`w-4 h-4 mr-2 ${isActive('/vegetation') ? 'text-green-700' : 'text-gray-500'}`}
                           />
-                          <span>Soil & Vegetation</span>
+                          <span>Vegetation & Crop Health</span>
                         </Link>
                       </li>
-                      {/* <li>
+                      <li>
+                        <Link
+                          to="/water"
+                          className={`flex items-center px-3 py-2 rounded-md ${
+                            isActive('/water') 
+                              ? 'bg-green-100 text-green-800 font-medium border-l-2 border-green-600' 
+                              : 'text-gray-600 hover:text-green-700 hover:bg-green-50'
+                          } transition-all duration-200`}
+                        >
+                          <FontAwesomeIcon
+                            icon={faCloudRain}
+                            className={`w-4 h-4 mr-2 ${isActive('/water') ? 'text-green-700' : 'text-gray-500'}`}
+                          />
+                          <span>Water Irrigation</span>
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          to="/fire"
+                          className={`flex items-center px-3 py-2 rounded-md ${
+                            isActive('/fire') 
+                              ? 'bg-green-50 text-green-800' 
+                              : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                          } transition-colors duration-150`}
+                        >
+                          <FontAwesomeIcon
+                            icon={faWarning}
+                            className={`w-4 h-4 mr-2 ${isActive('/fire') ? 'text-green-700' : 'text-gray-500'}`}
+                          />
+                          <span>Fire info</span>
+                        </Link>
+                      </li>
+                      <li>
                         <Link
                           to="/hazards"
                           className={`flex items-center px-3 py-2 rounded-md ${
@@ -380,24 +412,24 @@ const Sidebar = ({ isSidebarOpen, isCollapsed, toggleSidebar }) => {
                           />
                           <span>Hazard Activities</span>
                         </Link>
-                      </li> */}
+                      </li>
                       <li>
                         <Link
-                          to="/monsoon"
+                          to="/rainfall"
                           className={`flex items-center px-3 py-2 rounded-md ${
-                            isActive('/monsoon') 
-                              ? 'bg-green-100 text-green-800 font-medium border-l-2 border-green-600' 
-                              : 'text-gray-600 hover:text-green-700 hover:bg-green-50'
-                          } transition-all duration-200`}
+                            isActive('/rainfall') 
+                              ? 'bg-green-50 text-green-800' 
+                              : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                          } transition-colors duration-150`}
                         >
                           <FontAwesomeIcon
-                            icon={faCloudRain}
-                            className={`w-4 h-4 mr-2 ${isActive('/monsoon') ? 'text-green-700' : 'text-gray-500'}`}
+                            icon={faWarning}
+                            className={`w-4 h-4 mr-2 ${isActive('/rainfall') ? 'text-green-700' : 'text-gray-500'}`}
                           />
-                          <span>Water Irrigation</span>
+                          <span>Rainfall & Monsoon info</span>
                         </Link>
                       </li>
-                      {/* <li>
+                      <li>
                         <Link
                           to="/soil"
                           className={`flex items-center px-3 py-2 rounded-md ${
@@ -412,7 +444,7 @@ const Sidebar = ({ isSidebarOpen, isCollapsed, toggleSidebar }) => {
                           />
                           <span>Soil Info</span>
                         </Link>
-                      </li> */}
+                      </li>
                     </ul>
                   )}
                 </li>

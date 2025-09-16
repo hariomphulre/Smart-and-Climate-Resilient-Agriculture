@@ -18,7 +18,7 @@ import {
 import { Chart as ChartJS, LineElement, PointElement, BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend, Filler } from 'chart.js';
 import { Line, Bar } from 'react-chartjs-2';
 import { useAppContext } from '../../context/AppContext';
-import { fetchWaterData } from '../../services/climateService';
+import { fetchRainfallData } from '../../services/climateService';
 import Papa from 'papaparse';
 
 // Register ChartJS components
@@ -34,7 +34,7 @@ ChartJS.register(
   Filler
 );
 
-const WaterIrrigationAnalysis = ({ dateRange = {} }) => {
+const RainfallAnalysis = ({ dateRange = {} }) => {
   // Define loading state locally
   const [loading, setLoading] = useState(false);
   const { selectedField, selectedLocation } = useAppContext();
@@ -44,19 +44,17 @@ const WaterIrrigationAnalysis = ({ dateRange = {} }) => {
     startDate: dateRange.startDate || new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 7 days ago
     endDate: dateRange.endDate || new Date().toISOString().split('T')[0] // Today
   };
-  const [waterData, setWaterData] = useState({
+  const [rainfallData, setRainfallData] = useState({
     fieldSections: []
   });
   
   // New state for water indices from CSV files
-  const [waterIndices, setWaterIndices] = useState({
-    ndwi: [],
-    ndmi: [],
-    lswi: [],
-    awei: [],
-    mndwi: [],
-    sarwi: [],
-    ewi: [],
+  const [rainfallIndices, setRainfallIndices] = useState({
+    chirps: [],
+    era5: [],
+    gpm: [],
+    merra2: [],
+    trmm: [],
     loading: true
   });
 
@@ -74,48 +72,42 @@ const WaterIrrigationAnalysis = ({ dateRange = {} }) => {
     }
   });
   
-  // Recommended crops based on water and irrigation analysis
+  // Recommended crops based on rainfall and precipitation analysis
   const [recommendedCrops, setRecommendedCrops] = useState({
-    waterTolerant: ['Rice', 'Watercress', 'Celery'],
-    moderateWater: ['Tomatoes', 'Peppers', 'Squash'],
-    droughtTolerant: ['Beans', 'Peas', 'Herbs'],
-    highMoisture: ['Lettuce', 'Spinach', 'Cabbage'],
-    irrigation: ['Corn', 'Wheat', 'Soybeans'],
-    aquatic: ['Water Spinach', 'Lotus', 'Taro']
+    highRainfall: ['Rice', 'Sugar Cane', 'Banana'],
+    moderateRainfall: ['Tomatoes', 'Peppers', 'Beans'],
+    lowRainfall: ['Millet', 'Sorghum', 'Cacti'],
+    seasonalRain: ['Wheat', 'Barley', 'Mustard'],
+    monsoonDependent: ['Cotton', 'Jute', 'Coconut'],
+    droughtResistant: ['Quinoa', 'Amaranth', 'Desert Beans']
   });
   
   // Add refs for chart instances to properly clean up
-  const ndwiChartRef = useRef(null);
-  const ndmiChartRef = useRef(null);
-  const lswiChartRef = useRef(null);
-  const aweiChartRef = useRef(null);
-  const mndwiChartRef = useRef(null);
-  const sarwiChartRef = useRef(null);
-  const ewiChartRef = useRef(null);
-  const waterIndicesChartRef = useRef(null);
+  const chirpsChartRef = useRef(null);
+  const era5ChartRef = useRef(null);
+  const gpmChartRef = useRef(null);
+  const merra2ChartRef = useRef(null);
+  const trmmChartRef = useRef(null);
+  const rainfallIndicesChartRef = useRef(null);
   const nutrientsChartRef = useRef(null);
   
   // Chart container refs to check if they're in the DOM
-  const ndwiContainerRef = useRef(null);
-  const ndmiContainerRef = useRef(null);
-  const lswiContainerRef = useRef(null);
-  const aweiContainerRef = useRef(null);
-  const mndwiContainerRef = useRef(null);
-  const sarwiContainerRef = useRef(null);
-  const ewiContainerRef = useRef(null);
-  const waterIndicesContainerRef = useRef(null);
+  const chirpsContainerRef = useRef(null);
+  const era5ContainerRef = useRef(null);
+  const gpmContainerRef = useRef(null);
+  const merra2ContainerRef = useRef(null);
+  const trmmContainerRef = useRef(null);
+  const rainfallIndicesContainerRef = useRef(null);
   const nutrientsContainerRef = useRef(null);
   
   // Track chart visibility to prevent errors
   const [chartsVisible, setChartsVisible] = useState({
-    ndwi: false,
-    ndmi: false,
-    lswi: false,
-    awei: false,
-    mndwi: false,
-    sarwi: false,
-    ewi: false,
-    waterIndices: false,
+    chirps: false,
+    era5: false,
+    gpm: false,
+    merra2: false,
+    trmm: false,
+    rainfallIndices: false,
     nutrients: false
   });
   
@@ -131,19 +123,16 @@ const WaterIrrigationAnalysis = ({ dateRange = {} }) => {
       console.error("Error destroying chart:", error);
     }
   };
-  
   // Check if chart containers are in DOM and set visibility
   useEffect(() => {
     const checkVisibility = () => {
       setChartsVisible({
-        ndwi: !!document.getElementById('ndwi-chart-container'),
-        ndmi: !!document.getElementById('ndmi-chart-container'),
-        lswi: !!document.getElementById('lswi-chart-container'),
-        awei: !!document.getElementById('awei-chart-container'),
-        mndwi: !!document.getElementById('mndwi-chart-container'),
-        sarwi: !!document.getElementById('sarwi-chart-container'),
-        ewi: !!document.getElementById('ewi-chart-container'),
-        waterIndices: !!document.getElementById('water-indices-chart-container'),
+        chirps: !!document.getElementById('chirps-chart-container'),
+        era5: !!document.getElementById('era5-chart-container'),
+        gpm: !!document.getElementById('gpm-chart-container'),
+        merra2: !!document.getElementById('merra2-chart-container'),
+        trmm: !!document.getElementById('trmm-chart-container'),
+        rainfallIndices: !!document.getElementById('rainfall-indices-chart-container'),
         nutrients: !!document.getElementById('nutrients-chart-container')
       });
     };
@@ -167,32 +156,30 @@ const WaterIrrigationAnalysis = ({ dateRange = {} }) => {
       observer.disconnect();
       
       // Safely destroy all chart instances
-      safeDestroyChart(ndwiChartRef);
-      safeDestroyChart(ndmiChartRef);
-      safeDestroyChart(lswiChartRef);
-      safeDestroyChart(aweiChartRef);
-      safeDestroyChart(mndwiChartRef);
-      safeDestroyChart(sarwiChartRef);
-      safeDestroyChart(ewiChartRef);
-      safeDestroyChart(waterIndicesChartRef);
+      safeDestroyChart(chirpsChartRef);
+      safeDestroyChart(era5ChartRef);
+      safeDestroyChart(gpmChartRef);
+      safeDestroyChart(merra2ChartRef);
+      safeDestroyChart(trmmChartRef);
+      safeDestroyChart(rainfallIndicesChartRef);
       safeDestroyChart(nutrientsChartRef);
     };
   }, []);
   
   useEffect(() => {
-    loadWaterData();
-    loadWaterIndicesFromCsv();
+    loadRainfallData();
+    loadRainfallIndicesFromCsv();
   }, [selectedField, selectedLocation, defaultDateRange.startDate, defaultDateRange.endDate]);
   
-  const loadWaterData = async () => {
+  const loadRainfallData = async () => {
     setLoading(true);
     try {
-      const data = await fetchWaterData(
+      const data = await fetchRainfallData(
         selectedField,
         selectedLocation,
         defaultDateRange
       );
-      setWaterData(data);
+      setRainfallData(data);
     } catch (error) {
       console.error('Error loading water data:', error);
     } finally {
@@ -201,8 +188,8 @@ const WaterIrrigationAnalysis = ({ dateRange = {} }) => {
   };
   
   // Function to load water indices from CSV files
-  const loadWaterIndicesFromCsv = async () => {
-    setWaterIndices(prev => ({ ...prev, loading: true }));
+  const loadRainfallIndicesFromCsv = async () => {
+    setRainfallIndices(prev => ({ ...prev, loading: true }));
     
     try {
       // Helper function to fetch and parse CSV
@@ -223,51 +210,84 @@ const WaterIrrigationAnalysis = ({ dateRange = {} }) => {
       };
       
       // Load all CSV files in parallel
-      const [ndwiData, ndmiData, lswiData, aweiData, mndwiData, sarwiData, ewiData] = await Promise.all([
-        fetchCsv('ndwi.csv'),
-        fetchCsv('ndmi.csv'),
-        fetchCsv('lswi.csv'),
-        fetchCsv('awei.csv'),
-        fetchCsv('mndwi.csv'),
-        fetchCsv('sarwi.csv'),
-        fetchCsv('ewi.csv')
+      const [chirpsData, era5Data, merra2Data, trmmData, gpmData] = await Promise.all([
+        fetchCsv('chirps.csv'),
+        fetchCsv('era5.csv'),
+        fetchCsv('merra2.csv'),
+        fetchCsv('trmm.csv'),
+        fetchCsv('gpm.csv'),
       ]);
       
       // Process each dataset to extract date and values
       const processData = (data, valueField) => {
         console.log(`Processing ${valueField} data:`, data.slice(0, 3)); // Log first 3 items
-        const processed = data.map(item => ({
+        let processed = data.map(item => ({
           date: item.date,
           value: parseFloat(item[valueField])
         })).filter(item => !isNaN(item.value))
          .sort((a, b) => new Date(a.date) - new Date(b.date));
+        
+        // If no valid data, generate sample data for demonstration
+        if (processed.length === 0 && data.length > 0) {
+          console.log(`No valid data for ${valueField}, generating sample data...`);
+          processed = generateSampleRainfallData(valueField);
+        }
+        
         console.log(`Processed ${valueField} data:`, processed.slice(0, 3)); // Log first 3 processed items
         return processed;
       };
       
-      setWaterIndices({
-        ndwi: processData(ndwiData, 'ndwi'),
-        ndmi: processData(ndmiData, 'ndmi'),
-        lswi: processData(lswiData, 'lswi'),
-        awei: processData(aweiData, 'awei'),
-        mndwi: processData(mndwiData, 'mndwi'),
-        sarwi: processData(sarwiData, 'sarwi'),
-        ewi: processData(ewiData, 'ewi'),
+      // Function to generate sample rainfall data
+      const generateSampleRainfallData = (type) => {
+        const sampleData = [];
+        const startDate = new Date(2025, 0, 1); // January 1, 2025
+        const baseValues = {
+          'chirps': { min: 0, max: 50, avg: 15 },
+          'era5_precip': { min: 0, max: 40, avg: 12 },
+          'merra2': { min: 0, max: 35, avg: 10 },
+          'trmm': { min: 0, max: 45, avg: 14 },
+          'gpm': { min: 0, max: 55, avg: 18 }
+        };
+        
+        const config = baseValues[type] || { min: 0, max: 30, avg: 10 };
+        
+        for (let i = 0; i < 30; i++) {
+          const date = new Date(startDate);
+          date.setDate(startDate.getDate() + i);
+          
+          // Generate realistic rainfall data with some patterns
+          const seasonalFactor = Math.sin((i / 30) * Math.PI) + 1; // Seasonal variation
+          const randomFactor = Math.random() * 0.8 + 0.6; // Random variation
+          const value = (config.avg * seasonalFactor * randomFactor).toFixed(2);
+          
+          sampleData.push({
+            date: date.toISOString().split('T')[0],
+            value: parseFloat(value)
+          });
+        }
+        
+        return sampleData;
+      };
+      
+      setRainfallIndices({
+        chirps: processData(chirpsData, 'chirps'),
+        era5: processData(era5Data, 'era5_precip'),
+        merra2: processData(merra2Data, 'merra2'),
+        trmm: processData(trmmData, 'trmm'),
+        gpm: processData(gpmData, 'gpm'),
         loading: false
       });
       
       // Log the counts of each dataset to verify data loading
-      console.log('NDWI data points:', processData(ndwiData, 'ndwi').length);
-      console.log('NDMI data points:', processData(ndmiData, 'ndmi').length);
-      console.log('LSWI data points:', processData(lswiData, 'lswi').length);
-      console.log('AWEI data points:', processData(aweiData, 'awei').length);
-      console.log('MNDWI data points:', processData(mndwiData, 'mndwi').length);
-      console.log('SARWI data points:', processData(sarwiData, 'sarwi').length);
-      console.log('EWI data points:', processData(ewiData, 'ewi').length);
-      
+      console.log('CHIRPS data points:', processData(chirpsData, 'chirps').length);
+      console.log('ERA5 data points:', processData(era5Data, 'era5_precip').length);
+      console.log('MERRA2 data points:', processData(merra2Data, 'merra2').length);
+      console.log('TRMM data points:', processData(trmmData, 'trmm').length);
+      console.log('GPM data points:', processData(gpmData, 'gpm').length);
+
     } catch (error) {
       console.error('Error loading water indices from CSV:', error);
-      setWaterIndices(prev => ({ ...prev, loading: false }));
+      setRainfallIndices(prev => ({ ...prev, loading: false }));
     }
   };
   
@@ -387,12 +407,12 @@ const WaterIrrigationAnalysis = ({ dateRange = {} }) => {
     }
   });
   
-  const ndwiChartData = {
-    labels: waterIndices.ndwi?.map(item => new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })) || [],
+  const chirpsChartData = {
+    labels: rainfallIndices.chirps?.map(item => new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })) || [],
     datasets: [
       {
-        label: 'NDWI',
-        data: waterIndices.ndwi?.map(item => item.value) || [],
+        label: 'CHIRPS',
+        data: rainfallIndices.chirps?.map(item => item.value) || [],
         fill: true,
         backgroundColor: 'rgba(54, 162, 235, 0.2)',
         borderColor: 'rgb(54, 162, 235)',
@@ -402,12 +422,12 @@ const WaterIrrigationAnalysis = ({ dateRange = {} }) => {
     ]
   };
 
-  const ndmiChartData = {
-    labels: waterIndices.ndmi?.map(item => new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })) || [],
+  const era5ChartData = {
+    labels: rainfallIndices.era5?.map(item => new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })) || [],
     datasets: [
       {
-        label: 'NDMI',
-        data: waterIndices.ndmi?.map(item => item.value) || [],
+        label: 'ERA5',
+        data: rainfallIndices.era5?.map(item => item.value) || [],
         fill: true,
         backgroundColor: 'rgba(54, 162, 235, 0.2)',
         borderColor: 'rgb(54, 162, 235)',
@@ -416,12 +436,12 @@ const WaterIrrigationAnalysis = ({ dateRange = {} }) => {
       }
     ]
   };
-  const lswiChartData = {
-    labels: waterIndices.lswi?.map(item => new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })) || [],
+  const merra2ChartData = {
+    labels: rainfallIndices.merra2?.map(item => new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })) || [],
     datasets: [
       {
-        label: 'LSWI',
-        data: waterIndices.lswi?.map(item => item.value) || [],
+        label: 'MERRA2',
+        data: rainfallIndices.merra2?.map(item => item.value) || [],
         fill: true,
         backgroundColor: 'rgba(54, 162, 235, 0.2)',
         borderColor: 'rgb(54, 162, 235)',
@@ -430,12 +450,12 @@ const WaterIrrigationAnalysis = ({ dateRange = {} }) => {
       }
     ]
   };
-  const aweiChartData = {
-    labels: waterIndices.awei?.map(item => new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })) || [],
+  const trmmChartData = {
+    labels: rainfallIndices.trmm?.map(item => new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })) || [],
     datasets: [
       {
-        label: 'AWEI',
-        data: waterIndices.awei?.map(item => item.value) || [],
+        label: 'TRMM',
+        data: rainfallIndices.trmm?.map(item => item.value) || [],
         fill: true,
         backgroundColor: 'rgba(54, 162, 235, 0.2)',
         borderColor: 'rgb(54, 162, 235)',
@@ -444,40 +464,12 @@ const WaterIrrigationAnalysis = ({ dateRange = {} }) => {
       }
     ]
   };
-  const mndwiChartData = {
-    labels: waterIndices.mndwi?.map(item => new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })) || [],
+  const gpmChartData = {
+    labels: rainfallIndices.gpm?.map(item => new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })) || [],
     datasets: [
       {
-        label: 'MNDWI',
-        data: waterIndices.mndwi?.map(item => item.value) || [],
-        fill: true,
-        backgroundColor: 'rgba(54, 162, 235, 0.2)',
-        borderColor: 'rgb(54, 162, 235)',
-        tension: 0.3,
-        pointBackgroundColor: 'rgb(54, 162, 235)',
-      }
-    ]
-  };
-  const sarwiChartData = {
-    labels: waterIndices.sarwi?.map(item => new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })) || [],
-    datasets: [
-      {
-        label: 'SARWI',
-        data: waterIndices.sarwi?.map(item => item.value) || [],
-        fill: true,
-        backgroundColor: 'rgba(54, 162, 235, 0.2)',
-        borderColor: 'rgb(54, 162, 235)',
-        tension: 0.3,
-        pointBackgroundColor: 'rgb(54, 162, 235)',
-      }
-    ]
-  };
-  const ewiChartData = {
-    labels: waterIndices.ewi?.map(item => new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })) || [],
-    datasets: [
-      {
-        label: 'EWI',
-        data: waterIndices.ewi?.map(item => item.value) || [],
+        label: 'GPM',
+        data: rainfallIndices.gpm?.map(item => item.value) || [],
         fill: true,
         backgroundColor: 'rgba(54, 162, 235, 0.2)',
         borderColor: 'rgb(54, 162, 235)',
@@ -497,58 +489,45 @@ const WaterIrrigationAnalysis = ({ dateRange = {} }) => {
     }
   };
   
-  const getWaterIndicesChartData = (indices = waterIndices) => {
+  const getRainfallIndicesChartData = (indices = rainfallIndices) => {
     // Enhanced color map with more visually distinct colors
     const colorMap = {
-      ndwi: {
+      chirps: {
         border: 'rgb(25, 118, 210)',  // Deep blue
         background: 'rgba(25, 118, 210, 0.1)',
         pointBgColor: 'rgb(25, 118, 210)',
         pointBorderColor: 'white',
         dashed: false
       },
-      ndmi: {
+      era5: {
         border: 'rgb(56, 142, 60)',  // Forest green
         background: 'rgba(56, 142, 60, 0.1)',
         pointBgColor: 'rgb(56, 142, 60)',
         pointBorderColor: 'white',
         dashed: false
       },
-      lswi: {
+      merra2: {
         border: 'rgb(56, 142, 60)',  // Forest green
         background: 'rgba(56, 142, 60, 0.1)',
         pointBgColor: 'rgb(56, 142, 60)',
         pointBorderColor: 'white',
         dashed: false
       },
-      awei: {
+      trmm: {
         border: 'rgb(123, 31, 162)',  // Purple
         background: 'rgba(123, 31, 162, 0.1)',
         pointBgColor: 'rgb(123, 31, 162)',
         pointBorderColor: 'white',
         dashed: false
       },
-      mndwi: {
+      gpm: {
         border: 'rgb(123, 31, 162)',  // Purple
         background: 'rgba(123, 31, 162, 0.1)',
         pointBgColor: 'rgb(123, 31, 162)',
         pointBorderColor: 'white',
         dashed: false
       },
-      sarwi: {
-        border: 'rgb(255, 111, 0)',  // Deep orange
-        background: 'rgba(255, 111, 0, 0.1)',
-        pointBgColor: 'rgb(255, 111, 0)',
-        pointBorderColor: 'white',
-        dashed: true  // Use dashed line for better distinction
-      },
-      ewi: {
-        border: 'rgb(211, 47, 47)',  // Deep red
-        background: 'rgba(211, 47, 47, 0.1)',
-        pointBgColor: 'rgb(211, 47, 47)',
-        pointBorderColor: 'white',
-        dashed: true  // Use dashed line for better distinction
-      }
+      
     };
     
     // Find all dates from all indices
@@ -569,41 +548,31 @@ const WaterIrrigationAnalysis = ({ dateRange = {} }) => {
     
     // Define display names and ensure normalized ranges for better comparison
     const indexDefinitions = {
-      ndwi: { 
-        label: 'NDWI - Water Index',
-        description: 'Surface water detection',
+      chirps: { 
+        label: 'CHIRPS - Rainfall Estimate',
+        description: 'Rainfall estimation from satellite data',
         order: 1
       },
-      ndmi: { 
-        label: 'NDMI - Moisture Index',
-        description: 'Vegetation moisture content',
+      era5: { 
+        label: 'ERA5 - Reanalysis',
+        description: 'Global reanalysis dataset',
         order: 2
       },
-      lswi: { 
-        label: 'NDMI - Moisture Index',
-        description: 'Vegetation moisture content',
+      merra2: { 
+        label: 'MERRA-2 - Reanalysis',
+        description: 'Modern-era reanalysis dataset',
         order: 3
       },
-      awei: { 
-        label: 'AWEI - Water Extraction',
-        description: 'Enhanced water extraction',
+      trmm: { 
+        label: 'TRMM - Rainfall Estimate',
+        description: 'Tropical Rainfall Measuring Mission',
         order: 4
       },
-      mndwi: { 
-        label: 'NDMI - Moisture Index',
-        description: 'Vegetation moisture content',
+      gpm: { 
+        label: 'GPM - Global Precipitation Measurement',
+        description: 'Global precipitation measurement from satellites',
         order: 5
       },
-      sarwi: { 
-        label: 'SARWI - Radar-based Index',
-        description: 'Radar water detection',
-        order: 6
-      },
-      ewi: { 
-        label: 'EWI - Enhanced Wetness',
-        description: 'Improved wetness detection',
-        order: 7
-      }
     };
     
     // Process each index type
@@ -685,7 +654,7 @@ const WaterIrrigationAnalysis = ({ dateRange = {} }) => {
   };
   
   // Generate the chart data directly during component render for fresh data
-  const waterIndicesChartData = getWaterIndicesChartData();
+  const rainfallIndicesChartData = getRainfallIndicesChartData();
   
   // Generate chart data for nutrients
   const nutrientsChartData = {
@@ -738,33 +707,33 @@ const WaterIrrigationAnalysis = ({ dateRange = {} }) => {
   };
 
   // Debug logging
-  console.log('WaterIrrigationAnalysis - waterIndices:', waterIndices);
-  console.log('WaterIrrigationAnalysis - loading states:', { loading, waterIndicesLoading: waterIndices.loading });
-  console.log('WaterIrrigationAnalysis - NDWI data length:', waterIndices.ndwi?.length || 0);
-
+  console.log('RainfallAnalysis - rainfallIndices:', rainfallIndices);
+  console.log('RainfallAnalysis - loading states:', { loading, rainfallIndicesLoading: rainfallIndices.loading });
+  console.log('RainfallAnalysis - CHIRPS data length:', rainfallIndices.chirps?.length || 0);
+  console.log('RainfallAnalysis - ERA5 data length:', rainfallIndices.era5?.length || 0);
   return (
     <div className="Analytics">
       <div className="mb-6">
         <h2 className="text-2xl font-bold flex items-center">
           <FontAwesomeIcon icon={faDroplet} className="text-blue-500 mr-2" />
-          Water & Irrigation
+          Rainfall & Monsoon Analysis
         </h2>
         <p className="text-gray-600">
-          Monitor soil moisture, irrigation patterns, and water usage efficiency.
+          Monitor rainfall patterns, precipitation levels, and seasonal trends from multiple satellite data sources.
         </p>
       </div>
       
-      {loading || waterIndices.loading ? (
+      {loading || rainfallIndices.loading ? (
         <div className="text-center py-10">
           <div className="spinner border-t-4 border-blue-500 border-solid rounded-full w-12 h-12 mx-auto mb-4 animate-spin"></div>
-          <p className="text-gray-600">Loading water data...</p>
+          <p className="text-gray-600">Loading rainfall data...</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {/* Soil Moisture Chart - Enhanced UI */}
           <div className="bg-white p-5 rounded-lg shadow-lg border border-gray-100">
             <div style={{display: "flex",flexDirection: "column",overflowY: "hidden", transitionDuration: "200ms", transitionTimingFunction: "linear", transitionProperty: "all"}} className="flex items-center mb-0 h-8 hover:h-45">
-              <h3 style={{borderBottom: "1px solid rgba(0,0,0,0.2)"}} className="text-lg w-full pl-2 pb-0.5"><b className="font-semibold">NDWI - </b><span style={{fontSize: "17px"}} className="">crop health, greenness, biomass</span></h3>
+              <h3 style={{borderBottom: "1px solid rgba(0,0,0,0.2)"}} className="text-lg w-full pl-2 pb-0.5"><b className="font-semibold">CHIRPS - </b><span style={{fontSize: "17px"}} className="">crop health, greenness, biomass</span></h3>
   
               <div style={{fontSize: "14px",borderBottom: "1px solid rgba(0,0,0,0.2)"}} class="chart-info-content pl-2 pr-2 pb-1">
                 <p id="defination">It measures the <b>amount and health of green vegetation</b> by comparing how plants reflect near-infrared (NIR) light and absorb red light.</p>
@@ -775,13 +744,13 @@ const WaterIrrigationAnalysis = ({ dateRange = {} }) => {
           
             </div>
             <div className="h-80">
-              <Line 
-                data={ndwiChartData} 
-                options={getChartOptions('Normalized Difference Water Index', {
-                  yAxisTitle: 'NDWI Values',
+              <Line
+                data={chirpsChartData}
+                options={getChartOptions('CHIRPS - Rainfall Estimates', {
+                  yAxisTitle: 'Rainfall (mm)',
                   beginAtZero: true
                 })} 
-                ref={ndwiChartRef} 
+                ref={chirpsChartRef} 
               />
             </div>
           </div>
@@ -795,12 +764,12 @@ const WaterIrrigationAnalysis = ({ dateRange = {} }) => {
             </div>
             <div className="h-80">
               <Line 
-                data={ndmiChartData} 
+                data={era5ChartData} 
                 options={getChartOptions('Soil Moisture Over Time', {
                   yAxisTitle: 'NDMI Values',
                   beginAtZero: true
                 })} 
-                ref={ndmiChartRef} 
+                ref={era5ChartRef} 
               />
             </div>
           </div>
@@ -814,12 +783,12 @@ const WaterIrrigationAnalysis = ({ dateRange = {} }) => {
             </div>
             <div className="h-80">
               <Line 
-                data={lswiChartData} 
+                data={merra2ChartData} 
                 options={getChartOptions('Soil Moisture Over Time', {
                   yAxisTitle: 'Moisture (%)',
                   beginAtZero: true
-                })} 
-                ref={lswiChartRef} 
+                })}
+                ref={merra2ChartRef}
               />
             </div>
           </div>
@@ -833,12 +802,12 @@ const WaterIrrigationAnalysis = ({ dateRange = {} }) => {
             </div>
             <div className="h-80">
               <Line 
-                data={aweiChartData} 
+                data={trmmChartData} 
                 options={getChartOptions('Soil Moisture Over Time', {
                   yAxisTitle: 'Moisture (%)',
                   beginAtZero: true
-                })} 
-                ref={aweiChartRef} 
+                })}
+                ref={trmmChartRef}
               />
             </div>
           </div>
@@ -852,50 +821,12 @@ const WaterIrrigationAnalysis = ({ dateRange = {} }) => {
             </div>
             <div className="h-80">
               <Line 
-                data={mndwiChartData} 
+                data={gpmChartData} 
                 options={getChartOptions('Soil Moisture Over Time', {
                   yAxisTitle: 'Moisture (%)',
                   beginAtZero: true
-                })} 
-                ref={mndwiChartRef} 
-              />
-            </div>
-          </div>
-
-          <div className="bg-white p-5 rounded-lg shadow-lg border border-gray-100">
-            <div className="flex items-center mb-4">
-              <span className="text-blue-600 mr-3">
-                <FontAwesomeIcon icon={faTint} size="lg" />
-              </span>
-              <h3 className="text-lg font-semibold">Soil Moisture Trends</h3>
-            </div>
-            <div className="h-80">
-              <Line 
-                data={sarwiChartData} 
-                options={getChartOptions('Soil Moisture Over Time', {
-                  yAxisTitle: 'Moisture (%)',
-                  beginAtZero: true
-                })} 
-                ref={sarwiChartRef} 
-              />
-            </div>
-          </div>
-
-          <div className="bg-white p-5 rounded-lg shadow-lg border border-gray-100">
-            <div className="flex items-center mb-4">
-              <span className="text-blue-600 mr-3">
-                <FontAwesomeIcon icon={faTint} size="lg" />
-              </span>
-              <h3 className="text-lg font-semibold">Soil Moisture Trends</h3>
-            </div>
-            <div className="h-80">
-              <Line 
-                data={ewiChartData} 
-                options={getChartOptions('Soil Moisture Over Time', {
-                  yAxisTitle: 'Moisture (%)',
-                  beginAtZero: true
-                })} 
-                ref={ewiChartRef} 
+                })}
+                ref={gpmChartRef}
               />
             </div>
           </div>
@@ -910,7 +841,7 @@ const WaterIrrigationAnalysis = ({ dateRange = {} }) => {
             </div>
             
             <div className="space-y-4">
-              {waterData.recommendations?.map((recommendation, index) => (
+              {rainfallData.recommendations?.map((recommendation, index) => (
                 <div 
                   key={index} 
                   className={`p-3 ${
@@ -932,7 +863,7 @@ const WaterIrrigationAnalysis = ({ dateRange = {} }) => {
                 </div>
               ))}
               
-              {!waterData.recommendations?.length && (
+              {!rainfallData.recommendations?.length && (
                 <div className="p-3 bg-gray-50 border-l-4 border-gray-300 rounded">
                   <p className="text-sm text-gray-600">No irrigation recommendations available for the selected period.</p>
                 </div>
@@ -1100,28 +1031,27 @@ const WaterIrrigationAnalysis = ({ dateRange = {} }) => {
             </div>
           </div>
           
-
           {/* Recommended Crops for Water Conditions */}
-          <div className="bg-white p-5 rounded-lg shadow-lg border border-gray-100 lg:col-span-2">
+          <div className="bg-white p-5 rounded-lg shadow-lg border border-gray-100 lg:col-span-1">
             <div className="flex items-center mb-4">
               <span className="text-blue-600 mr-3">
                 <FontAwesomeIcon icon={faSeedling} size="lg" />
               </span>
-              <h3 className="text-lg font-semibold">Recommended Crops for Current Water Conditions</h3>
+              <h3 className="text-lg font-semibold">Recommended Crops for Current Rainfall Conditions</h3>
             </div>
             
             <div className="mb-4 p-3 bg-blue-50 rounded-md text-sm border-l-4 border-blue-400">
-              <p className="font-medium">Crops most suitable based on current water availability and irrigation patterns</p>
+              <p className="font-medium">Crops most suitable based on current rainfall patterns and precipitation levels</p>
             </div>
             
             <div className="grid grid-cols-1 gap-4">
               <div className="border-b pb-3">
                 <div className="flex items-center text-sm font-semibold text-blue-800 mb-2">
                   <FontAwesomeIcon icon={faDroplet} className="mr-2" />
-                  <span>Water Tolerant</span>
+                  <span>High Rainfall</span>
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  {recommendedCrops.waterTolerant.map((crop, index) => (
+                  {recommendedCrops.highRainfall.map((crop, index) => (
                     <span key={index} className="px-3 py-1.5 bg-blue-50 text-blue-800 rounded-lg text-sm">
                       {crop}
                     </span>
@@ -1132,10 +1062,10 @@ const WaterIrrigationAnalysis = ({ dateRange = {} }) => {
               <div className="border-b pb-3">
                 <div className="flex items-center text-sm font-semibold text-blue-800 mb-2">
                   <FontAwesomeIcon icon={faWater} className="mr-2" />
-                  <span>Moderate Water Needs</span>
+                  <span>Moderate Rainfall</span>
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  {recommendedCrops.moderateWater.map((crop, index) => (
+                  {recommendedCrops.moderateRainfall.map((crop, index) => (
                     <span key={index} className="px-3 py-1.5 bg-green-50 text-green-800 rounded-lg text-sm">
                       {crop}
                     </span>
@@ -1146,10 +1076,10 @@ const WaterIrrigationAnalysis = ({ dateRange = {} }) => {
               <div className="border-b pb-3">
                 <div className="flex items-center text-sm font-semibold text-blue-800 mb-2">
                   <FontAwesomeIcon icon={faSun} className="mr-2" />
-                  <span>Drought Tolerant</span>
+                  <span>Low Rainfall</span>
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  {recommendedCrops.droughtTolerant.map((crop, index) => (
+                  {recommendedCrops.lowRainfall.map((crop, index) => (
                     <span key={index} className="px-3 py-1.5 bg-yellow-50 text-yellow-800 rounded-lg text-sm">
                       {crop}
                     </span>
@@ -1160,10 +1090,10 @@ const WaterIrrigationAnalysis = ({ dateRange = {} }) => {
               <div className="border-b pb-3">
                 <div className="flex items-center text-sm font-semibold text-blue-800 mb-2">
                   <FontAwesomeIcon icon={faTint} className="mr-2" />
-                  <span>High Moisture Loving</span>
+                  <span>Seasonal Rain Dependent</span>
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  {recommendedCrops.highMoisture.map((crop, index) => (
+                  {recommendedCrops.seasonalRain.map((crop, index) => (
                     <span key={index} className="px-3 py-1.5 bg-cyan-50 text-cyan-800 rounded-lg text-sm">
                       {crop}
                     </span>
@@ -1174,10 +1104,10 @@ const WaterIrrigationAnalysis = ({ dateRange = {} }) => {
               <div className="border-b pb-3">
                 <div className="flex items-center text-sm font-semibold text-blue-800 mb-2">
                   <FontAwesomeIcon icon={faLeaf} className="mr-2" />
-                  <span>Irrigation Dependent</span>
+                  <span>Monsoon Dependent</span>
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  {recommendedCrops.irrigation.map((crop, index) => (
+                  {recommendedCrops.monsoonDependent.map((crop, index) => (
                     <span key={index} className="px-3 py-1.5 bg-purple-50 text-purple-800 rounded-lg text-sm">
                       {crop}
                     </span>
@@ -1187,12 +1117,12 @@ const WaterIrrigationAnalysis = ({ dateRange = {} }) => {
               
               <div>
                 <div className="flex items-center text-sm font-semibold text-blue-800 mb-2">
-                  <FontAwesomeIcon icon={faWater} className="mr-2" />
-                  <span>Aquatic/Semi-aquatic</span>
+                  <FontAwesomeIcon icon={faSeedling} className="mr-2" />
+                  <span>Drought Resistant</span>
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  {recommendedCrops.aquatic.map((crop, index) => (
-                    <span key={index} className="px-3 py-1.5 bg-teal-50 text-teal-800 rounded-lg text-sm">
+                  {recommendedCrops.droughtResistant.map((crop, index) => (
+                    <span key={index} className="px-3 py-1.5 bg-orange-50 text-orange-800 rounded-lg text-sm">
                       {crop}
                     </span>
                   ))}
@@ -1206,5 +1136,5 @@ const WaterIrrigationAnalysis = ({ dateRange = {} }) => {
   );
 };
 
-export default WaterIrrigationAnalysis;
+export default RainfallAnalysis;
 

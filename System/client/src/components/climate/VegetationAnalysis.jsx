@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faLeaf,
+  faCarrot,
   faInfoCircle,
   faChartLine,
   faFlask,
@@ -84,18 +85,31 @@ const VegetationAnalysis = ({ dateRange = {} }) => {
   // Add chart visibility states and refs for chart instances to properly clean up
   const ndviChartRef = useRef(null);
   const eviChartRef = useRef(null);
+  const gciChartRef = useRef(null);
+  const psriChartRef = useRef(null);
+  const ndreChartRef = useRef(null);
+  const cri1ChartRef = useRef(null);
   const vegetationIndicesChartRef = useRef(null);
   const nutrientsChartRef = useRef(null);
   
   // Chart container refs to check if they're in the DOM
   const ndviContainerRef = useRef(null);
   const eviContainerRef = useRef(null);
+  const gciContainerRef = useRef(null);
+  const psriContainerRef = useRef(null);
+  const ndreContainerRef = useRef(null);
+  const cri1ContainerRef = useRef(null);
   const vegetationIndicesContainerRef = useRef(null);
   const nutrientsContainerRef = useRef(null);
   
   // Track chart visibility to prevent errors
   const [chartsVisible, setChartsVisible] = useState({
     ndvi: false,
+    evi: false,
+    gci: false,
+    psri: false,
+    ndre: false,
+    cri1: false,
     vegetationIndices: false,
     nutrients: false
   });
@@ -119,6 +133,10 @@ const VegetationAnalysis = ({ dateRange = {} }) => {
       setChartsVisible({
         ndvi: !!document.getElementById('ndvi-chart-container'),
         evi: !!document.getElementById('evi-chart-container'),
+        gci: !!document.getElementById('gci-chart-container'),
+        psri: !!document.getElementById('psri-chart-container'),
+        ndre: !!document.getElementById('ndre-chart-container'),
+        cri1: !!document.getElementById('cri1-chart-container'),
         vegetationIndices: !!document.getElementById('vegetation-indices-chart-container'),
         nutrients: !!document.getElementById('nutrients-chart-container')
       });
@@ -145,6 +163,10 @@ const VegetationAnalysis = ({ dateRange = {} }) => {
       // Safely destroy all chart instances
       safeDestroyChart(ndviChartRef);
       safeDestroyChart(eviChartRef);
+      safeDestroyChart(gciChartRef);
+      safeDestroyChart(psriChartRef);
+      safeDestroyChart(ndreChartRef);
+      safeDestroyChart(cri1ChartRef);
       safeDestroyChart(vegetationIndicesChartRef);
       safeDestroyChart(nutrientsChartRef);
     };
@@ -556,7 +578,7 @@ const VegetationAnalysis = ({ dateRange = {} }) => {
       labels,
       datasets: [
         {
-          label: 'NDVI - Vegetation Health',
+          label: 'NDVI',
           data: values,
           fill: true,
           backgroundColor: 'rgba(56, 142, 60, 0.2)',
@@ -597,7 +619,171 @@ const VegetationAnalysis = ({ dateRange = {} }) => {
       labels,
       datasets: [
         {
-          label: 'EVI - Vegetation Health',
+          label: 'EVI',
+          data: values,
+          fill: true,
+          backgroundColor: 'rgba(56, 142, 60, 0.2)',
+          borderColor: 'rgb(56, 142, 60)',
+          tension: 0.3,
+          pointBackgroundColor: 'rgb(56, 142, 60)',
+          pointBorderColor: 'white',
+          pointBorderWidth: 1.5,
+          pointRadius: 4
+        }
+      ]
+    };
+  };
+
+  const getGciChartData = () => {
+    const gciData = vegetationIndices.gci;
+    
+    if (!gciData || gciData.length === 0) {
+      return {
+        labels: [],
+        datasets: [{
+          label: 'GCI',
+          data: [],
+          fill: true,
+          backgroundColor: 'rgba(75, 192, 75, 0.2)',
+          borderColor: 'rgb(75, 192, 75)',
+          tension: 0.3
+        }]
+      };
+    }
+    
+    // Process the data
+    const sortedData = [...gciData].sort((a, b) => new Date(a.date) - new Date(b.date));
+    const labels = sortedData.map(item => formatDate(item.date));
+    const values = sortedData.map(item => item.value);
+    
+    return {
+      labels,
+      datasets: [
+        {
+          label: 'GCI',
+          data: values,
+          fill: true,
+          backgroundColor: 'rgba(56, 142, 60, 0.2)',
+          borderColor: 'rgb(56, 142, 60)',
+          tension: 0.3,
+          pointBackgroundColor: 'rgb(56, 142, 60)',
+          pointBorderColor: 'white',
+          pointBorderWidth: 1.5,
+          pointRadius: 4
+        }
+      ]
+    };
+  };
+
+  const getNdreChartData = () => {
+    const ndreData = vegetationIndices.ndre;
+    
+    if (!ndreData || ndreData.length === 0) {
+      return {
+        labels: [],
+        datasets: [{
+          label: 'EVI',
+          data: [],
+          fill: true,
+          backgroundColor: 'rgba(75, 192, 75, 0.2)',
+          borderColor: 'rgb(75, 192, 75)',
+          tension: 0.3
+        }]
+      };
+    }
+    
+    // Process the data
+    const sortedData = [...ndreData].sort((a, b) => new Date(a.date) - new Date(b.date));
+    const labels = sortedData.map(item => formatDate(item.date));
+    const values = sortedData.map(item => item.value);
+    
+    return {
+      labels,
+      datasets: [
+        {
+          label: 'NDRE',
+          data: values,
+          fill: true,
+          backgroundColor: 'rgba(56, 142, 60, 0.2)',
+          borderColor: 'rgb(56, 142, 60)',
+          tension: 0.3,
+          pointBackgroundColor: 'rgb(56, 142, 60)',
+          pointBorderColor: 'white',
+          pointBorderWidth: 1.5,
+          pointRadius: 4
+        }
+      ]
+    };
+  };
+
+  const getPsriChartData = () => {
+    const psriData = vegetationIndices.psri;
+    
+    if (!psriData || psriData.length === 0) {
+      return {
+        labels: [],
+        datasets: [{
+          label: 'PSRI',
+          data: [],
+          fill: true,
+          backgroundColor: 'rgba(75, 192, 75, 0.2)',
+          borderColor: 'rgb(75, 192, 75)',
+          tension: 0.3
+        }]
+      };
+    }
+    
+    // Process the data
+    const sortedData = [...psriData].sort((a, b) => new Date(a.date) - new Date(b.date));
+    const labels = sortedData.map(item => formatDate(item.date));
+    const values = sortedData.map(item => item.value);
+    
+    return {
+      labels,
+      datasets: [
+        {
+          label: 'PSRI',
+          data: values,
+          fill: true,
+          backgroundColor: 'rgba(56, 142, 60, 0.2)',
+          borderColor: 'rgb(56, 142, 60)',
+          tension: 0.3,
+          pointBackgroundColor: 'rgb(56, 142, 60)',
+          pointBorderColor: 'white',
+          pointBorderWidth: 1.5,
+          pointRadius: 4
+        }
+      ]
+    };
+  };
+
+  const getCri1ChartData = () => {
+    const cri1Data = vegetationIndices.cri1;
+    
+    if (!cri1Data || cri1Data.length === 0) {
+      return {
+        labels: [],
+        datasets: [{
+          label: 'EVI',
+          data: [],
+          fill: true,
+          backgroundColor: 'rgba(75, 192, 75, 0.2)',
+          borderColor: 'rgb(75, 192, 75)',
+          tension: 0.3
+        }]
+      };
+    }
+    
+    // Process the data
+    const sortedData = [...cri1Data].sort((a, b) => new Date(a.date) - new Date(b.date));
+    const labels = sortedData.map(item => formatDate(item.date));
+    const values = sortedData.map(item => item.value);
+    
+    return {
+      labels,
+      datasets: [
+        {
+          label: 'CRI1',
           data: values,
           fill: true,
           backgroundColor: 'rgba(56, 142, 60, 0.2)',
@@ -647,6 +833,10 @@ const VegetationAnalysis = ({ dateRange = {} }) => {
   const vegetationIndicesChartData = getVegetationIndicesChartData();
   const ndviChartData = getNdviChartData();
   const eviChartData = getEviChartData();
+  const gciChartData = getGciChartData();
+  const ndreChartData = getNdreChartData();
+  const psriChartData = getPsriChartData();
+  const cri1ChartData = getCri1ChartData();
   const nutrientsChartData = getNutrientsChartData();
   
   // Helper function to get status color
@@ -673,14 +863,17 @@ const VegetationAnalysis = ({ dateRange = {} }) => {
 
   return (
     <div className="Analytics">
-      <div className="mb-6">
-        <h2 className="text-2xl font-bold flex items-center">
-          <FontAwesomeIcon icon={faLeaf} className="text-green-600 mr-0" />
+      <div style={{display: "flex", flexDirection: "row", borderBottom: "1px solid rgba(0,0,0,0.2)"}} className="mb-6">
+        <h2 className="text-2xl font-bold flex items-center ">
+          <FontAwesomeIcon icon={faCarrot} className="text-green-600 mr-2" />
           Vegetation & Crop Health
         </h2>
-        <p className="text-gray-600">
-          Monitor crop health indicators, vegetation indices, and growth patterns.
-        </p>
+        <div style={{display: "flex", flexDirection: "row", marginLeft: "auto", marginRight: "10px", alignItems: "center"}} class="IntervalRange">
+          <p id="Interval">Interval:</p>
+          <input type="date" id="startDate"/>
+          <p id="to">to</p>
+          <input type="date" id="endDate"/>
+        </div>
       </div>
       
       {loading || vegetationIndices.loading ? (
@@ -689,29 +882,27 @@ const VegetationAnalysis = ({ dateRange = {} }) => {
           <p className="text-gray-600">Loading vegetation data...</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
           {/* NDVI Chart - Enhanced UI */}
-          <div className="bg-white p-5 rounded-lg shadow-lg border border-gray-100">
-            <div className="flex items-center mb-4">
-              <span className="text-green-600 mr-3">
-                <FontAwesomeIcon icon={faLeaf} size="lg" />
-              </span>
-              <h3 className="text-lg font-semibold">NDVI Analysis</h3>
+          <div className="bg-white rounded-lg shadow-lg border border-gray-100">
+            <div style={{display: "flex",flexDirection: "column",overflowY: "hidden", transitionDuration: "200ms", transitionTimingFunction: "linear", transitionProperty: "all"}} className="flex items-center mb-0 h-8 hover:h-45">
+              <h3 style={{borderBottom: "1px solid rgba(0,0,0,0.2)"}} className="text-lg w-full pl-2 pb-0.5"><b className="font-semibold">NDVI - </b><span style={{fontSize: "17px"}} className="">crop health, greenness, biomass</span></h3>
+  
+              <div style={{fontSize: "14px",borderBottom: "1px solid rgba(0,0,0,0.2)"}} class="chart-info-content pl-2 pr-2 pb-1">
+                <p id="defination">It measures the <b>amount and health of green vegetation</b> by comparing how plants reflect near-infrared (NIR) light and absorb red light.</p>
+                <p id="scale-range">Range: -1 to +1</p>
+                <p id="scale-increase"><b>Increase</b>: Vigorous plant growth, high leaf area.</p>
+                <p id="scale-decrease"><b>Decrease</b>: Sparse or stressed vegetation.</p>
+              </div>
+          
             </div>
-            
-            {/* <div className="mb-4 p-3 bg-green-50 rounded-md text-sm border-l-4 border-green-400">
-              <p className="font-medium">NDVI - Normalized Difference Vegetation Index</p>
-              <p className="mt-1">Measures <b>green vegetation amount & health</b> using NIR and red light reflectance.</p>
-              <p className="mt-1"><b>Range</b>: -1 to +1</p>
-              <p className="mt-1"><b>Interpretation</b>: Higher values indicate healthier vegetation.</p>
-            </div> */}
-            
-            <div className="h-72">
+            <div className="h-72 pl-1 pr-1 ">
               <div id="ndvi-chart-container" className="w-full h-full" ref={ndviContainerRef}>
                 {chartsVisible.ndvi && (
                   <Line 
                     data={ndviChartData} 
-                    options={getChartOptions('NDVI Trend Over Time', {
+                    options={getChartOptions('Normalized Difference Vegetation Index', {
                       yAxisTitle: 'NDVI Value',
                       beginAtZero: false
                     })} 
@@ -722,26 +913,24 @@ const VegetationAnalysis = ({ dateRange = {} }) => {
             </div>
           </div>
 
-          <div className="bg-white p-5 rounded-lg shadow-lg border border-gray-100">
-            <div className="flex items-center mb-4">
-              <span className="text-green-600 mr-3">
-                <FontAwesomeIcon icon={faLeaf} size="lg" />
-              </span>
-              <h3 className="text-lg font-semibold">EVI Analysis</h3>
+          <div className="bg-white rounded-lg shadow-lg border border-gray-100">
+            <div className="flex items-center mb-0">
+              
+                <h3 style={{borderBottom: "1px solid rgba(0,0,0,0.2)"}} className="text-lg w-full pl-2 pb-0.5"><b className="font-semibold">EVI - </b><span style={{fontSize: "17px"}} className="">similar to NDVI, better in dense canopies</span></h3>
             </div>
             
-            {/* <div className="mb-4 p-3 bg-green-50 rounded-md text-sm border-l-4 border-green-400">
+            {/* <div className="mb-0 p-3 bg-green-50 rounded-md text-sm border-l-4 border-green-400">
               <p className="font-medium">NDVI - Normalized Difference Vegetation Index</p>
               <p className="mt-1">Measures <b>green vegetation amount & health</b> using NIR and red light reflectance.</p>
               <p className="mt-1"><b>Range</b>: -1 to +1</p>
               <p className="mt-1"><b>Interpretation</b>: Higher values indicate healthier vegetation.</p>
             </div> */}
-            <div className="h-72">
+            <div className="h-72 pl-1 pr-1 ">
               <div id="evi-chart-container" className="w-full h-full" ref={eviContainerRef}>
                 {chartsVisible.evi && (
                   <Line 
                     data={eviChartData} 
-                    options={getChartOptions('EVI Trend Over Time', {
+                    options={getChartOptions('Enhanced Vegetation Index', {
                       yAxisTitle: 'EVI Value',
                       beginAtZero: false
                     })} 
@@ -751,7 +940,120 @@ const VegetationAnalysis = ({ dateRange = {} }) => {
               </div>
             </div>
           </div>
+
+          <div className="bg-white rounded-lg shadow-lg border border-gray-100">
+            <div className="flex items-center mb-0">
+              
+              <h3 style={{borderBottom: "1px solid rgba(0,0,0,0.2)"}} className="text-lg w-full pl-2 pb-0.5"><b className="font-semibold">GCI - </b><span style={{fontSize: "17px"}} className="">chlorophyll content, nitrogen</span></h3>
+            </div>
+            
+            {/* <div className="mb-0 p-3 bg-green-50 rounded-md text-sm border-l-4 border-green-400">
+              <p className="font-medium">NDVI - Normalized Difference Vegetation Index</p>
+              <p className="mt-1">Measures <b>green vegetation amount & health</b> using NIR and red light reflectance.</p>
+              <p className="mt-1"><b>Range</b>: -1 to +1</p>
+              <p className="mt-1"><b>Interpretation</b>: Higher values indicate healthier vegetation.</p>
+            </div> */}
+            <div className="h-72 pl-1 pr-1 ">
+              <div id="gci-chart-container" className="w-full h-full" ref={gciContainerRef}>
+                {chartsVisible.gci && (
+                  <Line 
+                    data={gciChartData} 
+                    options={getChartOptions('Green Chlorophyll Index', {
+                      yAxisTitle: 'GCI Value',
+                      beginAtZero: false
+                    })} 
+                    ref={gciChartRef}
+                  />
+                )}
+              </div>
+            </div>
+          </div>
           
+          <div className="bg-white rounded-lg shadow-lg border border-gray-100">
+            <div className="flex items-center mb-0">
+              
+              <h3 style={{borderBottom: "1px solid rgba(0,0,0,0.2)"}} className="text-lg w-full pl-2 pb-0.5"><b className="font-semibold">PSRI - </b><span style={{fontSize: "17px"}} className="">aging, stress, carotenoid/pigment ratio</span></h3>
+            </div>
+            
+            {/* <div className="mb-0 p-3 bg-green-50 rounded-md text-sm border-l-4 border-green-400">
+              <p className="font-medium">NDVI - Normalized Difference Vegetation Index</p>
+              <p className="mt-1">Measures <b>green vegetation amount & health</b> using NIR and red light reflectance.</p>
+              <p className="mt-1"><b>Range</b>: -1 to +1</p>
+              <p className="mt-1"><b>Interpretation</b>: Higher values indicate healthier vegetation.</p>
+            </div> */}
+            <div className="h-72 pl-1 pr-1 ">
+              <div id="psri-chart-container" className="w-full h-full" ref={psriContainerRef}>
+                {chartsVisible.psri && (
+                  <Line 
+                    data={psriChartData} 
+                    options={getChartOptions('Plant Senescence Reflectance Index', {
+                      yAxisTitle: 'PSRI Value',
+                      beginAtZero: false
+                    })} 
+                    ref={psriChartRef}
+                  />
+                )}
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-lg shadow-lg border border-gray-100">
+            <div className="flex items-center mb-0">
+              
+              <h3 style={{borderBottom: "1px solid rgba(0,0,0,0.2)"}} className="text-lg w-full pl-2 pb-0.5"><b className="font-semibold">NDRE - </b><span style={{fontSize: "17px"}} className="">chlorophyll concentration in canopy</span></h3>
+            </div>
+            
+            {/* <div className="mb-0 p-3 bg-green-50 rounded-md text-sm border-l-4 border-green-400">
+              <p className="font-medium">NDVI - Normalized Difference Vegetation Index</p>
+              <p className="mt-1">Measures <b>green vegetation amount & health</b> using NIR and red light reflectance.</p>
+              <p className="mt-1"><b>Range</b>: -1 to +1</p>
+              <p className="mt-1"><b>Interpretation</b>: Higher values indicate healthier vegetation.</p>
+            </div> */}
+            <div className="h-72 pl-1 pr-1 ">
+              <div id="ndre-chart-container" className="w-full h-full" ref={ndreContainerRef}>
+                {chartsVisible.ndre && (
+                  <Line 
+                    data={ndreChartData} 
+                    options={getChartOptions('Normalized Difference Red Edge Index', {
+                      yAxisTitle: 'NDRE Value',
+                      beginAtZero: false
+                    })} 
+                    ref={ndreChartRef}
+                  />
+                )}
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-lg shadow-lg border border-gray-100">
+            <div className="flex items-center mb-0">
+              
+              <h3 style={{borderBottom: "1px solid rgba(0,0,0,0.2)"}} className="text-lg w-full pl-2 pb-0.5"><b className="font-semibold">CRI1 - </b><span style={{fontSize: "17px"}} className="">carotenoid content in leaves (stress-related pigments)</span></h3>
+              
+            </div>
+            
+            {/* <div className="mb-0 p-3 bg-green-50 rounded-md text-sm border-l-4 border-green-400">
+              <p className="font-medium">NDVI - Normalized Difference Vegetation Index</p>
+              <p className="mt-1">Measures <b>green vegetation amount & health</b> using NIR and red light reflectance.</p>
+              <p className="mt-1"><b>Range</b>: -1 to +1</p>
+              <p className="mt-1"><b>Interpretation</b>: Higher values indicate healthier vegetation.</p>
+            </div> */}
+            <div className="h-72 pl-1 pr-1 ">
+              <div id="cri1-chart-container" className="w-full h-full" ref={cri1ContainerRef}>
+                {chartsVisible.cri1 && (
+                  <Line 
+                    data={cri1ChartData} 
+                    options={getChartOptions('Carotenoid Reflectance Index 1', {
+                      yAxisTitle: 'CRI1 Value',
+                      beginAtZero: false
+                    })} 
+                    ref={cri1ChartRef}
+                  />
+                )}
+              </div>
+            </div>
+          </div>
+
           {/* Key Observations - Enhanced UI */}
           <div className="bg-white p-5 rounded-lg shadow-lg border border-gray-100">
             <div className="flex items-center mb-4">
@@ -833,7 +1135,7 @@ const VegetationAnalysis = ({ dateRange = {} }) => {
           </div>
           
           {/* Vegetation Indices Chart - Enhanced UI */}
-          <div className="bg-white p-5 rounded-lg shadow-lg border border-gray-100 lg:col-span-2">
+          {/* <div className="bg-white p-5 rounded-lg shadow-lg border border-gray-100 lg:col-span-2">
             <div className="flex items-center mb-4">
               <span className="text-green-600 mr-3">
                 <FontAwesomeIcon icon={faChartBar} size="lg" />
@@ -910,16 +1212,16 @@ const VegetationAnalysis = ({ dateRange = {} }) => {
               )}
             </div> */}
 
-            
+{/*             
             <div className="mt-3 bg-gray-50 p-3 rounded-md text-xs text-gray-600 flex items-center">
               <FontAwesomeIcon icon={faInfoCircle} className="text-green-500 mr-2" />
               <span>Indices are calculated from multispectral satellite imagery and updated weekly.</span>
             </div>
-          </div>
+          </div> */} 
           
           {/* Enhanced Soil Nutrient Analysis */}
-          <div className="bg-white p-5 rounded-lg shadow-lg border border-gray-100">
-            <div className="flex items-center justify-between mb-4">
+          <div className="bg-white pl-3 pr-3 pt-2.5 pb-2 rounded-lg shadow-lg border border-gray-100">
+            <div className="flex items-center justify-between mb-0">
               <div className="flex items-center">
                 <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mr-3">
                   <FontAwesomeIcon icon={faFlask} className="text-green-600" />
@@ -950,7 +1252,7 @@ const VegetationAnalysis = ({ dateRange = {} }) => {
               </div>
             </div> */}
             
-            <div className="h-60 mb-4">
+            <div className="h-80 mb-0">
               <div id="nutrients-chart-container" className="w-full h-full" ref={nutrientsContainerRef}>
                 {chartsVisible.nutrients && (
                   <Bar 
@@ -999,7 +1301,7 @@ const VegetationAnalysis = ({ dateRange = {} }) => {
           </div>
 
           {/* Recommended Crops */}
-          {/* <div className="bg-white p-5 rounded-lg shadow-lg border border-gray-100 lg:col-span-1">
+          <div className="bg-white p-5 rounded-lg shadow-lg border border-gray-100 lg:col-span-1">
             <div className="flex items-center mb-4">
               <span className="text-green-600 mr-3">
                 <FontAwesomeIcon icon={faSeedling} size="lg" />
@@ -1068,7 +1370,7 @@ const VegetationAnalysis = ({ dateRange = {} }) => {
                 </div>
               </div>
             </div>
-          </div> */}
+          </div>
         </div>
       )}
     </div>
