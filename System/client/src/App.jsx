@@ -24,6 +24,7 @@ function App() {
       <Router>
         <Layout>
           <Routes>
+            <Route path="/" element={<Auth />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/climate" element={<ClimateAnalysis />} />
             <Route path="/farm-console" element={<FarmConsole />} />
