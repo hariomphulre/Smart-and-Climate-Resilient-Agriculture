@@ -19,6 +19,7 @@ import WaterIrrigationAnalysis from './components/climate/WaterIrrigationAnalysi
 import RainfallAnalysis from './components/climate/RainfallAnalysis';
 import TraderLayout from './components/layout/Trader/TraderLayout';
 import TraderDashboard from './pages/Trader/TraderDashboard';
+import MarketPrice from './pages/Trader/MarketPrice';
 
 function App() {
   return (
@@ -52,6 +53,7 @@ function App() {
           {/* Trader layout */}
           <Route path="/trader" element={<TraderLayout />}>
             <Route path="dashboard" element={<TraderDashboard />} />
+            <Route path="market-price" element={<MarketPrice />} />
             <Route path="*" element={<h1>Trader Page Not Found</h1>} />
           </Route>
 

@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import TraderNavbar from './TraderNavbar';
 import TraderSidebar from './TraderSidebar';
-import ChatbotButton from '../../common/ChatbotButton';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faXmark } from '@fortawesome/free-solid-svg-icons';
 
@@ -78,8 +77,6 @@ const TraderLayout = () => {
         <span className="sr-only">Toggle sidebar</span>
         <FontAwesomeIcon icon={sidebarOpen ? faXmark : faBars} className="text-xl" />
       </button>
-
-      <ChatbotButton />
 
       {sidebarOpen && isMobile && (
         <div 
