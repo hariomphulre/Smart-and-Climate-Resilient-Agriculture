@@ -1,79 +1,77 @@
 import { useState, useEffect, useRef } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { FcGoogle } from "react-icons/fc";
-import {
-  faEye,
-  faEyeSlash,
-  faLock,
-  faEnvelope,
-  faUser,
-  faShieldHalved,
-  faSignInAlt,
-  faUserPlus
-} from '@fortawesome/free-solid-svg-icons';
-import { FaGoogle } from 'react-icons/fa';
-const background = "/background_img.jpeg"
+
 const Auth = () => {
-  // const [isLogin, setIsLogin] = useState(true);
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [recaptchaLoaded, setRecaptchaLoaded] = useState(false);
   const [recaptchaVerified, setRecaptchaVerified] = useState(false);
   const recaptchaRef = useRef(null);
-  
-  // Form state
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    confirmPassword: '',
-    firstName: '',
-    lastName: '',
-    acceptTerms: false
-  });
   
   // Error state
   const [errors, setErrors] = useState({});
 
   // Google OAuth and reCAPTCHA configuration
   const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || 'your-google-client-id';
-  const RECAPTCHA_SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY || 'your-recaptcha-site-key';
+  const RECAPTCHA_SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY || '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI';
 
   // Load Google OAuth script
   useEffect(() => {
     const loadGoogleScript = () => {
-      if (window.google) return;
+      if (window.google) {
+        console.log('Google OAuth already loaded');
+        return;
+      }
+      
+      console.log('Loading Google OAuth script...');
       
       const script = document.createElement('script');
       script.src = 'https://accounts.google.com/gsi/client';
       script.async = true;
       script.defer = true;
       script.onload = initializeGoogleAuth;
+      script.onerror = () => {
+        console.error('Failed to load Google OAuth script');
+        setErrors(prev => ({ ...prev, google: 'Failed to load Google OAuth. Please refresh the page.' }));
+      };
       document.head.appendChild(script);
     };
 
     const initializeGoogleAuth = () => {
-      if (window.google) {
-        window.google.accounts.id.initialize({
-          client_id: GOOGLE_CLIENT_ID,
-          callback: handleGoogleResponse,
-          auto_select: false,
-        });
+      if (window.google && GOOGLE_CLIENT_ID !== 'your-google-client-id') {
+        try {
+          console.log('Initializing Google OAuth with client ID:', GOOGLE_CLIENT_ID);
+          window.google.accounts.id.initialize({
+            client_id: GOOGLE_CLIENT_ID,
+            callback: handleGoogleResponse,
+            auto_select: false,
+          });
+          console.log('Google OAuth initialized successfully');
+        } catch (error) {
+          console.error('Google OAuth initialization error:', error);
+          setErrors(prev => ({ ...prev, google: 'Failed to initialize Google OAuth.' }));
+        }
+      } else {
+        console.warn('Google OAuth client ID not configured properly');
       }
     };
 
     loadGoogleScript();
-  }, []);
+  }, [GOOGLE_CLIENT_ID]);
 
   // Load reCAPTCHA script
   useEffect(() => {
     const loadRecaptchaScript = () => {
       if (window.grecaptcha) {
+        console.log('reCAPTCHA already loaded');
         setRecaptchaLoaded(true);
         return;
       }
       
+      console.log('Loading reCAPTCHA script...');
+      
+      // Set up callback function
       window.recaptchaCallback = () => {
+        console.log('reCAPTCHA script loaded successfully');
         setRecaptchaLoaded(true);
       };
 
@@ -81,6 +79,10 @@ const Auth = () => {
       script.src = `https://www.google.com/recaptcha/api.js?onload=recaptchaCallback&render=explicit`;
       script.async = true;
       script.defer = true;
+      script.onerror = () => {
+        console.error('Failed to load reCAPTCHA script');
+        setErrors(prev => ({ ...prev, recaptcha: 'Failed to load reCAPTCHA. Please refresh the page.' }));
+      };
       document.head.appendChild(script);
     };
 
@@ -98,14 +100,17 @@ const Auth = () => {
   useEffect(() => {
     if (recaptchaLoaded && window.grecaptcha && recaptchaRef.current) {
       try {
+        console.log('Rendering reCAPTCHA with site key:', RECAPTCHA_SITE_KEY);
         window.grecaptcha.render(recaptchaRef.current, {
           sitekey: RECAPTCHA_SITE_KEY,
           callback: handleRecaptchaResponse,
           'expired-callback': handleRecaptchaExpired,
           'error-callback': handleRecaptchaError
         });
+        console.log('reCAPTCHA rendered successfully');
       } catch (error) {
         console.error('reCAPTCHA render error:', error);
+        setErrors(prev => ({ ...prev, recaptcha: 'Failed to initialize reCAPTCHA. Please refresh the page.' }));
       }
     }
   }, [recaptchaLoaded]);
@@ -114,20 +119,44 @@ const Auth = () => {
   const handleGoogleResponse = async (response) => {
     try {
       setLoading(true);
-      console.log('Google OAuth response:', response);
+      console.log('Google OAuth response received:', response);
       
-      // Here you would typically send the token to your backend
-      // const result = await fetch('/api/auth/google', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ token: response.credential })
-      // });
-      
-      // Mock success for demo
-      setTimeout(() => {
-        alert('Google authentication successful!');
+      // Decode the JWT token to get user info
+      try {
+        const payload = JSON.parse(atob(response.credential.split('.')[1]));
+        const googleUser = {
+          id: payload.sub,
+          email: payload.email,
+          name: payload.name,
+          picture: payload.picture
+        };
+
+        console.log('Google user authenticated:', googleUser);
+        
+        // Store user data
+        localStorage.setItem('authToken', response.credential);
+        localStorage.setItem('user', JSON.stringify(googleUser));
+        
+        // Simulate API call to your backend
+        setTimeout(() => {
+          alert(`Google authentication successful! Welcome ${googleUser.name}!`);
+          setLoading(false);
+          
+          // Reset reCAPTCHA
+          if (window.grecaptcha && recaptchaRef.current) {
+            window.grecaptcha.reset();
+            setRecaptchaVerified(false);
+          }
+          
+          // Redirect to dashboard
+          window.location.href = '/dashboard';
+        }, 1000);
+        
+      } catch (decodeError) {
+        console.error('Error decoding Google token:', decodeError);
+        setErrors({ general: 'Google authentication failed. Invalid token received.' });
         setLoading(false);
-      }, 1000);
+      }
       
     } catch (error) {
       console.error('Google auth error:', error);
@@ -158,124 +187,66 @@ const Auth = () => {
   // Handle Google sign in button click
   const handleGoogleSignIn = () => {
     if (!recaptchaVerified) {
-      setErrors(prev => ({ ...prev, recaptcha: 'Please complete the reCAPTCHA verification.' }));
+      setErrors({ general: 'Please complete the reCAPTCHA verification first.' });
       return;
     }
 
-    if (window.google) {
-      window.google.accounts.id.prompt();
+    if (window.google && window.google.accounts) {
+      try {
+        console.log('Initiating Google sign-in...');
+        window.google.accounts.id.prompt();
+      } catch (error) {
+        console.error('Google sign-in error:', error);
+        setErrors({ general: 'Failed to initiate Google sign-in. Please try again.' });
+      }
+    } else {
+      console.log('Google OAuth not ready yet');
+      setErrors({ general: 'Google OAuth is loading. Please wait a moment and try again.' });
     }
   };
 
-  // Handle form input changes
-  const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value
-    }));
-    
-    // Clear specific error when user starts typing
-    if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: '' }));
-    }
-  };
-
-  // Validate form
-  const validateForm = () => {
-    const newErrors = {};
-
-    // Email validation
-    if (!formData.email) {
-      newErrors.email = 'Email is required';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email';
-    }
-
-    // Password validation
-    if (!formData.password) {
-      newErrors.password = 'Password is required';
-    } else if (formData.password.length < 8) {
-      newErrors.password = 'Password must be at least 8 characters';
-    }
-
-    // Registration-specific validations
-    // if (!isLogin) {
-    //   if (!formData.firstName.trim()) {
-    //     newErrors.firstName = 'First name is required';
-    //   }
-      
-    //   if (!formData.lastName.trim()) {
-    //     newErrors.lastName = 'Last name is required';
-    //   }
-      
-    //   if (formData.password !== formData.confirmPassword) {
-    //     newErrors.confirmPassword = 'Passwords do not match';
-    //   }
-      
-    //   if (!formData.acceptTerms) {
-    //     newErrors.acceptTerms = 'Please accept the terms and conditions';
-    //   }
-    // }
-
-    // reCAPTCHA validation
-    if (!recaptchaVerified) {
-      newErrors.recaptcha = 'Please complete the reCAPTCHA verification';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  // Handle form submission
-  const handleSubmit = async (e) => {
+  const checkDetails = (e) => {
     e.preventDefault();
+    console.log('Form submitted!');
     
-    if (!validateForm()) return;
-
-    try {
-      setLoading(true);
-      
-      // Here you would typically send data to your backernd
-      const endpoint = '/api/auth/login';
-      
-      // Mock API call
-      console.log('Login data: ', formData);
-      
-      // Simulate API call
-      setTimeout(() => {
-        alert('Login successful!');
-        setLoading(false);
-        
-        // Reset form
-        setFormData({
-          email: '',
-          password: '',
-          confirmPassword: '',
-          firstName: '',
-          lastName: '',
-          acceptTerms: false
-        });
-        
-        // Reset reCAPTCHA
-        if (window.grecaptcha && recaptchaRef.current) {
-          window.grecaptcha.reset();
-          setRecaptchaVerified(false);
-        }
-      }, 1500);
-      
-    } catch (error) {
-      console.error('Auth error:', error);
-      setErrors({ general: 'Authentication failed. Please try again.' });
-      setLoading(false);
+    const usernameInput = document.querySelector('input[placeholder="Username"]').value;
+    const passwordInput = document.querySelector('input[placeholder="Password"]').value;
+    
+    // Basic validation
+    if (!usernameInput || !passwordInput) {
+      setErrors({ general: 'Please enter both username and password' });
+      return;
     }
+    
+    if (!recaptchaVerified) {
+      console.log('Validation failed: reCAPTCHA not verified');
+      setErrors({ general: 'Please complete the reCAPTCHA verification' });
+      return;
+    }
+    
+    setLoading(true);
+    setErrors({});
+    
+    setTimeout(() => {
+      if (passwordInput === "admin12345" && usernameInput === "Hariom") {
+        // Store authentication data
+        localStorage.setItem('authToken', 'mock-token-' + Date.now());
+        localStorage.setItem('user', JSON.stringify({ 
+          username: usernameInput, 
+          loginTime: new Date().toISOString() 
+        }));
+        window.location.href = '/dashboard';
+      } else {
+        setErrors({ general: 'Invalid username or password.' });
+      }
+      setLoading(false);
+    }, 1000);
   };
 
   return (
     <div>
-      {/* <img src={background} alt="background loading..." style={{position: "fixed"}} className="w-full h-full"/> */}
       <div className="flex flex-row ">
-        <img src="/logo.png" alt="logo loding..." className="w-15 h-auto position-fixed overflow-y-hidden m-3"/>
+        <img src="/logo.png" alt="logo loading..." className="w-15 h-auto position-fixed overflow-y-hidden m-3"/>
         <h1 style={{fontFamily: "sans-serif"}} className="pt-5 text-3xl font-bold text-green-900">Smart & Climate Resilient Agriculture</h1>
       </div>
 
@@ -289,13 +260,23 @@ const Auth = () => {
             </div>
           )}
 
-          <div onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={checkDetails} className="space-y-4">
             <div>
               <h1 style={{fontFamily: "arial"}} className="font-bold text-3xl">Sign in</h1>
             </div>
             <div className="flex flex-col gap-3 pt-3">
-              <input type="text" placeholder='Username' className="border black rounded-xs  p-1 pl-2 text-lg"/>
-              <input type="text" placeholder='Password' className="border black rounded-xs  p-1 pl-2 text-lg"/>
+              <input 
+                type="text" 
+                placeholder='Username' 
+                className="border black rounded-xs p-1 pl-2 text-lg"
+                required
+              />
+              <input 
+                type="password" 
+                placeholder='Password' 
+                className="border black rounded-xs p-1 pl-2 text-lg"
+                required
+              />
             </div>
             <div>
               <div 
@@ -307,21 +288,12 @@ const Auth = () => {
 
             <button
               type="submit"
-              disabled={loading}
-              className="w-full flex justify-center py-3 px-4 border border-transparent rounded-xs shadow-sm text-white bg-blue-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+              disabled={loading || !recaptchaVerified}
+              className="w-full cursor-pointer hover:bg-blue-700 flex justify-center py-3 px-4 border border-transparent rounded-xs shadow-sm text-white bg-blue-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-medium"
             >
-              {loading ? (
-                <div className="flex items-center">
-                  <div className="h-5 w-5 border-b-2 border-white mr-2"></div>
-                  Singing In...
-                </div>
-              ) : (
-                <>
-                  Sign in
-                </>
-              )}
+              Sign in
             </button>
-          </div>
+          </form>
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-gray-300" />
@@ -335,7 +307,7 @@ const Auth = () => {
               type="button"
               onClick={handleGoogleSignIn}
               disabled={loading || !recaptchaVerified}
-              className="w-full flex flex-row gap-12 items-center py-3 border border-gray-300 rounded-xs shadow-sm bg-white hover:bg-gray-100 transition-all disabled:cursor-not-allowed"
+              className="w-full cursor-pointer flex flex-row gap-12 items-center py-3 border border-gray-300 rounded-xs shadow-sm bg-white hover:bg-gray-100 transition-all disabled:cursor-not-allowed"
             >
               <FcGoogle className="ml-4 text-2xl"/>
               {loading ? 'Signing in...' : `Sign in with Google`}

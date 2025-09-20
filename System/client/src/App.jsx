@@ -25,7 +25,7 @@ function App() {
     <AppProvider>
       <Router>
         <Routes>
-          {/* <Route path="/" element={<Auth/>} /> */}
+          <Route path="/" element={<Auth/>} />
 
           {/* Farmer layout */}
           <Route path="/" element={<Layout />}>
