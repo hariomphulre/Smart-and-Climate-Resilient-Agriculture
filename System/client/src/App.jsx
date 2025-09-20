@@ -26,6 +26,8 @@ function App() {
     <AppProvider>
       <Router>
         <Routes>
+          <Route path="/" element={<Auth/>} />
+
           {/* Farmer layout */}
           <Route path="/" element={<Layout />}>
             <Route path="dashboard" element={<Dashboard />} />
@@ -47,9 +49,10 @@ function App() {
             <Route path="field-list" element={<Fields />} />
             <Route path="field-detail/:id" element={<FieldDetail />} />
             <Route path="plant-disease-detection" element={<PlantDiseaseDetection />} />
+
             <Route path="*" element={<h1>Page Not Found</h1>} />
           </Route>
-          <Route path="Auth" element={<Auth/>} />
+
           {/* Trader layout */}
           <Route path="/trader" element={<TraderLayout />}>
             <Route path="dashboard" element={<TraderDashboard />} />
