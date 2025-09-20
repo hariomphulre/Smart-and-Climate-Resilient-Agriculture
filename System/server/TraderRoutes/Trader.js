@@ -1,4 +1,4 @@
-import { sql } from "../NeonSetup";
+import { sql } from "../NeonSetup.js";
 import express from "express";
 const router = express.Router();
 
@@ -17,4 +17,4 @@ router.post("/api/schedule-events", async(req,res) => {
     }
 });
 
-module.exports = router;
+export default router;
