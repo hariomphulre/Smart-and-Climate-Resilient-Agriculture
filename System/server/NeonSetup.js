@@ -1,13 +1,21 @@
-import pkg from 'pg';
-const { Pool } = pkg;
-import dotenv from "dotenv";
-dotenv.config();
+const { neon } = require("@neondatabase/serverless");
+const path = require("path");
+const dotenv = require("dotenv");
 
-const pool = new Pool({
-  connectionString: process.env.NEON_DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false,
+dotenv.config({ path: path.join(__dirname, ".env") });
+
+if (!process.env.DATABASE_URL) {
+  throw new Error("DATABASE_URL missing");
+}
+
+const sql = neon(process.env.DATABASE_URL, {
+  fetchOptions: {
+    timeout: 60000, 
+  },
+  pool: {
+    max: 10,             
+    idleTimeoutMillis: 30000, 
   },
 });
 
-export const sql = (text, params) => pool.query(text, params);
+module.exports = { sql };

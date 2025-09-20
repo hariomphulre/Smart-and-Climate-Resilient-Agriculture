@@ -20,6 +20,7 @@ import RainfallAnalysis from './components/climate/RainfallAnalysis';
 import TraderLayout from './components/layout/Trader/TraderLayout';
 import TraderDashboard from './pages/Trader/TraderDashboard';
 import MarketPrice from './pages/Trader/MarketPrice';
+import EventManagement from './components/Trader/EventManagement';
 
 function App() {
   return (
@@ -58,6 +59,7 @@ function App() {
             <Route path="dashboard" element={<TraderDashboard />} />
             <Route path="market-price" element={<MarketPrice />} />
             <Route path="*" element={<h1>Trader Page Not Found</h1>} />
+            <Route path='event-management' element={<EventManagement/>}/>
           </Route>
 
         </Routes>
