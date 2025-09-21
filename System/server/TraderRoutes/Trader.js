@@ -16,4 +16,14 @@ router.post("/event-schedule", async(req,res) => {
     }
 });
 
+router.get("/get-events", async(req,res) => {
+    try{
+        const result = await sql`SELECT * FROM events`;
+        res.status(200).json({message: "Events fetched successfully", data: result});
+    }catch(error){
+        console.log("Error fetching events:", error);
+        res.status(400).json({message: "Error in fetching events"});
+    }
+});
+
 module.exports = router;
