@@ -2,6 +2,7 @@
   "name": "client",
   "private": true,
   "version": "0.0.0",
+  "description": "Client for SmartAgri application",
   "type": "module",
   "scripts": {
     "dev": "vite",

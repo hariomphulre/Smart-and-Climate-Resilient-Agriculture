@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { MdHistory } from "react-icons/md";
 import { IoIosNotifications } from "react-icons/io";
-import { faHandshake, faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import { faHandshake, faChevronLeft, faChevronRight, faCalendar, faIndianRupeeSign } from '@fortawesome/free-solid-svg-icons';
 
 const TraderSidebar = ({ isSidebarOpen, isCollapsed, toggleSidebar }) => {
     const location = useLocation();
@@ -77,6 +77,20 @@ const TraderSidebar = ({ isSidebarOpen, isCollapsed, toggleSidebar }) => {
                                         {!isCollapsed && <span className="ml-3 whitespace-nowrap">Connections</span>}
                                     </Link>
                                 </li>
+                                    <Link
+                                        to="/trader/market-price"
+                                        className={`flex items-center px-3 py-3 rounded-lg ${isCollapsed ? 'justify-center' : ''} ${
+                                            isActive('/trader/market-price') 
+                                                ? 'bg-green-100 text-green-800 font-medium shadow-sm border-l-4 border-green-600' 
+                                                : 'text-gray-700 hover:bg-green-100 hover:text-green-700'
+                                        } group transition-all duration-200 ${isMobile ? 'active:bg-green-100' : ''}`}
+                                    >
+                                        <FontAwesomeIcon
+                                            icon={faIndianRupeeSign}
+                                            className={`w-5 h-5 ${isActive('/trader/market-price') ? 'text-green-700' : 'text-gray-500 group-hover:text-gray-900'}`}
+                                        />
+                                        {!isCollapsed && <span className="ml-3 whitespace-nowrap">Market Price</span>}
+                                    </Link>
                                 <li>
                                     <Link
                                         to="/trader/trading-history"
@@ -101,6 +115,19 @@ const TraderSidebar = ({ isSidebarOpen, isCollapsed, toggleSidebar }) => {
                                     >
                                         <IoIosNotifications className={`w-5 h-5 ${isActive('/trader/notifications') ? 'text-green-700' : 'text-gray-500 group-hover:text-gray-900'}`} />
                                         {!isCollapsed && <span className="ml-3 whitespace-nowrap">Notifications</span>}
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link
+                                        to="/trader/event-management"
+                                        className={`flex items-center px-3 py-3 rounded-lg ${isCollapsed ? 'justify-center' : ''} ${isActive('/trader/event-management')
+                                                ? 'bg-green-100 text-green-800 font-medium shadow-sm border-l-4 border-green-600'
+                                                : 'text-gray-700 hover:bg-green-100 hover:text-green-700'
+                                            } group transition-all duration-200 ${isMobile ? 'active:bg-green-100' : ''}`}
+                                    >
+                                        <FontAwesomeIcon icon={faCalendar}
+                                        className={`w-5 h-5 ${isActive('/trader/event-management') ? 'text-green-700' : 'text-gray-500 group-hover:text-gray-900'}`} />
+                                        {!isCollapsed && <span className="ml-3 whitespace-nowrap">Event Management</span>}
                                     </Link>
                                 </li>
                             </ul>

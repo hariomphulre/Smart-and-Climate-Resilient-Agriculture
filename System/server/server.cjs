@@ -480,6 +480,10 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 
+const traderRoutes = require('./TraderRoutes/Trader.js');
+
+app.use("/api/trader", traderRoutes);
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });

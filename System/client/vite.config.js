@@ -1,23 +1,29 @@
 import path from "path"
+import { fileURLToPath } from "url"
+import { defineConfig, loadEnv } from "vite"
+import react from "@vitejs/plugin-react"
 import tailwindcss from "@tailwindcss/vite"
-import { defineConfig, loadEnv } from 'vite'
-import react from '@vitejs/plugin-react'
 
-// https://vite.dev/config/
+// Fix for __dirname in ESM
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+
 export default defineConfig(({ mode }) => {
   // Load env file based on mode
-  const env = loadEnv(mode, process.cwd(), '');
-  
+  const env = loadEnv(mode, process.cwd(), "")
+
   return {
-    plugins: [react(), tailwindcss()],
+    plugins: [
+      react(),
+      tailwindcss()
+    ],
     resolve: {
       alias: {
         "@": path.resolve(__dirname, "./src"),
       },
     },
     define: {
-      // Make env variables available globally
-      'process.env': env
-    }
+      "process.env": env, // Make env variables available globally
+    },
   }
 })
