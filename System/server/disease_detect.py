@@ -10,9 +10,9 @@ from ultralytics import YOLO
 # ---------------------------
 # User settings
 # ---------------------------
-model_path = r"I:/Projects/SmartAgri/server/tea1.pt"
-img_source = r"I:/Projects/SmartAgri/server/crop_imgs/disease/tea/img.png"
-output_dir = r"I:/Projects/SmartAgri/server/detect_results/disease/tea"
+model_path = r"I:/Projects/Climate-Resilient-Agriculture/System/server/tea1.pt"
+img_source = r"I:/Projects/Climate-Resilient-Agriculture/System/server/crop_imgs/disease/tea/img.png"
+output_dir = r"I:/Projects/Climate-Resilient-Agriculture/System/server/detect_results/disease/tea"
 min_thresh = 0.5
 user_res = "480x480"
 # ---------------------------

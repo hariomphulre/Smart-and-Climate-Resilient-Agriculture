@@ -211,7 +211,7 @@ from ultralytics import YOLO
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
-WATCH_FOLDER = r"I:/Projects/SmartAgri/server/crop_imgs/disease"
+WATCH_FOLDER = r"I:/Projects/Climate-Resilient-Agriculture/System/server/crop_imgs/disease"
 
 
 def safe_read_image(file_path, timeout=10, delay=0.5):
@@ -261,21 +261,21 @@ class ImageEventHandler(FileSystemEventHandler):
         time.sleep(1.0)  # extra delay for safety
 
         # Reset suggest.json
-        with open(r"I:/Projects/SmartAgri/server/detect_results/suggest.json", "r") as file:
+        with open(r"I:/Projects/Climate-Resilient-Agriculture/System/server/detect_results/suggest.json", "r") as file:
             data = json.load(file)
         data["result"] = False
-        with open(r"I:/Projects/SmartAgri/server/detect_results/suggest.json", "w") as file:
+        with open(r"I:/Projects/Climate-Resilient-Agriculture/System/server/detect_results/suggest.json", "w") as file:
             json.dump(data, file, indent=4)
 
         # Select model based on crop
         if crop == "tea":
-            model_path = r"I:/Projects/SmartAgri/server/tea1.pt"
+            model_path = r"I:/Projects/Climate-Resilient-Agriculture/System/server/tea1.pt"
             img_source = file_path
-            output_dir = r"I:/Projects/SmartAgri/server/detect_results/disease"
+            output_dir = r"I:/Projects/Climate-Resilient-Agriculture/System/server/detect_results/disease"
         elif crop == "tomato":
-            model_path = r"I:/Projects/SmartAgri/server/tomato_leaf.pt"
+            model_path = r"I:/Projects/Climate-Resilient-Agriculture/System/server/tomato_leaf.pt"
             img_source = file_path
-            output_dir = r"I:/Projects/SmartAgri/server/detect_results/disease"
+            output_dir = r"I:/Projects/Climate-Resilient-Agriculture/System/server/detect_results/disease"
         else:
             print(f"⚠️ No model defined for crop {crop}, skipping...")
             return
@@ -388,7 +388,7 @@ class ImageEventHandler(FileSystemEventHandler):
                     object_count += 1
 
                     with open(
-                        r"I:/Projects/SmartAgri/server/detect_results/suggest.json", "r"
+                        r"I:/Projects/Climate-Resilient-Agriculture/System/server/detect_results/suggest.json", "r"
                     ) as file:
                         data = json.load(file)
 
@@ -410,7 +410,7 @@ class ImageEventHandler(FileSystemEventHandler):
                         print("❌ Not detected")
 
                     with open(
-                        r"I:/Projects/SmartAgri/server/detect_results/suggest.json", "w"
+                        r"I:/Projects/Climate-Resilient-Agriculture/System/server/detect_results/suggest.json", "w"
                     ) as file:
                         json.dump(data, file, indent=4)
 

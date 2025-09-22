@@ -14,6 +14,11 @@ const Auth = () => {
   const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || 'your-google-client-id';
   const RECAPTCHA_SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY || '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI';
 
+  // Background image path (now in public folder)
+  const backgrd_img = "/forest_img.jpg";
+  
+  let usertype="";
+
   // Load Google OAuth script
   useEffect(() => {
     const loadGoogleScript = () => {
@@ -89,14 +94,12 @@ const Auth = () => {
     loadRecaptchaScript();
 
     return () => {
-      // Cleanup
       if (window.recaptchaCallback) {
         delete window.recaptchaCallback;
       }
     };
   }, []);
 
-  // Initialize reCAPTCHA when loaded
   useEffect(() => {
     if (recaptchaLoaded && window.grecaptcha && recaptchaRef.current) {
       try {
@@ -115,13 +118,11 @@ const Auth = () => {
     }
   }, [recaptchaLoaded]);
 
-  // Handle Google OAuth response
   const handleGoogleResponse = async (response) => {
     try {
       setLoading(true);
       console.log('Google OAuth response received:', response);
       
-      // Decode the JWT token to get user info
       try {
         const payload = JSON.parse(atob(response.credential.split('.')[1]));
         const googleUser = {
@@ -133,22 +134,18 @@ const Auth = () => {
 
         console.log('Google user authenticated:', googleUser);
         
-        // Store user data
         localStorage.setItem('authToken', response.credential);
         localStorage.setItem('user', JSON.stringify(googleUser));
         
-        // Simulate API call to your backend
         setTimeout(() => {
           alert(`Google authentication successful! Welcome ${googleUser.name}!`);
           setLoading(false);
           
-          // Reset reCAPTCHA
           if (window.grecaptcha && recaptchaRef.current) {
             window.grecaptcha.reset();
             setRecaptchaVerified(false);
           }
           
-          // Redirect to dashboard
           window.location.href = '/dashboard';
         }, 1000);
         
@@ -165,7 +162,6 @@ const Auth = () => {
     }
   };
 
-  // Handle reCAPTCHA response
   const handleRecaptchaResponse = (token) => {
     console.log('reCAPTCHA verified:', token);
     setRecaptchaVerified(true);
@@ -184,7 +180,6 @@ const Auth = () => {
     setErrors(prev => ({ ...prev, recaptcha: 'reCAPTCHA error. Please try again.' }));
   };
 
-  // Handle Google sign in button click
   const handleGoogleSignIn = () => {
     if (!recaptchaVerified) {
       setErrors({ general: 'Please complete the reCAPTCHA verification first.' });
@@ -212,7 +207,6 @@ const Auth = () => {
     const usernameInput = document.querySelector('input[placeholder="Username"]').value;
     const passwordInput = document.querySelector('input[placeholder="Password"]').value;
     
-    // Basic validation
     if (!usernameInput || !passwordInput) {
       setErrors({ general: 'Please enter both username and password' });
       return;
@@ -229,13 +223,17 @@ const Auth = () => {
     
     setTimeout(() => {
       if (passwordInput === "admin12345" && usernameInput === "Hariom") {
-        // Store authentication data
         localStorage.setItem('authToken', 'mock-token-' + Date.now());
         localStorage.setItem('user', JSON.stringify({ 
           username: usernameInput, 
           loginTime: new Date().toISOString() 
         }));
-        window.location.href = '/dashboard';
+        if(usertype=="Farmer" || usertype=="Trader"){
+          window.location.href = usertype=="Farmer" ? '/dashboard' : '/trader';
+        }
+        else{
+          setErrors({general: 'Please select user type.'});
+        }
       } else {
         setErrors({ general: 'Invalid username or password.' });
       }
@@ -244,16 +242,21 @@ const Auth = () => {
   };
 
   return (
-    <div>
-      <div className="flex flex-row ">
-        <img src="/logo.png" alt="logo loading..." className="w-15 h-auto position-fixed overflow-y-hidden m-3"/>
-        <h1 style={{fontFamily: "sans-serif"}} className="pt-5 text-3xl font-bold text-green-900">Smart & Climate Resilient Agriculture</h1>
+    <div className="relative min-h-screen">
+      <img 
+        src={backgrd_img} 
+        alt="Forest background" 
+        className="fixed brightness-80 inset-0 w-full h-full object-cover -z-10"
+      />
+      
+      <div className="flex flex-wrap relative z-10">
+        <img src="/logo.png" alt="logo loading..." className="w-10 h-10 sm:w-15 sm:h-15 position-fixed overflow-y-hidden m-2 sm:m-3"/>
+        <h1 style={{fontFamily: "sans-serif"}} className={`sm:pt-5 text-xl sm:text-3xl font-bold text-gray-200`}>Smart & Climate Resilient Agriculture</h1>
       </div>
 
-      <div style={{justifySelf: "center"}} className="flex items-center flex-col justify-center py-12 px-4 sm:px-6 lg:px-8 max-w-sm w-full space-y-8">
+      <div style={{justifySelf: "center"}} className="flex items-center flex-col justify-center py-12 px-4 sm:px-6 lg:px-8 max-w-sm w-full space-y-8 relative z-10">
 
-        <div className="bg-white shadow-2xl rounded-2xl pl-6 pr-6 pb-6 pt-3 space-y-0">
-          {/* Error Message */}
+        <div className="flex flex-col bg-white backdrop-blur-sm shadow-2xl rounded-2xl pl-6 pr-6 pb-6 pt-3 space-y-0">
           {errors.general && (
             <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
               {errors.general}
@@ -264,7 +267,12 @@ const Auth = () => {
             <div>
               <h1 style={{fontFamily: "arial"}} className="font-bold text-3xl">Sign in</h1>
             </div>
-            <div className="flex flex-col gap-3 pt-3">
+            <div className="flex flex-col gap-3 pt-0">
+              <select onChange={(e)=>{usertype=e.target.value; console.log(usertype)}} className="pl-1 text-lg border w-76 h-9 rounded-xs" id="">
+                <option disabled selected hidden>Select User</option>
+                <option>Farmer</option>
+                <option>Trader</option>
+              </select>
               <input 
                 type="text" 
                 placeholder='Username' 
@@ -310,13 +318,13 @@ const Auth = () => {
               className="w-full cursor-pointer flex flex-row gap-12 items-center py-3 border border-gray-300 rounded-xs shadow-sm bg-white hover:bg-gray-100 transition-all disabled:cursor-not-allowed"
             >
               <FcGoogle className="ml-4 text-2xl"/>
-              {loading ? 'Signing in...' : `Sign in with Google`}
+              Sign in with Google
             </button>
           </div>
         </div>
 
         {/* Footer */}
-        <div className="text-center text-sm text-gray-500">
+        <div className="text-center text-sm text-white">
           <p>Secured with Google OAuth 2.0 and reCAPTCHA</p>
         </div>
       </div>

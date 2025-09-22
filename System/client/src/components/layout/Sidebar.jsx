@@ -134,7 +134,7 @@ const Sidebar = ({ isSidebarOpen, isCollapsed, toggleSidebar }) => {
                       isActive('/dashboard') 
                         ? 'bg-green-100 text-green-800 font-medium shadow-sm border-l-4 border-green-600' 
                         : 'text-gray-700 hover:bg-green-100 hover:text-green-700'
-                    } group transition-all duration-200 ${isMobile ? 'active:bg-green-100' : ''}`}
+                    } group transition-all duration-100 ${isMobile ? 'active:bg-green-100' : ''}`}
                   >
                     <FontAwesomeIcon
                       icon={faHome}
@@ -183,7 +183,7 @@ const Sidebar = ({ isSidebarOpen, isCollapsed, toggleSidebar }) => {
                       isActive('/crop-management') 
                         ? 'bg-green-100 text-green-800 font-medium shadow-sm border-l-4 border-green-600' 
                         : 'text-gray-700 hover:bg-green-100 hover:text-green-700'
-                    } group transition-all duration-200`}
+                    } group transition-all duration-100`}
                   >
                     <FontAwesomeIcon
                       icon={faWarehouse}
@@ -199,7 +199,7 @@ const Sidebar = ({ isSidebarOpen, isCollapsed, toggleSidebar }) => {
                       isActive('/financial-aid') 
                         ? 'bg-green-100 text-green-800 font-medium shadow-sm border-l-4 border-green-600' 
                         : 'text-gray-700 hover:bg-green-100 hover:text-green-700'
-                    } group transition-all duration-200`}
+                    } group transition-all duration-100`}
                   >
                     <FontAwesomeIcon
                       icon={faHandshake}
@@ -215,7 +215,7 @@ const Sidebar = ({ isSidebarOpen, isCollapsed, toggleSidebar }) => {
                       isActive('/plant-disease-detection') 
                         ? 'bg-green-100 text-green-800 font-medium shadow-sm border-l-4 border-green-600' 
                         : 'text-gray-700 hover:bg-green-100 hover:text-green-700'
-                    } group transition-all duration-200`}
+                    } group transition-all duration-100`}
                   >
                     <FontAwesomeIcon
                       icon={faMicroscope}
@@ -239,7 +239,7 @@ const Sidebar = ({ isSidebarOpen, isCollapsed, toggleSidebar }) => {
                     type="button"
                     className={`flex items-center w-full px-3 py-2.5 rounded-lg text-left text-gray-700 ${
                       isCollapsed ? 'justify-center' : ''
-                    } hover:bg-green-100 hover:text-green-700 transition-all duration-200 ${expandedMenus.fields ? 'bg-green-50 text-green-700' : ''}`}
+                    } hover:bg-green-100 hover:text-green-700 transition-all duration-100 ${expandedMenus.fields ? 'bg-green-50 text-green-700' : ''}`}
                     onClick={() => toggleMenu('fields')}
                   >
                     <FontAwesomeIcon
@@ -266,7 +266,7 @@ const Sidebar = ({ isSidebarOpen, isCollapsed, toggleSidebar }) => {
                             isActive('/create-field') 
                               ? 'bg-green-100 text-green-800 font-medium border-l-2 border-green-600' 
                               : 'text-gray-600 hover:text-green-700 hover:bg-green-50'
-                          } transition-all duration-200`}
+                          } transition-all duration-100`}
                         >
                           <FontAwesomeIcon
                             icon={faDraftingCompass}
@@ -282,7 +282,7 @@ const Sidebar = ({ isSidebarOpen, isCollapsed, toggleSidebar }) => {
                             isActive('/field-list') 
                               ? 'bg-green-100 text-green-800 font-medium border-l-2 border-green-600' 
                               : 'text-gray-600 hover:text-green-700 hover:bg-green-50'
-                          } transition-all duration-200`}
+                          } transition-all duration-100`}
                         >
                           <FontAwesomeIcon
                             icon={faLocationDot}
@@ -595,7 +595,7 @@ const Sidebar = ({ isSidebarOpen, isCollapsed, toggleSidebar }) => {
                     type="button"
                     className={`flex items-center w-full px-3 py-2.5 rounded-lg text-left text-gray-700 ${
                       isCollapsed ? 'justify-center' : ''
-                    } hover:bg-green-100 hover:text-green-700 transition-all duration-200 ${expandedMenus.irrigation ? 'bg-green-50 text-green-700' : ''}`}
+                    } hover:bg-green-100 hover:text-green-700 transition-all duration-100 ${expandedMenus.irrigation ? 'bg-green-50 text-green-700' : ''}`}
                     onClick={() => toggleMenu('irrigation')}
                   >
                     <FontAwesomeIcon
@@ -622,7 +622,7 @@ const Sidebar = ({ isSidebarOpen, isCollapsed, toggleSidebar }) => {
                             isActive('/water-management') 
                               ? 'bg-green-100 text-green-800 font-medium border-l-2 border-green-600' 
                               : 'text-gray-600 hover:text-green-700 hover:bg-green-50'
-                          } transition-all duration-200`}
+                          } transition-all duration-100`}
                         >
                           <FontAwesomeIcon
                             icon={faDroplet}
@@ -671,7 +671,7 @@ const Sidebar = ({ isSidebarOpen, isCollapsed, toggleSidebar }) => {
                       isActive('/ai-assistant') 
                         ? 'bg-blue-100 text-blue-800 font-medium rounded-lg border-l-4 border-blue-600 shadow-sm' 
                         : 'text-gray-700 hover:bg-blue-50 hover:text-blue-700 rounded-lg'
-                    } group transition-all duration-200`}
+                    } group transition-all duration-100`}
                   >
                     <FontAwesomeIcon
                       icon={faRobot}
@@ -701,7 +701,7 @@ const Sidebar = ({ isSidebarOpen, isCollapsed, toggleSidebar }) => {
                     isActive('/profile') 
                       ? 'bg-green-100 text-green-800 font-medium border-l-4 border-green-600 shadow-sm' 
                       : 'text-gray-700 hover:bg-green-500 hover:text-white'
-                  } group transition-all duration-200`}
+                  } group transition-all duration-100`}
                 >
                   <FontAwesomeIcon
                     icon={faUser}

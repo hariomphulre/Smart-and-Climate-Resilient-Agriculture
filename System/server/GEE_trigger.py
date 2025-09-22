@@ -6,7 +6,7 @@ from watchdog.events import FileSystemEventHandler
 import subprocess
 from dotenv import load_dotenv
 
-JSON_FILE_PATH = r"I:\Projects\SmartAgri\server\field_corrdinates\manipal.json"
+JSON_FILE_PATH = r"I:\Projects\Climate-Resilient-Agriculture\System\server\field_corrdinates\manipal.json"
 WATCH_DIRECTORY = os.path.dirname(JSON_FILE_PATH)
 
 
@@ -32,7 +32,7 @@ class JSONFileHandler(FileSystemEventHandler):
                 # print(coordinates_list)
 
                 load_dotenv()
-                env_path="I:\Projects\SmartAgri\server\.env"
+                env_path="I:\Projects\Climate-Resilient-Agriculture\System\server\.env"
                 json_string = json.dumps(coordinates_list)
 
                 if os.path.exists(env_path):
@@ -58,11 +58,11 @@ class JSONFileHandler(FileSystemEventHandler):
 
                 print("COORDINATES updated in .env")
 
-                subprocess.Popen(['python', 'I://Projects//SmartAgri//server//Google_Earth_Engine//vegetation_data.py'])
-                subprocess.Popen(['python', 'I://Projects//SmartAgri//server//Google_Earth_Engine//water_data.py'])
-                subprocess.Popen(['python', 'I://Projects//SmartAgri//server//Google_Earth_Engine/rainfall_data.py'])
-                subprocess.Popen(['python', 'I://Projects//SmartAgri//server//Google_Earth_Engine//fire_data.py'])
-                subprocess.Popen(['python', 'I://Projects//SmartAgri//server//Google_Earth_Engine//soil_data.py'])
+                subprocess.Popen(['python', 'I://Projects//Climate-Resilient-Agriculture//System//server//Google_Earth_Engine//vegetation_data.py'])
+                subprocess.Popen(['python', 'I://Projects//Climate-Resilient-Agriculture//System//server//Google_Earth_Engine//water_data.py'])
+                subprocess.Popen(['python', 'I://Projects//Climate-Resilient-Agriculture//System//server//Google_Earth_Engine/rainfall_data.py'])
+                subprocess.Popen(['python', 'I://Projects//Climate-Resilient-Agriculture//System//server//Google_Earth_Engine//fire_data.py'])
+                subprocess.Popen(['python', 'I://Projects//Climate-Resilient-Agriculture//System//server//Google_Earth_Engine//soil_data.py'])
 
         except Exception as e:
             print(f"Error reading JSON: {e}")

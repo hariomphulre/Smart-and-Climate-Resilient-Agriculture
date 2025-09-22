@@ -254,6 +254,27 @@ const FieldMapper = () => {
         throw new Error(result.message || 'Failed to save field data');
       }
       
+      // Also update manipal.json with the new field coordinates
+      try {
+        console.log('Updating manipal.json with field ID:', fieldId);
+        const manipalResponse = await fetch(API_URLS.UPDATE_MANIPAL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ fieldId }),
+        });
+        
+        if (manipalResponse.ok) {
+          const manipalResult = await manipalResponse.json();
+          console.log('manipal.json updated successfully:', manipalResult);
+        } else {
+          console.warn('Failed to update manipal.json, but field was saved successfully');
+        }
+      } catch (manipalError) {
+        console.warn('Error updating manipal.json (field still saved):', manipalError);
+      }
+      
       setMessage({
         show: true,
         text: `Field "${fieldName}" saved successfully!`,

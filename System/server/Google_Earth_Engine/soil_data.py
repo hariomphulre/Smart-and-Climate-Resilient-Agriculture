@@ -261,7 +261,7 @@ for index in parameters:
             for blob in blobs:
                 if blob.name.endswith(".csv"):
                     upload_csv_blob_to_firebase(GCS_BUCKET_NAME, blob.name, index)
-                    LOCAL_DIR = r"I:\Projects\SmartAgri\client\local_csv"   # 🔹 change this to your preferred folder
+                    LOCAL_DIR = r"I:\Projects\Climate-Resilient-Agriculture\System\client\local_csv"   # 🔹 change this to your preferred folder
 
                     os.makedirs(LOCAL_DIR, exist_ok=True)   
 
