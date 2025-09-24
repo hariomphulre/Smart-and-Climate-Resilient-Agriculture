@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAppContext } from '../context/AppContext';
 import { fetchFields, fetchFieldData, fetchWeatherByCoordinates, fetchWeatherByLocation } from '../services/dataService';
+import NewsFarmer from '../components/financial-aid/NewsFarmer';
 
 const Dashboard = () => {
   // Initial weather data from your state
@@ -708,6 +709,26 @@ const Dashboard = () => {
             </motion.button>
           </motion.div>
         </motion.div>
+        
+        {/* Agriculture News Section - Below Header */}
+        <div className="mb-8">
+          <NewsFarmer
+            coordinates={(() => {
+              if (Array.isArray(fieldData.coordinates) && fieldData.coordinates.length > 0) {
+                const n = fieldData.coordinates.length;
+                const centroid = fieldData.coordinates.reduce(
+                  (acc, p) => ({
+                    lat: acc.lat + p.lat / n,
+                    lng: acc.lng + p.lng / n,
+                  }),
+                  { lat: 0, lng: 0 }
+                );
+                return centroid;
+              }
+              return null;
+            })()}
+          />
+        </div>
 
         {/* Hero Weather Display */}
         <motion.div 
@@ -1485,5 +1506,5 @@ const Dashboard = () => {
     </div>
   );
 };
-
+ 
 export default Dashboard;

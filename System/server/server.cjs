@@ -555,7 +555,6 @@ app.post("/api/weather-location", async (req, res) => {
       humidity: data.main?.humidity,
       wind_speed: data.wind?.speed,
     };
-    console.log("this is weather data",data);
     return res.status(200).json({ success: true, data: { simplified} });
   } catch (error) {
     console.error('Error fetching weather by location:', error);
@@ -563,11 +562,39 @@ app.post("/api/weather-location", async (req, res) => {
   }
 });
 
+const NEWS_KEY = process.env.NEWSDATA_API_KEY;
+
+app.get("/api/agri-news", async (req, res) => {
+  console.log("📩 Incoming request:", req.query);
+
+  try {
+    const { state, type } = req.query;
+    console.log("🔍 Fetching news for:", state, type);
+
+    const response = await fetch(
+      `https://newsdata.io/api/1/news?apikey=${process.env.NEWSDATA_API_KEY}&q=${type}&country=in&language=en`
+    );
+    const data = await response.json();
+    
+    console.log("📰 Raw API response:", data);
+
+    if (!data || data.status === "error") {
+      return res.json({ status: "error", results: data });
+    }
+
+    return res.json({ status: "success", results: data });
+  } catch (err) {
+    console.error("❌ Backend error:", err);
+    res.status(500).json({ status: "error", message: "Server error" });
+  }
+
+});
+
 // Serve static files from public directory for production
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../client/dist')));
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../client/dist', 'index.html'));
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "../client/dist")));
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "../client/dist", "index.html"));
   });
 }
 

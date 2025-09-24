@@ -9,6 +9,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import CropLifecycleTracking from '../components/crop/CropLifecycleTracking';
 import InventoryManagement from '../components/crop/InventoryManagement';
+import FertilizerRecommender from '../components/crop/fertilizerrecomender';
 
 const CropManagement = () => {
   const [activeTab, setActiveTab] = useState('lifecycle');
@@ -50,6 +51,17 @@ const CropManagement = () => {
               <FontAwesomeIcon icon={faWarehouse} className="mr-2" />
               Inventory Management
             </button>
+            <button
+              onClick={() => setActiveTab('fertilizer')}
+              className={`py-2 px-1 border-b-2 font-medium text-sm ${
+                activeTab === 'fertilizer'
+                  ? 'border-green-500 text-green-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              }`}
+            >
+              <FontAwesomeIcon icon={faWheatAwn} className="mr-2" />
+              Fertilizer Recommender
+            </button>
           </nav>
         </div>
       </div>
@@ -59,6 +71,9 @@ const CropManagement = () => {
 
       {/* Inventory Tab */}
       {activeTab === 'inventory' && <InventoryManagement />}
+
+      {/* Fertilizer Recaommender Tab */}
+      {activeTab === 'fertilizer' && <FertilizerRecommender />}
     </div>
   );
 };
