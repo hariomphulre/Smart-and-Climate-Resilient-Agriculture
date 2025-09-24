@@ -31,7 +31,7 @@ ChartJS.register(
   Filler
 );
 
-const VegetationAnalysis = ({ dateRange = {} }) => {
+const FireAnalysis = ({ dateRange = {} }) => {
   // Define loading state locally
   const [loading, setLoading] = useState(false);
   const { selectedField, selectedLocation } = useAppContext();
@@ -43,18 +43,17 @@ const VegetationAnalysis = ({ dateRange = {} }) => {
   };
   
   // State for vegetation data from the API
-  const [vegetationData, setVegetationData] = useState({
+  const [fireData, setFireData] = useState({
     fieldSections: []
   });
   
   // State for vegetation indices from CSV files
-  const [vegetationIndices, setVegetationIndices] = useState({
-    ndvi: [],
-    evi: [],
-    gci: [],
-    psri: [],
-    ndre: [],
-    cri1: [],
+  const [fireIndices, setFireIndices] = useState({
+    modis_fire: [],
+    viirs_fire: [],
+    burned_area: [],
+    frp: [],
+    fwi: [],
     loading: true
   });
   
@@ -83,34 +82,31 @@ const VegetationAnalysis = ({ dateRange = {} }) => {
   });
   
   // Add chart visibility states and refs for chart instances to properly clean up
-  const ndviChartRef = useRef(null);
-  const eviChartRef = useRef(null);
-  const gciChartRef = useRef(null);
-  const psriChartRef = useRef(null);
-  const ndreChartRef = useRef(null);
-  const cri1ChartRef = useRef(null);
-  const vegetationIndicesChartRef = useRef(null);
+  const modis_fireChartRef = useRef(null);
+  const viirs_fireChartRef = useRef(null);
+  const burned_areaChartRef = useRef(null);
+  const frpChartRef = useRef(null);
+  const fwiChartRef = useRef(null);
+  const fireIndicesChartRef = useRef(null);
   const nutrientsChartRef = useRef(null);
   
   // Chart container refs to check if they're in the DOM
-  const ndviContainerRef = useRef(null);
-  const eviContainerRef = useRef(null);
-  const gciContainerRef = useRef(null);
-  const psriContainerRef = useRef(null);
-  const ndreContainerRef = useRef(null);
-  const cri1ContainerRef = useRef(null);
-  const vegetationIndicesContainerRef = useRef(null);
+  const modis_fireContainerRef = useRef(null);
+  const viirs_fireContainerRef = useRef(null);
+  const burned_areaContainerRef = useRef(null);
+  const frpContainerRef = useRef(null);
+  const fwiContainerRef = useRef(null);
+  const fireIndicesContainerRef = useRef(null);
   const nutrientsContainerRef = useRef(null);
   
   // Track chart visibility to prevent errors
   const [chartsVisible, setChartsVisible] = useState({
-    ndvi: false,
-    evi: false,
-    gci: false,
-    psri: false,
-    ndre: false,
-    cri1: false,
-    vegetationIndices: false,
+    modis_fire: false,
+    viirs_fire: false,
+    burned_area: false,
+    frp: false,
+    fwi: false,
+    fireIndices: false,
     nutrients: false
   });
   
@@ -131,13 +127,12 @@ const VegetationAnalysis = ({ dateRange = {} }) => {
   useEffect(() => {
     const checkVisibility = () => {
       setChartsVisible({
-        ndvi: !!document.getElementById('ndvi-chart-container'),
-        evi: !!document.getElementById('evi-chart-container'),
-        gci: !!document.getElementById('gci-chart-container'),
-        psri: !!document.getElementById('psri-chart-container'),
-        ndre: !!document.getElementById('ndre-chart-container'),
-        cri1: !!document.getElementById('cri1-chart-container'),
-        vegetationIndices: !!document.getElementById('vegetation-indices-chart-container'),
+        modis_fire: !!document.getElementById('modis_fire-chart-container'),
+        viirs_fire: !!document.getElementById('viirs_fire-chart-container'),
+        burned_area: !!document.getElementById('burned_area-chart-container'),
+        frp: !!document.getElementById('frp-chart-container'),
+        fwi: !!document.getElementById('fwi-chart-container'),
+        fireIndices: !!document.getElementById('fire-indices-chart-container'),
         nutrients: !!document.getElementById('nutrients-chart-container')
       });
     };
@@ -161,41 +156,40 @@ const VegetationAnalysis = ({ dateRange = {} }) => {
       observer.disconnect();
       
       // Safely destroy all chart instances
-      safeDestroyChart(ndviChartRef);
-      safeDestroyChart(eviChartRef);
-      safeDestroyChart(gciChartRef);
-      safeDestroyChart(psriChartRef);
-      safeDestroyChart(ndreChartRef);
-      safeDestroyChart(cri1ChartRef);
-      safeDestroyChart(vegetationIndicesChartRef);
+      safeDestroyChart(modis_fireChartRef);
+      safeDestroyChart(viirs_fireChartRef);
+      safeDestroyChart(burned_areaChartRef);
+      safeDestroyChart(frpChartRef);
+      safeDestroyChart(fwiChartRef);
+      safeDestroyChart(fireIndicesChartRef);
       safeDestroyChart(nutrientsChartRef);
     };
   }, []);
   
   useEffect(() => {
-    loadVegetationData();
-    loadVegetationIndicesFromCsv();
+    loadFireData();
+    loadFireIndicesFromCsv();
   }, [selectedField, selectedLocation, defaultDateRange.startDate, defaultDateRange.endDate]);
   
-  const loadVegetationData = async () => {
+  const loadFireData = async () => {
     setLoading(true);
     try {
-      const data = await fetchVegetationData(
+      const data = await fetchFireData(
         selectedField,
         selectedLocation,
         defaultDateRange
       );
-      setVegetationData(data);
+      setFireData(data);
     } catch (error) {
-      console.error('Error loading vegetation data:', error);
+      console.error('Error loading fire data:', error);
     } finally {
       setLoading(false);
     }
   };
   
   // Function to load vegetation indices from CSV files
-  const loadVegetationIndicesFromCsv = async () => {
-    setVegetationIndices(prev => ({ ...prev, loading: true }));
+  const loadFireIndicesFromCsv = async () => {
+    setFireIndices(prev => ({ ...prev, loading: true }));
     
     try {
       // Helper function to fetch and parse CSV
@@ -206,13 +200,12 @@ const VegetationAnalysis = ({ dateRange = {} }) => {
       };
       
       // Load all CSV files in parallel
-      const [ndviData, eviData, gciData, psriData, ndreData, cri1Data] = await Promise.all([
-        fetchCsv('ndvi.csv'),
-        fetchCsv('evi.csv'),
-        fetchCsv('gci.csv'),
-        fetchCsv('psri.csv'),
-        fetchCsv('ndre.csv'),
-        fetchCsv('cri1.csv')
+      const [modis_fireData, viirs_fireData, burned_areaData, frpData, fwiData] = await Promise.all([
+        fetchCsv('modis_fire.csv'),
+        fetchCsv('viirs_fire.csv'),
+        fetchCsv('burned_area.csv'),
+        fetchCsv('frp.csv'),
+        fetchCsv('fwi.csv'),
       ]);
       
       // Process each dataset to extract date and values
@@ -224,27 +217,26 @@ const VegetationAnalysis = ({ dateRange = {} }) => {
          .sort((a, b) => new Date(a.date) - new Date(b.date));
       };
       
-      setVegetationIndices({
-        ndvi: processData(ndviData, 'ndvi'),
-        evi: processData(eviData, 'evi'),
-        gci: processData(gciData, 'gci'),
-        psri: processData(psriData, 'psri'),
-        ndre: processData(ndreData, 'ndre'),
-        cri1: processData(cri1Data, 'cri1'),
+      setFireIndices({
+        modis_fire: processData(modis_fireData, 'modis_fire'),
+        viirs_fire: processData(viirs_fireData, 'viirs_fire'),
+        burned_area: processData(burned_areaData, 'burned_area'),
+        frp: processData(frpData, 'frp'),
+        fwi: processData(fwiData, 'fwi'),
         loading: false
       });
       
-      // Log the counts of each dataset to verify data loading
-      console.log('NDVI data points:', processData(ndviData, 'ndvi').length);
-      console.log('EVI data points:', processData(eviData, 'evi').length);
-      console.log('GCI data points:', processData(gciData, 'gci').length);
-      console.log('PSRI data points:', processData(psriData, 'psri').length);
-      console.log('NDRE data points:', processData(ndreData, 'ndre').length);
-      console.log('CRI1 data points:', processData(cri1Data, 'cri1').length);
+      // // Log the counts of each dataset to verify data loading
+      // console.log('modis_fire data points:', processData(ndviData, 'ndvi').length);
+      // console.log('EVI data points:', processData(eviData, 'evi').length);
+      // console.log('GCI data points:', processData(gciData, 'gci').length);
+      // console.log('PSRI data points:', processData(psriData, 'psri').length);
+      // console.log('NDRE data points:', processData(ndreData, 'ndre').length);
+      // console.log('CRI1 data points:', processData(cri1Data, 'cri1').length);
       
     } catch (error) {
-      console.error('Error loading vegetation indices from CSV:', error);
-      setVegetationIndices(prev => ({ ...prev, loading: false }));
+      console.error('Error loading fire indices from CSV:', error);
+      setFireIndices(prev => ({ ...prev, loading: false }));
     }
   };
   
@@ -375,51 +367,44 @@ const VegetationAnalysis = ({ dateRange = {} }) => {
   };
 
   // Generate chart data for vegetation indices
-  const getVegetationIndicesChartData = (indices = vegetationIndices) => {
+  const getFireIndicesChartData = (indices = fireIndices) => {
     // Enhanced color map with visually distinct colors
     const colorMap = {
-      ndvi: {
+      modis_fire: {
         border: 'rgb(56, 142, 60)',  // Forest green
         background: 'rgba(56, 142, 60, 0.1)',
         pointBgColor: 'rgb(56, 142, 60)',
         pointBorderColor: 'white',
         dashed: false
       },
-      evi: {
+      viirs_fire: {
         border: 'rgb(0, 137, 123)',  // Teal
         background: 'rgba(0, 137, 123, 0.1)',
         pointBgColor: 'rgb(0, 137, 123)',
         pointBorderColor: 'white',
         dashed: false
       },
-      gci: {
+      burned_area: {
         border: 'rgb(104, 159, 56)',  // Light green
         background: 'rgba(104, 159, 56, 0.1)',
         pointBgColor: 'rgb(104, 159, 56)',
         pointBorderColor: 'white',
         dashed: false
       },
-      psri: {
+      frp: {
         border: 'rgb(255, 87, 34)',  // Deep orange
         background: 'rgba(255, 87, 34, 0.1)',
         pointBgColor: 'rgb(255, 87, 34)',
         pointBorderColor: 'white',
         dashed: true
       },
-      ndre: {
+      fwi: {
         border: 'rgb(121, 85, 72)',  // Brown
         background: 'rgba(121, 85, 72, 0.1)',
         pointBgColor: 'rgb(121, 85, 72)',
         pointBorderColor: 'white',
         dashed: false
       },
-      cri1: {
-        border: 'rgb(156, 39, 176)',  // Purple
-        background: 'rgba(156, 39, 176, 0.1)',
-        pointBgColor: 'rgb(156, 39, 176)',
-        pointBorderColor: 'white',
-        dashed: true
-      }
     };
     
     // Find all dates from all indices
@@ -440,36 +425,31 @@ const VegetationAnalysis = ({ dateRange = {} }) => {
     
     // Define display names and ensure normalized ranges for better comparison
     const indexDefinitions = {
-      ndvi: { 
+      modis_fire: { 
         label: 'NDVI - Vegetation Index',
         description: 'Vegetation health & density',
         order: 1
       },
-      evi: { 
+      viirs_fire: { 
         label: 'EVI - Enhanced Vegetation',
         description: 'Improved vegetation detection',
         order: 2
       },
-      gci: { 
+      burned_area: { 
         label: 'GCI - Chlorophyll Index',
         description: 'Chlorophyll content estimate',
         order: 3
       },
-      psri: { 
+      frp: { 
         label: 'PSRI - Senescence Index',
         description: 'Plant aging & stress',
         order: 4
       },
-      ndre: { 
+      fwi: { 
         label: 'NDRE - Red Edge Index',
         description: 'Nitrogen & chlorophyll detection',
         order: 5
       },
-      cri1: { 
-        label: 'CRI1 - Carotenoid Index',
-        description: 'Carotenoid pigment detection',
-        order: 6
-      }
     };
     
     // Process each index type
@@ -551,15 +531,15 @@ const VegetationAnalysis = ({ dateRange = {} }) => {
   };
   
   // Generate specific chart data for NDVI
-  const getNdviChartData = () => {
-    const ndviData = vegetationIndices.ndvi;
+  const getModis_fireChartData = () => {
+    const modis_fireData = fireIndices.modis_fire;
     
     // Return empty dataset if no data
-    if (!ndviData || ndviData.length === 0) {
+    if (!modis_fireData || modis_fireData.length === 0) {
       return {
         labels: [],
         datasets: [{
-          label: 'NDVI',
+          label: 'MODIS FIRE',
           data: [],
           fill: true,
           backgroundColor: 'rgba(75, 192, 75, 0.2)',
@@ -570,7 +550,7 @@ const VegetationAnalysis = ({ dateRange = {} }) => {
     }
     
     // Process the data
-    const sortedData = [...ndviData].sort((a, b) => new Date(a.date) - new Date(b.date));
+    const sortedData = [...modis_fireData].sort((a, b) => new Date(a.date) - new Date(b.date));
     const labels = sortedData.map(item => formatDate(item.date));
     const values = sortedData.map(item => item.value);
     
@@ -578,7 +558,7 @@ const VegetationAnalysis = ({ dateRange = {} }) => {
       labels,
       datasets: [
         {
-          label: 'NDVI',
+          label: 'MODIS FIRE',
           data: values,
           fill: true,
           backgroundColor: 'rgba(56, 142, 60, 0.2)',
@@ -593,14 +573,14 @@ const VegetationAnalysis = ({ dateRange = {} }) => {
     };
   };
 
-  const getEviChartData = () => {
-    const eviData = vegetationIndices.evi;
+  const getViirs_fireChartData = () => {
+    const viirs_fireData = fireIndices.viirs_fire;
     
-    if (!eviData || eviData.length === 0) {
+    if (!viirs_fireData || viirs_fireData.length === 0) {
       return {
         labels: [],
         datasets: [{
-          label: 'EVI',
+          label: 'VIIRS FIRE',
           data: [],
           fill: true,
           backgroundColor: 'rgba(75, 192, 75, 0.2)',
@@ -611,7 +591,7 @@ const VegetationAnalysis = ({ dateRange = {} }) => {
     }
     
     // Process the data
-    const sortedData = [...eviData].sort((a, b) => new Date(a.date) - new Date(b.date));
+    const sortedData = [...viirs_fireData].sort((a, b) => new Date(a.date) - new Date(b.date));
     const labels = sortedData.map(item => formatDate(item.date));
     const values = sortedData.map(item => item.value);
     
@@ -619,7 +599,7 @@ const VegetationAnalysis = ({ dateRange = {} }) => {
       labels,
       datasets: [
         {
-          label: 'EVI',
+          label: 'VIIRS FIRE',
           data: values,
           fill: true,
           backgroundColor: 'rgba(56, 142, 60, 0.2)',
@@ -634,14 +614,14 @@ const VegetationAnalysis = ({ dateRange = {} }) => {
     };
   };
 
-  const getGciChartData = () => {
-    const gciData = vegetationIndices.gci;
+  const getBurned_areaChartData = () => {
+    const burned_areaData = fireIndices.burned_area;
     
-    if (!gciData || gciData.length === 0) {
+    if (!burned_areaData || burned_areaData.length === 0) {
       return {
         labels: [],
         datasets: [{
-          label: 'GCI',
+          label: 'Burned Area',
           data: [],
           fill: true,
           backgroundColor: 'rgba(75, 192, 75, 0.2)',
@@ -652,7 +632,7 @@ const VegetationAnalysis = ({ dateRange = {} }) => {
     }
     
     // Process the data
-    const sortedData = [...gciData].sort((a, b) => new Date(a.date) - new Date(b.date));
+    const sortedData = [...burned_areaData].sort((a, b) => new Date(a.date) - new Date(b.date));
     const labels = sortedData.map(item => formatDate(item.date));
     const values = sortedData.map(item => item.value);
     
@@ -660,7 +640,7 @@ const VegetationAnalysis = ({ dateRange = {} }) => {
       labels,
       datasets: [
         {
-          label: 'GCI',
+          label: 'Burned Area',
           data: values,
           fill: true,
           backgroundColor: 'rgba(56, 142, 60, 0.2)',
@@ -675,14 +655,14 @@ const VegetationAnalysis = ({ dateRange = {} }) => {
     };
   };
 
-  const getNdreChartData = () => {
-    const ndreData = vegetationIndices.ndre;
+  const getFrpChartData = () => {
+    const frpData = fireIndices.frp;
     
-    if (!ndreData || ndreData.length === 0) {
+    if (!frpData || frpData.length === 0) {
       return {
         labels: [],
         datasets: [{
-          label: 'EVI',
+          label: 'FRP',
           data: [],
           fill: true,
           backgroundColor: 'rgba(75, 192, 75, 0.2)',
@@ -693,7 +673,7 @@ const VegetationAnalysis = ({ dateRange = {} }) => {
     }
     
     // Process the data
-    const sortedData = [...ndreData].sort((a, b) => new Date(a.date) - new Date(b.date));
+    const sortedData = [...frpData].sort((a, b) => new Date(a.date) - new Date(b.date));
     const labels = sortedData.map(item => formatDate(item.date));
     const values = sortedData.map(item => item.value);
     
@@ -701,7 +681,7 @@ const VegetationAnalysis = ({ dateRange = {} }) => {
       labels,
       datasets: [
         {
-          label: 'NDRE',
+          label: 'FRP',
           data: values,
           fill: true,
           backgroundColor: 'rgba(56, 142, 60, 0.2)',
@@ -716,14 +696,14 @@ const VegetationAnalysis = ({ dateRange = {} }) => {
     };
   };
 
-  const getPsriChartData = () => {
-    const psriData = vegetationIndices.psri;
+  const getFwiChartData = () => {
+    const pwiData = fireIndices.fwi;
     
-    if (!psriData || psriData.length === 0) {
+    if (!pwiData || pwiData.length === 0) {
       return {
         labels: [],
         datasets: [{
-          label: 'PSRI',
+          label: 'PWI',
           data: [],
           fill: true,
           backgroundColor: 'rgba(75, 192, 75, 0.2)',
@@ -734,7 +714,7 @@ const VegetationAnalysis = ({ dateRange = {} }) => {
     }
     
     // Process the data
-    const sortedData = [...psriData].sort((a, b) => new Date(a.date) - new Date(b.date));
+    const sortedData = [...pwiData].sort((a, b) => new Date(a.date) - new Date(b.date));
     const labels = sortedData.map(item => formatDate(item.date));
     const values = sortedData.map(item => item.value);
     
@@ -742,48 +722,7 @@ const VegetationAnalysis = ({ dateRange = {} }) => {
       labels,
       datasets: [
         {
-          label: 'PSRI',
-          data: values,
-          fill: true,
-          backgroundColor: 'rgba(56, 142, 60, 0.2)',
-          borderColor: 'rgb(56, 142, 60)',
-          tension: 0.3,
-          pointBackgroundColor: 'rgb(56, 142, 60)',
-          pointBorderColor: 'white',
-          pointBorderWidth: 1.5,
-          pointRadius: 4
-        }
-      ]
-    };
-  };
-
-  const getCri1ChartData = () => {
-    const cri1Data = vegetationIndices.cri1;
-    
-    if (!cri1Data || cri1Data.length === 0) {
-      return {
-        labels: [],
-        datasets: [{
-          label: 'EVI',
-          data: [],
-          fill: true,
-          backgroundColor: 'rgba(75, 192, 75, 0.2)',
-          borderColor: 'rgb(75, 192, 75)',
-          tension: 0.3
-        }]
-      };
-    }
-    
-    // Process the data
-    const sortedData = [...cri1Data].sort((a, b) => new Date(a.date) - new Date(b.date));
-    const labels = sortedData.map(item => formatDate(item.date));
-    const values = sortedData.map(item => item.value);
-    
-    return {
-      labels,
-      datasets: [
-        {
-          label: 'CRI1',
+          label: 'PWI',
           data: values,
           fill: true,
           backgroundColor: 'rgba(56, 142, 60, 0.2)',
@@ -830,13 +769,12 @@ const VegetationAnalysis = ({ dateRange = {} }) => {
   };
   
   // Generate the chart data for rendering
-  const vegetationIndicesChartData = getVegetationIndicesChartData();
-  const ndviChartData = getNdviChartData();
-  const eviChartData = getEviChartData();
-  const gciChartData = getGciChartData();
-  const ndreChartData = getNdreChartData();
-  const psriChartData = getPsriChartData();
-  const cri1ChartData = getCri1ChartData();
+  const fireIndicesChartData = getFireIndicesChartData();
+  const modis_fireChartData = getModis_fireChartData();
+  const viirs_fireChartData = getViirs_fireChartData();
+  const burned_areaChartData = getBurned_areaChartData();
+  const frpChartData = getFrpChartData();
+  const fwiChartData = getFwiChartData();
   const nutrientsChartData = getNutrientsChartData();
   
   // Helper function to get status color
@@ -866,7 +804,7 @@ const VegetationAnalysis = ({ dateRange = {} }) => {
       <div style={{display: "flex", flexDirection: "row", borderBottom: "1px solid rgba(0,0,0,0.2)"}} className="mb-6">
         <h2 className="text-2xl font-bold flex items-center ">
           <FontAwesomeIcon icon={faCarrot} className="text-green-600 mr-2" />
-          Vegetation & Crop Health
+          Fire Analytics
         </h2>
         <div style={{display: "flex", flexDirection: "row", marginLeft: "auto", marginRight: "10px", alignItems: "center"}} class="IntervalRange">
           <p id="Interval">Interval:</p>
@@ -876,10 +814,10 @@ const VegetationAnalysis = ({ dateRange = {} }) => {
         </div>
       </div>
       
-      {loading || vegetationIndices.loading ? (
+      {loading || fireIndices.loading ? (
         <div className="text-center py-10">
           <div className="spinner border-t-4 border-green-500 border-solid rounded-full w-12 h-12 mx-auto mb-4 animate-spin"></div>
-          <p className="text-gray-600">Loading vegetation data...</p>
+          <p className="text-gray-600">Loading fire data...</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -887,7 +825,7 @@ const VegetationAnalysis = ({ dateRange = {} }) => {
           {/* NDVI Chart - Enhanced UI */}
           <div className="bg-white rounded-lg shadow-lg border border-gray-100">
             <div style={{display: "flex",flexDirection: "column",overflowY: "hidden", transitionDuration: "200ms", transitionTimingFunction: "linear", transitionProperty: "all"}} className="flex items-center mb-0 h-8 hover:h-45">
-              <h3 style={{borderBottom: "1px solid rgba(0,0,0,0.2)"}} className="text-lg w-full pl-2 pb-0.5"><b className="font-semibold">NDVI - </b><span style={{fontSize: "17px"}} className="">crop health, greenness, biomass</span></h3>
+              <h3 style={{borderBottom: "1px solid rgba(0,0,0,0.2)"}} className="text-lg w-full pl-2 pb-0.5"><b className="font-semibold">MODIS Fire - </b><span style={{fontSize: "17px"}} className="">crop health, greenness, biomass</span></h3>
   
               <div style={{fontSize: "14px",borderBottom: "1px solid rgba(0,0,0,0.2)"}} class="chart-info-content pl-2 pr-2 pb-1">
                 <p id="defination">It measures the <b>amount and health of green vegetation</b> by comparing how plants reflect near-infrared (NIR) light and absorb red light.</p>
@@ -898,15 +836,15 @@ const VegetationAnalysis = ({ dateRange = {} }) => {
           
             </div>
             <div className="h-72 pl-1 pr-1 ">
-              <div id="ndvi-chart-container" className="w-full h-full" ref={ndviContainerRef}>
-                {chartsVisible.ndvi && (
+              <div id="ndvi-chart-container" className="w-full h-full" ref={modis_fireContainerRef}>
+                {chartsVisible.modis_fire && (
                   <Line 
-                    data={ndviChartData} 
+                    data={modis_fireChartData} 
                     options={getChartOptions('Normalized Difference Vegetation Index', {
                       yAxisTitle: 'NDVI Value',
                       beginAtZero: false
                     })} 
-                    ref={ndviChartRef}
+                    ref={modis_fireChartRef}
                   />
                 )}
               </div>
@@ -916,7 +854,7 @@ const VegetationAnalysis = ({ dateRange = {} }) => {
           <div className="bg-white rounded-lg shadow-lg border border-gray-100">
             <div className="flex items-center mb-0">
               
-                <h3 style={{borderBottom: "1px solid rgba(0,0,0,0.2)"}} className="text-lg w-full pl-2 pb-0.5"><b className="font-semibold">EVI - </b><span style={{fontSize: "17px"}} className="">similar to NDVI, better in dense canopies</span></h3>
+                <h3 style={{borderBottom: "1px solid rgba(0,0,0,0.2)"}} className="text-lg w-full pl-2 pb-0.5"><b className="font-semibold">VIIRS Fire - </b><span style={{fontSize: "17px"}} className="">similar to NDVI, better in dense canopies</span></h3>
             </div>
             
             {/* <div className="mb-0 p-3 bg-green-50 rounded-md text-sm border-l-4 border-green-400">
@@ -926,15 +864,15 @@ const VegetationAnalysis = ({ dateRange = {} }) => {
               <p className="mt-1"><b>Interpretation</b>: Higher values indicate healthier vegetation.</p>
             </div> */}
             <div className="h-72 pl-1 pr-1 ">
-              <div id="evi-chart-container" className="w-full h-full" ref={eviContainerRef}>
-                {chartsVisible.evi && (
+              <div id="evi-chart-container" className="w-full h-full" ref={viirs_fireContainerRef}>
+                {chartsVisible.viirs_fire && (
                   <Line 
-                    data={eviChartData} 
+                    data={viirs_fireChartData} 
                     options={getChartOptions('Enhanced Vegetation Index', {
-                      yAxisTitle: 'EVI Value',
+                      yAxisTitle: 'VIIRS Fire Value',
                       beginAtZero: false
                     })} 
-                    ref={eviChartRef}
+                    ref={viirs_fireChartRef}
                   />
                 )}
               </div>
@@ -944,7 +882,7 @@ const VegetationAnalysis = ({ dateRange = {} }) => {
           <div className="bg-white rounded-lg shadow-lg border border-gray-100">
             <div className="flex items-center mb-0">
               
-              <h3 style={{borderBottom: "1px solid rgba(0,0,0,0.2)"}} className="text-lg w-full pl-2 pb-0.5"><b className="font-semibold">GCI - </b><span style={{fontSize: "17px"}} className="">chlorophyll content, nitrogen</span></h3>
+              <h3 style={{borderBottom: "1px solid rgba(0,0,0,0.2)"}} className="text-lg w-full pl-2 pb-0.5"><b className="font-semibold">Burned Area - </b><span style={{fontSize: "17px"}} className="">chlorophyll content, nitrogen</span></h3>
             </div>
             
             {/* <div className="mb-0 p-3 bg-green-50 rounded-md text-sm border-l-4 border-green-400">
@@ -954,15 +892,15 @@ const VegetationAnalysis = ({ dateRange = {} }) => {
               <p className="mt-1"><b>Interpretation</b>: Higher values indicate healthier vegetation.</p>
             </div> */}
             <div className="h-72 pl-1 pr-1 ">
-              <div id="gci-chart-container" className="w-full h-full" ref={gciContainerRef}>
-                {chartsVisible.gci && (
+              <div id="gci-chart-container" className="w-full h-full" ref={burned_areaContainerRef}>
+                {chartsVisible.burned_area && (
                   <Line 
-                    data={gciChartData} 
+                    data={burned_areaChartData} 
                     options={getChartOptions('Green Chlorophyll Index', {
-                      yAxisTitle: 'GCI Value',
+                      yAxisTitle: 'Burned Area Value',
                       beginAtZero: false
                     })} 
-                    ref={gciChartRef}
+                    ref={burned_areaChartRef}
                   />
                 )}
               </div>
@@ -972,7 +910,7 @@ const VegetationAnalysis = ({ dateRange = {} }) => {
           <div className="bg-white rounded-lg shadow-lg border border-gray-100">
             <div className="flex items-center mb-0">
               
-              <h3 style={{borderBottom: "1px solid rgba(0,0,0,0.2)"}} className="text-lg w-full pl-2 pb-0.5"><b className="font-semibold">PSRI - </b><span style={{fontSize: "17px"}} className="">aging, stress, carotenoid/pigment ratio</span></h3>
+              <h3 style={{borderBottom: "1px solid rgba(0,0,0,0.2)"}} className="text-lg w-full pl-2 pb-0.5"><b className="font-semibold">FRP - </b><span style={{fontSize: "17px"}} className="">aging, stress, carotenoid/pigment ratio</span></h3>
             </div>
             
             {/* <div className="mb-0 p-3 bg-green-50 rounded-md text-sm border-l-4 border-green-400">
@@ -982,15 +920,15 @@ const VegetationAnalysis = ({ dateRange = {} }) => {
               <p className="mt-1"><b>Interpretation</b>: Higher values indicate healthier vegetation.</p>
             </div> */}
             <div className="h-72 pl-1 pr-1 ">
-              <div id="psri-chart-container" className="w-full h-full" ref={psriContainerRef}>
-                {chartsVisible.psri && (
+              <div id="psri-chart-container" className="w-full h-full" ref={frpContainerRef}>
+                {chartsVisible.frp && (
                   <Line 
-                    data={psriChartData} 
+                    data={frpChartData} 
                     options={getChartOptions('Plant Senescence Reflectance Index', {
-                      yAxisTitle: 'PSRI Value',
+                      yAxisTitle: 'FRP Value',
                       beginAtZero: false
                     })} 
-                    ref={psriChartRef}
+                    ref={frpChartRef}
                   />
                 )}
               </div>
@@ -1000,7 +938,7 @@ const VegetationAnalysis = ({ dateRange = {} }) => {
           <div className="bg-white rounded-lg shadow-lg border border-gray-100">
             <div className="flex items-center mb-0">
               
-              <h3 style={{borderBottom: "1px solid rgba(0,0,0,0.2)"}} className="text-lg w-full pl-2 pb-0.5"><b className="font-semibold">NDRE - </b><span style={{fontSize: "17px"}} className="">chlorophyll concentration in canopy</span></h3>
+              <h3 style={{borderBottom: "1px solid rgba(0,0,0,0.2)"}} className="text-lg w-full pl-2 pb-0.5"><b className="font-semibold">FWI - </b><span style={{fontSize: "17px"}} className="">chlorophyll concentration in canopy</span></h3>
             </div>
             
             {/* <div className="mb-0 p-3 bg-green-50 rounded-md text-sm border-l-4 border-green-400">
@@ -1010,38 +948,15 @@ const VegetationAnalysis = ({ dateRange = {} }) => {
               <p className="mt-1"><b>Interpretation</b>: Higher values indicate healthier vegetation.</p>
             </div> */}
             <div className="h-72 pl-1 pr-1 ">
-              <div id="ndre-chart-container" className="w-full h-full" ref={ndreContainerRef}>
-                {chartsVisible.ndre && (
+              <div id="ndre-chart-container" className="w-full h-full" ref={fwiContainerRef}>
+                {chartsVisible.fwi && (
                   <Line 
-                    data={ndreChartData} 
+                    data={fwiChartData} 
                     options={getChartOptions('Normalized Difference Red Edge Index', {
-                      yAxisTitle: 'NDRE Value',
+                      yAxisTitle: 'FWI Value',
                       beginAtZero: false
                     })} 
-                    ref={ndreChartRef}
-                  />
-                )}
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-lg shadow-lg border border-gray-100">
-            <div className="flex items-center mb-0">
-              
-              <h3 style={{borderBottom: "1px solid rgba(0,0,0,0.2)"}} className="text-lg w-full pl-2 pb-0.5"><b className="font-semibold">CRI1 - </b><span style={{fontSize: "17px"}} className="">carotenoid content in leaves (stress-related pigments)</span></h3>
-              
-            </div>
-
-            <div className="h-72 pl-1 pr-1 ">
-              <div id="cri1-chart-container" className="w-full h-full" ref={cri1ContainerRef}>
-                {chartsVisible.cri1 && (
-                  <Line 
-                    data={cri1ChartData} 
-                    options={getChartOptions('Carotenoid Reflectance Index 1', {
-                      yAxisTitle: 'CRI1 Value',
-                      beginAtZero: false
-                    })} 
-                    ref={cri1ChartRef}
+                    ref={fwiChartRef}
                   />
                 )}
               </div>
@@ -1286,4 +1201,4 @@ const VegetationAnalysis = ({ dateRange = {} }) => {
   );
 };
 
-export default VegetationAnalysis;
+export default FireAnalysis;

@@ -15,6 +15,7 @@ import PlantDiseaseDetection from './pages/PlantDiseaseDetection';
 import { AppProvider } from './context/AppContext';
 import VegetationAnalysis from './components/climate/VegetationAnalysis';
 import SoilLandAnalysis from './components/climate/SoilLandAnalysis';
+import FireAnalysis from './components/climate/FireAnalysis';
 import WaterIrrigationAnalysis from './components/climate/WaterIrrigationAnalysis';
 import RainfallAnalysis from './components/climate/RainfallAnalysis';
 import TraderLayout from './components/layout/Trader/TraderLayout';
@@ -44,6 +45,7 @@ function App() {
             <Route path="ai-assistant" element={<AIAssistant />} />
             <Route path="soil" element={<SoilLandAnalysis />} />
             <Route path="vegetation" element={<VegetationAnalysis />} />
+            <Route path="fire" element={<FireAnalysis />} />
             <Route path="water" element={<WaterIrrigationAnalysis dateRange={{ startDate: '2025-01-01', endDate: '2025-09-01' }} />} />
             <Route path="rainfall" element={<RainfallAnalysis dateRange={{ startDate: '2025-01-01', endDate: '2025-09-01' }} />} />
             <Route path="create-field" element={<CreateField />} />

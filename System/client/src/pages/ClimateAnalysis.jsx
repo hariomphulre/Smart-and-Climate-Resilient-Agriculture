@@ -25,6 +25,9 @@ import WeatherAnalysis from '../components/climate/WeatherAnalysis';
 import VegetationAnalysis from '../components/climate/VegetationAnalysis';
 import WaterIrrigationAnalysis from '../components/climate/WaterIrrigationAnalysis';
 import SoilLandAnalysis from '../components/climate/SoilLandAnalysis';
+// import FireAnalysis from '../components/climate/FireAnalysis';
+// import RainfallAnalysis from '../components/climate/RainfallAnalysis';
+// import HazardAnalysis from '../components/climate/HazardAnalysis';
 
 // Import Chart.js components
 import { Line } from 'react-chartjs-2';
@@ -62,25 +65,13 @@ const ClimateAnalysis = () => {
   });
   const [showDateRangePicker, setShowDateRangePicker] = useState(false);
   const [loading, setLoading] = useState(false);
+
   const [weatherData, setWeatherData] = useState({
     temperature: generateMockWeatherData(7, 25, 35),
     humidity: generateMockWeatherData(7, 50, 85),
     rainfall: generateMockWeatherData(7, 0, 25)
   });
-  
-  const [vegetationData, setVegetationData] = useState({
-    ndvi: generateMockNDVIData(7),
-    evi: generateMockNDVIData(7, 0.2, 0.7),
-    gci: generateMockNDVIData(7, 1, 3, false)
-  });
-  
-  const [waterData, setWaterData] = useState({
-    soilMoisture: generateMockWeatherData(7, 30, 70),
-    irrigationEvents: [
-      { date: '2025-08-11', amount: 15 },
-      { date: '2025-08-14', amount: 12 }
-    ]
-  });
+
   
   // Check URL parameters for tab selection on component mount
   useEffect(() => {
@@ -160,21 +151,7 @@ const ClimateAnalysis = () => {
         humidity: generateMockWeatherData(daysDiff, 50, 85),
         rainfall: generateMockWeatherData(daysDiff, 0, 25)
       });
-      
-      setVegetationData({
-        ndvi: generateMockNDVIData(daysDiff),
-        evi: generateMockNDVIData(daysDiff, 0.2, 0.7),
-        gci: generateMockNDVIData(daysDiff, 1, 3, false)
-      });
-      
-      setWaterData({
-        soilMoisture: generateMockWeatherData(daysDiff, 30, 70),
-        irrigationEvents: [
-          { date: '2025-08-11', amount: 15 },
-          { date: '2025-08-14', amount: 12 }
-        ]
-      });
-      
+
       setLoading(false);
       setShowDateRangePicker(false);
     }, 1000);
@@ -218,70 +195,7 @@ const ClimateAnalysis = () => {
       intersect: false
     }
   });
-  
-  // Generate chart data for temperature
-  const temperatureChartData = {
-    labels: weatherData.temperature.map(item => new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })),
-    datasets: [
-      {
-        label: 'Temperature (°C)',
-        data: weatherData.temperature.map(item => item.value),
-        fill: false,
-        borderColor: 'rgb(255, 99, 132)',
-        tension: 0.3,
-        pointBackgroundColor: 'rgb(255, 99, 132)',
-      }
-    ]
-  };
-  
-  // Generate chart data for rainfall
-  const rainfallChartData = {
-    labels: weatherData.rainfall.map(item => new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })),
-    datasets: [
-      {
-        label: 'Rainfall (mm)',
-        data: weatherData.rainfall.map(item => item.value),
-        fill: true,
-        backgroundColor: 'rgba(54, 162, 235, 0.2)',
-        borderColor: 'rgb(54, 162, 235)',
-        tension: 0.3,
-        pointBackgroundColor: 'rgb(54, 162, 235)',
-      }
-    ]
-  };
-  
-  // Generate chart data for NDVI
-  const ndviChartData = {
-    labels: vegetationData.ndvi.map(item => new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })),
-    datasets: [
-      {
-        label: 'NDVI',
-        data: vegetationData.ndvi.map(item => item.value),
-        fill: true,
-        backgroundColor: 'rgba(75, 192, 75, 0.2)',
-        borderColor: 'rgb(75, 192, 75)',
-        tension: 0.3,
-        pointBackgroundColor: 'rgb(75, 192, 75)',
-      }
-    ]
-  };
-  
-  // Generate chart data for soil moisture
-  const soilMoistureChartData = {
-    labels: waterData.soilMoisture.map(item => new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })),
-    datasets: [
-      {
-        label: 'Soil Moisture (%)',
-        data: waterData.soilMoisture.map(item => item.value),
-        fill: true,
-        backgroundColor: 'rgba(54, 162, 235, 0.2)',
-        borderColor: 'rgb(54, 162, 235)',
-        tension: 0.3,
-        pointBackgroundColor: 'rgb(54, 162, 235)',
-      }
-    ]
-  };
-  
+    
   // Render content based on active tab
   const renderContent = () => {
     switch(activeTab) {
@@ -378,7 +292,7 @@ const ClimateAnalysis = () => {
                     <Line data={rainfallChartData} options={getChartOptions('Rainfall Patterns')} />
                   </div>
                 </div>
-                
+
                 {/* Weather Summary */}
                 <div className="bg-white p-4 rounded-lg shadow lg:col-span-2">
                   <h3 className="text-lg font-semibold mb-3">Weather Summary</h3>
@@ -698,6 +612,107 @@ const ClimateAnalysis = () => {
                         <span className="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">Moderate</span>
                       </div>
                     </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        );
+
+      case 'fire':
+        return(
+          <div className="Analytics">
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold flex items-center">
+                <FontAwesomeIcon icon={faDroplet} className="text-blue-500 mr-2" />
+                Fire Activities
+              </h2>
+            </div>
+            
+            {loading ? (
+              <div className="text-center py-10">
+                <div className="spinner border-t-4 border-blue-500 border-solid rounded-full w-12 h-12 mx-auto mb-4 animate-spin"></div>
+                <p className="text-gray-600">Loading fire data...</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className="bg-white p-4 rounded-lg shadow">
+                  <div className="h-80">
+                    <Line data={fireChartData} options={getChartOptions('Fire Activities')} />
+                  </div>
+                </div>
+                
+                {/* Irrigation Recommendations */}
+                <div className="bg-white p-4 rounded-lg shadow">
+                  <h3 className="text-lg font-semibold mb-3">Irrigation Recommendations</h3>
+                  
+                  <div className="space-y-4">
+                    <div className="p-3 bg-blue-50 border-l-4 border-blue-500 rounded">
+                      <div className="flex items-start">
+                        <FontAwesomeIcon icon={faInfoCircle} className="text-blue-500 mt-1 mr-2" />
+                        <div>
+                          <h4 className="font-medium">Next Irrigation Schedule</h4>
+                          <p className="text-sm text-gray-600">Based on soil moisture trends and weather forecast, schedule next irrigation for <span className="font-medium">August 17, 2025</span>.</p>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="p-3 bg-yellow-50 border-l-4 border-yellow-500 rounded">
+                      <div className="flex items-start">
+                        <FontAwesomeIcon icon={faTriangleExclamation} className="text-yellow-500 mt-1 mr-2" />
+                        <div>
+                          <h4 className="font-medium">Water Conservation Alert</h4>
+                          <p className="text-sm text-gray-600">Lower North field section shows higher than average water usage. Consider adjusting irrigation in this area.</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Irrigation History */}
+                <div className="bg-white p-4 rounded-lg shadow lg:col-span-2">
+                  <h3 className="text-lg font-semibold mb-3">Irrigation History</h3>
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full divide-y divide-gray-200">
+                      <thead>
+                        <tr>
+                          <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                          <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Field Section</th>
+                          <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Water Used</th>
+                          <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Duration</th>
+                          <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        </tr>
+                      </thead>
+                      <tbody className="bg-white divide-y divide-gray-200">
+                        <tr>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Aug 14, 2025</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">North Field</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">12,000 L</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">1h 45m</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm">
+                            <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Completed</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Aug 11, 2025</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">All Sections</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">15,000 L</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">2h 15m</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm">
+                            <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Completed</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Aug 8, 2025</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">South Field</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">8,500 L</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">1h 10m</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm">
+                            <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Completed</span>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
                   </div>
                 </div>
               </div>
