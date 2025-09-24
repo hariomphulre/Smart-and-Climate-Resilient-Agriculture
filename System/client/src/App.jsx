@@ -22,10 +22,14 @@ import TraderLayout from './components/layout/Trader/TraderLayout';
 import TraderDashboard from './pages/Trader/TraderDashboard';
 import MarketPrice from './pages/Trader/MarketPrice';
 import EventManagement from './components/Trader/EventManagement';
+import farmers from './components/Trader/connectiondata';
+import Connections from './components/Trader/Connections';
+import TranslateComponent from './components/TranslateComponent';
 
 function App() {
   return (
     <AppProvider>
+      <TranslateComponent />
       <Router>
         <Routes>
           <Route path="/" element={<Auth/>} />
@@ -62,6 +66,7 @@ function App() {
             <Route path="market-price" element={<MarketPrice />} />
             <Route path="*" element={<h1>Trader Page Not Found</h1>} />
             <Route path='event-management' element={<EventManagement/>}/>
+            <Route path='connections' element={<Connections farmersData={farmers}/>}/>
           </Route>
 
         </Routes>

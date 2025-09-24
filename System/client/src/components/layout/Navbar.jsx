@@ -14,6 +14,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import './Navbar.css';
 import { useAppContext } from '../../context/AppContext';
+import { API_URLS } from '../../config';
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -97,9 +98,49 @@ const Navbar = () => {
     }
   };
   
-  const handleLocationChange = (e) => {
-    setSelectedLocation(e.target.value);
+  // Compute centroid for a polygon
+  const getCentroid = (points) => {
+    if (!Array.isArray(points) || points.length === 0) return null;
+    const n = points.length;
+    let latSum = 0;
+    let lngSum = 0;
+    points.forEach(({ lat, lng }) => {
+      latSum += lat;
+      lngSum += lng;
+    });
+    return { lat: latSum / n, lng: lngSum / n };
   };
+
+  // Auto-fetch location name from backend when selectedField changes
+  useEffect(() => {
+    const updateLocationFromBackend = async () => {
+      try {
+        if (!selectedField) return;
+        const field = fields.find(f => String(f.id) === String(selectedField));
+        if (!field || !Array.isArray(field.coordinates) || field.coordinates.length === 0) return;
+        const centroid = getCentroid(field.coordinates);
+        if (!centroid) return;
+        const res = await fetch(API_URLS.WEATHER_COORDINATES, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify([centroid])
+        });
+        const json = await res.json();
+        if (res.ok && json && json.success && Array.isArray(json.data) && json.data.length > 0) {
+          const backendName = json.data[0]?.raw?.name;
+          if (backendName && backendName.trim().length > 0) {
+            setSelectedLocation(backendName);
+            return;
+          }
+        }
+        setSelectedLocation(`${centroid.lat.toFixed(5)}, ${centroid.lng.toFixed(5)}`);
+      } catch (err) {
+        // Silent fallback
+      }
+    };
+    updateLocationFromBackend();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedField, fields]);
   
   const handleSearch = (e) => {
     e.preventDefault();
@@ -227,24 +268,9 @@ const Navbar = () => {
               </button> */}
             </div>
             
-            {/* Location Selector - Desktop */}
-            <div className="hidden md:block relative">
-              <div className="relative">
-                <input 
-                  list="location-options" 
-                  id="location" 
-                  name="location" 
-                  placeholder="📍 Location" 
-                  className="h-9 md:h-10 w-32 md:w-40 border border-green-200 rounded-md px-2.5 md:px-4 py-0 md:py-2 bg-white/90 text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 shadow-sm text-sm transition-all duration-200"
-                  value={selectedLocation}
-                  onChange={handleLocationChange}
-                />
-                <datalist id="location-options">
-                  <option value="DIT Pune" />
-                  <option value="Baramati" />
-                  <option value="Sterling Castle Bhopal" />
-                </datalist>
-              </div>
+            {/* Location Display - Desktop (auto-fetched) */}
+            <div className="hidden md:flex items-center h-9 md:h-10 border border-green-200 rounded-md px-2.5 md:px-3 bg-white/90 text-gray-700 shadow-sm text-sm min-w-[8rem]">
+              <span className="truncate" title={selectedLocation || ''}>📍 {selectedLocation || 'Fetching...'}</span>
             </div>
           </div>
           
@@ -307,24 +333,12 @@ const Navbar = () => {
                 </div>
               </div>
               
-              {/* Mobile Location */}
+              {/* Mobile Location (read-only display) */}
               <div className="mb-4 px-4">
                 <label className="block text-sm font-medium text-green-50 mb-1.5">Location</label>
-                <div className="relative">
-                  <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm">📍</span>
-                  <input 
-                    list="mobile-location-options" 
-                    className="w-full border border-green-100 rounded-md pl-9 pr-3 py-2.5 bg-white text-gray-700 text-sm focus:outline-none focus:ring-2 focus:ring-green-400 shadow-sm"
-                    placeholder="Select Location"
-                    value={selectedLocation}
-                    onChange={handleLocationChange}
-                  />
+                <div className="w-full border border-green-100 rounded-md px-3 py-2.5 bg-white text-gray-700 text-sm shadow-sm">
+                  <span className="truncate">📍 {selectedLocation || 'Fetching...'}</span>
                 </div>
-                <datalist id="mobile-location-options">
-                  <option value="DIT Pune" />
-                  <option value="Baramati" />
-                  <option value="Sterling Castle Bhopal" />
-                </datalist>
               </div>
               
               {/* Mobile Navigation Buttons */}

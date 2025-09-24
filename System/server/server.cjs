@@ -1,9 +1,11 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const fs = require('fs');
 const path = require('path');
 const bodyParser = require('body-parser');
 const multer = require('multer');
+require('dotenv').config(); 
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -55,6 +57,22 @@ const upload = multer({
 // Serve static files for detection results
 app.use('/detect_results', express.static(path.join(__dirname, 'detect_results')));
 app.use('/crop_imgs', express.static(path.join(__dirname, 'crop_imgs')));
+
+// Serve crop recommendation output.json via API
+app.get('/api/crop/output', (req, res) => {
+  try {
+    const filePath = path.join(__dirname, 'crop_prediction', 'crop_data', 'output.json');
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({ success: false, message: 'output.json not found' });
+    }
+    const content = fs.readFileSync(filePath, 'utf8');
+    const json = JSON.parse(content);
+    return res.status(200).json(json);
+  } catch (error) {
+    console.error('Error serving /api/crop/output:', error);
+    return res.status(500).json({ success: false, message: 'Failed to read output.json' });
+  }
+});
 
 // Create directory for field coordinates if it doesn't exist
 const fieldCoordsDir = path.join(__dirname, 'Field_co-ordinates');
@@ -274,7 +292,7 @@ app.delete('/api/fields/:id', (req, res) => {
 app.post('/api/update-manipal', (req, res) => {
   try {
     const { fieldId } = req.body;
-    
+    console.log("from manipal route",req.body);
     if (!fieldId) {
       return res.status(400).json({
         success: false,
@@ -469,6 +487,79 @@ app.get('/api/soil/:fieldId', (req, res) => {
       success: false,
       message: 'Server error while getting soil data'
     });
+  }
+});
+
+const weatherapikey = process.env.OPENWEATHER_API_KEY;
+
+app.post("/api/weather-coordinates", async (req, res) => {
+  try {
+    const coordinates = req.body; 
+
+    if (!Array.isArray(coordinates) || coordinates.length === 0) {
+      return res.status(400).json({ message: "Coordinates array is required" });
+    }
+
+    // Fetch weather data for each coordinate
+    const weatherDataPromises = coordinates.map(async ({ lat, lng }) => {
+      const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&appid=${weatherapikey}&units=metric`;
+      const response = await fetch(url);
+      const data = await response.json();
+
+      // Return only useful info
+      return {
+        simplified: {
+          lat,
+          lng,
+          weather: data.weather[0].description,
+          temperature: data.main.temp,
+          feels_like: data.main.feels_like,
+          humidity: data.main.humidity,
+          wind_speed: data.wind.speed,
+        },
+        raw: data
+      };      
+    });
+
+    const allWeatherData = await Promise.all(weatherDataPromises);
+    res.status(200).json({
+      success: true,
+      data: allWeatherData,
+    });
+  } catch (error) {
+    console.error("Error fetching weather data:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error while fetching weather data",
+    });
+  }
+});
+
+// API endpoint: weather by location name (keeps API key on server)
+app.post("/api/weather-location", async (req, res) => {
+  try {
+    const { location } = req.body || {};
+    if (!location || typeof location !== 'string') {
+      return res.status(400).json({ success: false, message: "location string is required" });
+    }
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${weatherapikey}&units=metric`;
+    const response = await fetch(url);
+    const data = await response.json();
+    if (!response.ok) {
+      return res.status(response.status).json({ success: false, message: data?.message || 'weather fetch failed' });
+    }
+    const simplified = {
+      weather: data.weather?.[0]?.description,
+      temperature: data.main?.temp,
+      feels_like: data.main?.feels_like,
+      humidity: data.main?.humidity,
+      wind_speed: data.wind?.speed,
+    };
+    console.log("this is weather data",data);
+    return res.status(200).json({ success: true, data: { simplified} });
+  } catch (error) {
+    console.error('Error fetching weather by location:', error);
+    return res.status(500).json({ success: false, message: 'Server error while fetching weather by location' });
   }
 });
 
