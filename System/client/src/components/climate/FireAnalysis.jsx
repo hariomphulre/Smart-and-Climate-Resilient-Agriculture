@@ -15,7 +15,7 @@ import {
 import { Chart as ChartJS, LineElement, PointElement, BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend, Filler } from 'chart.js';
 import { Line, Bar } from 'react-chartjs-2';
 import { useAppContext } from '../../context/AppContext';
-import { fetchVegetationData } from '../../services/climateService';
+import { fetchVegetationData, fetchFireData } from '../../services/climateService';
 import Papa from 'papaparse';
 
 // Register ChartJS components
@@ -101,13 +101,13 @@ const FireAnalysis = ({ dateRange = {} }) => {
   
   // Track chart visibility to prevent errors
   const [chartsVisible, setChartsVisible] = useState({
-    modis_fire: false,
-    viirs_fire: false,
-    burned_area: false,
-    frp: false,
-    fwi: false,
-    fireIndices: false,
-    nutrients: false
+    modis_fire: true,
+    viirs_fire: true,
+    burned_area: true,
+    frp: true,
+    fwi: true,
+    fireIndices: true,
+    nutrients: true
   });
   
   // Function to safely destroy a chart instance
@@ -127,11 +127,11 @@ const FireAnalysis = ({ dateRange = {} }) => {
   useEffect(() => {
     const checkVisibility = () => {
       setChartsVisible({
-        modis_fire: !!document.getElementById('modis_fire-chart-container'),
-        viirs_fire: !!document.getElementById('viirs_fire-chart-container'),
-        burned_area: !!document.getElementById('burned_area-chart-container'),
-        frp: !!document.getElementById('frp-chart-container'),
-        fwi: !!document.getElementById('fwi-chart-container'),
+        modis_fire: !!document.getElementById('ndvi-chart-container'),
+        viirs_fire: !!document.getElementById('evi-chart-container'),
+        burned_area: !!document.getElementById('gci-chart-container'),
+        frp: !!document.getElementById('psri-chart-container'),
+        fwi: !!document.getElementById('ndre-chart-container'),
         fireIndices: !!document.getElementById('fire-indices-chart-container'),
         nutrients: !!document.getElementById('nutrients-chart-container')
       });

@@ -25,7 +25,7 @@ import WeatherAnalysis from '../components/climate/WeatherAnalysis';
 import VegetationAnalysis from '../components/climate/VegetationAnalysis';
 import WaterIrrigationAnalysis from '../components/climate/WaterIrrigationAnalysis';
 import SoilLandAnalysis from '../components/climate/SoilLandAnalysis';
-// import FireAnalysis from '../components/climate/FireAnalysis';
+import FireAnalysis from '../components/climate/FireAnalysis';
 // import RainfallAnalysis from '../components/climate/RainfallAnalysis';
 // import HazardAnalysis from '../components/climate/HazardAnalysis';
 
@@ -748,7 +748,7 @@ const ClimateAnalysis = () => {
       </div> */}
 
       {/* Enhanced Tab Navigation */}
-      {/* <div className="mb-6 border-b border-gray-200">
+      <div className="mb-6 border-b border-gray-200">
         <nav className="-mb-px flex space-x-6 overflow-x-auto">
           <button
             onClick={() => setActiveTab('weather')}
@@ -822,7 +822,7 @@ const ClimateAnalysis = () => {
             Fire & Hazards
           </button>
         </nav>
-      </div> */}
+      </div>
 
       {/* Render analysis component based on selected tab */}
       <div className="analysis-container">
@@ -847,7 +847,11 @@ const ClimateAnalysis = () => {
           <WaterIrrigationAnalysis dateRange={dateRange} />
         )}
         
-        {(activeTab === 'rainfall' || activeTab === 'fire') && (
+        {activeTab === 'fire' && (
+          <FireAnalysis dateRange={dateRange} />
+        )}
+        
+        {activeTab === 'rainfall' && (
           <div className="Analytics">
             <div className="bg-white p-6 rounded-lg shadow text-center">
               <h3 className="text-xl font-semibold mb-2">Feature Coming Soon</h3>

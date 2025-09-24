@@ -82,7 +82,7 @@ aoi = ee.Geometry.Polygon(coordinates)
 
 s2 = ee.ImageCollection('COPERNICUS/S2_SR_HARMONIZED') \
     .filterBounds(aoi) \
-    .filterDate('2025-01-01', '2025-04-01') \
+    .filterDate('2023-01-01', '2024-12-01') \
     .filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 20))
 
 parameters = ["modis_fire", "viirs_fire", "burned_area", "frp", "fwi"]

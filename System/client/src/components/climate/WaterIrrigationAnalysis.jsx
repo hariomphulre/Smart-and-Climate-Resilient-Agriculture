@@ -762,9 +762,9 @@ const WaterIrrigationAnalysis = ({ dateRange = {} }) => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {/* Soil Moisture Chart - Enhanced UI */}
-          <div className="bg-white p-5 rounded-lg shadow-lg border border-gray-100">
+          <div className="bg-white rounded-lg shadow-lg border border-gray-100">
             <div style={{display: "flex",flexDirection: "column",overflowY: "hidden", transitionDuration: "200ms", transitionTimingFunction: "linear", transitionProperty: "all"}} className="flex items-center mb-0 h-8 hover:h-45">
-              <h3 style={{borderBottom: "1px solid rgba(0,0,0,0.2)"}} className="text-lg w-full pl-2 pb-0.5"><b className="font-semibold">NDWI - </b><span style={{fontSize: "17px"}} className="">crop health, greenness, biomass</span></h3>
+              <h3 style={{borderBottom: "1px solid rgba(0,0,0,0.2)"}} className="text-lg w-full pl-2 pb-0.5"><b className="font-semibold">NDWI - </b><span style={{fontSize: "17px"}} className="">highlights open water bodies</span></h3>
   
               <div style={{fontSize: "14px",borderBottom: "1px solid rgba(0,0,0,0.2)"}} class="chart-info-content pl-2 pr-2 pb-1">
                 <p id="defination">It measures the <b>amount and health of green vegetation</b> by comparing how plants reflect near-infrared (NIR) light and absorb red light.</p>
@@ -786,12 +786,17 @@ const WaterIrrigationAnalysis = ({ dateRange = {} }) => {
             </div>
           </div>
 
-          <div className="bg-white p-5 rounded-lg shadow-lg border border-gray-100">
-            <div className="flex items-center mb-4">
-              <span className="text-blue-600 mr-3">
-                <FontAwesomeIcon icon={faTint} size="lg" />
-              </span>
-              <h3 className="text-lg font-semibold">Soil Moisture Trends</h3>
+          <div className="bg-white rounded-lg shadow-lg border border-gray-100">
+            <div style={{display: "flex",flexDirection: "column",overflowY: "hidden", transitionDuration: "200ms", transitionTimingFunction: "linear", transitionProperty: "all"}} className="flex items-center mb-0 h-8 hover:h-45">
+              <h3 style={{borderBottom: "1px solid rgba(0,0,0,0.2)"}} className="text-lg w-full pl-2 pb-0.5"><b className="font-semibold">NDMI - </b><span style={{fontSize: "17px"}} className="">drought stress, crop water availability</span></h3>
+  
+              <div style={{fontSize: "14px",borderBottom: "1px solid rgba(0,0,0,0.2)"}} class="chart-info-content pl-2 pr-2 pb-1">
+                <p id="defination">It measures the <b>amount and health of green vegetation</b> by comparing how plants reflect near-infrared (NIR) light and absorb red light.</p>
+                <p id="scale-range">Range: -1 to +1</p>
+                <p id="scale-increase"><b>Increase</b>: Vigorous plant growth, high leaf area.</p>
+                <p id="scale-decrease"><b>Decrease</b>: Sparse or stressed vegetation.</p>
+              </div>
+          
             </div>
             <div className="h-80">
               <Line 
@@ -805,12 +810,17 @@ const WaterIrrigationAnalysis = ({ dateRange = {} }) => {
             </div>
           </div>
 
-          <div className="bg-white p-5 rounded-lg shadow-lg border border-gray-100">
-            <div className="flex items-center mb-4">
-              <span className="text-blue-600 mr-3">
-                <FontAwesomeIcon icon={faTint} size="lg" />
-              </span>
-              <h3 className="text-lg font-semibold">Soil Moisture Trends</h3>
+          <div className="bg-white rounded-lg shadow-lg border border-gray-100">
+            <div style={{display: "flex",flexDirection: "column",overflowY: "hidden", transitionDuration: "200ms", transitionTimingFunction: "linear", transitionProperty: "all"}} className="flex items-center mb-0 h-8 hover:h-45">
+              <h3 style={{borderBottom: "1px solid rgba(0,0,0,0.2)"}} className="text-lg w-full pl-2 pb-0.5"><b className="font-semibold">LSWI - </b><span style={{fontSize: "17px"}} className="">vegetation water content & soil moisture</span></h3>
+  
+              <div style={{fontSize: "14px",borderBottom: "1px solid rgba(0,0,0,0.2)"}} class="chart-info-content pl-2 pr-2 pb-1">
+                <p id="defination">It measures the <b>amount and health of green vegetation</b> by comparing how plants reflect near-infrared (NIR) light and absorb red light.</p>
+                <p id="scale-range">Range: -1 to +1</p>
+                <p id="scale-increase"><b>Increase</b>: Vigorous plant growth, high leaf area.</p>
+                <p id="scale-decrease"><b>Decrease</b>: Sparse or stressed vegetation.</p>
+              </div>
+          
             </div>
             <div className="h-80">
               <Line 
@@ -824,12 +834,17 @@ const WaterIrrigationAnalysis = ({ dateRange = {} }) => {
             </div>
           </div>
 
-          <div className="bg-white p-5 rounded-lg shadow-lg border border-gray-100">
-            <div className="flex items-center mb-4">
-              <span className="text-blue-600 mr-3">
-                <FontAwesomeIcon icon={faTint} size="lg" />
-              </span>
-              <h3 className="text-lg font-semibold">Soil Moisture Trends</h3>
+          <div className="bg-white rounded-lg shadow-lg border border-gray-100">
+            <div style={{display: "flex",flexDirection: "column",overflowY: "hidden", transitionDuration: "200ms", transitionTimingFunction: "linear", transitionProperty: "all"}} className="flex items-center mb-0 h-8 hover:h-45">
+              <h3 style={{borderBottom: "1px solid rgba(0,0,0,0.2)"}} className="text-lg w-full pl-2 pb-0.5"><b className="font-semibold">AWEI - </b><span style={{fontSize: "17px"}} className="">open water detection</span></h3>
+  
+              <div style={{fontSize: "14px",borderBottom: "1px solid rgba(0,0,0,0.2)"}} class="chart-info-content pl-2 pr-2 pb-1">
+                <p id="defination">It measures the <b>amount and health of green vegetation</b> by comparing how plants reflect near-infrared (NIR) light and absorb red light.</p>
+                <p id="scale-range">Range: -1 to +1</p>
+                <p id="scale-increase"><b>Increase</b>: Vigorous plant growth, high leaf area.</p>
+                <p id="scale-decrease"><b>Decrease</b>: Sparse or stressed vegetation.</p>
+              </div>
+          
             </div>
             <div className="h-80">
               <Line 
@@ -843,13 +858,17 @@ const WaterIrrigationAnalysis = ({ dateRange = {} }) => {
             </div>
           </div>
 
-          <div className="bg-white p-5 rounded-lg shadow-lg border border-gray-100">
-            <div className="flex items-center mb-4">
-              <span className="text-blue-600 mr-3">
-                <FontAwesomeIcon icon={faTint} size="lg" />
-              </span>
-              <h3 className="text-lg font-semibold">Soil Moisture Trends</h3>
+          <div className="bg-white rounded-lg shadow-lg border border-gray-100">
+            <div className="flex items-center mb-0">
+              <h3 style={{borderBottom: "1px solid rgba(0,0,0,0.2)"}} className="text-lg w-full pl-2 pb-0.5"><b className="font-semibold">CRI1 - </b><span style={{fontSize: "17px"}} className="">carotenoid content in leaves (stress-related pigments)</span></h3>
+              {/* <div style={{fontSize: "14px",borderBottom: "1px solid rgba(0,0,0,0.2)"}} class="chart-info-content pl-2 pr-2 pb-1">
+                <p id="defination">It measures the <b>amount and health of green vegetation</b> by comparing how plants reflect near-infrared (NIR) light and absorb red light.</p>
+                <p id="scale-range">Range: -1 to +1</p>
+                <p id="scale-increase"><b>Increase</b>: Vigorous plant growth, high leaf area.</p>
+                <p id="scale-decrease"><b>Decrease</b>: Sparse or stressed vegetation.</p>
+              </div> */}
             </div>
+        
             <div className="h-80">
               <Line 
                 data={mndwiChartData} 
@@ -862,12 +881,17 @@ const WaterIrrigationAnalysis = ({ dateRange = {} }) => {
             </div>
           </div>
 
-          <div className="bg-white p-5 rounded-lg shadow-lg border border-gray-100">
-            <div className="flex items-center mb-4">
-              <span className="text-blue-600 mr-3">
-                <FontAwesomeIcon icon={faTint} size="lg" />
-              </span>
-              <h3 className="text-lg font-semibold">Soil Moisture Trends</h3>
+          <div className="bg-white rounded-lg shadow-lg border border-gray-100">
+            <div style={{display: "flex",flexDirection: "column",overflowY: "hidden", transitionDuration: "200ms", transitionTimingFunction: "linear", transitionProperty: "all"}} className="flex items-center mb-0 h-8 hover:h-45">
+              <h3 style={{borderBottom: "1px solid rgba(0,0,0,0.2)"}} className="text-lg w-full pl-2 pb-0.5"><b className="font-semibold">SARWI - </b><span style={{fontSize: "17px"}} className="">Highlights algal blooms / water turbidity</span></h3>
+  
+              <div style={{fontSize: "14px",borderBottom: "1px solid rgba(0,0,0,0.2)"}} class="chart-info-content pl-2 pr-2 pb-1">
+                <p id="defination">It measures the <b>amount and health of green vegetation</b> by comparing how plants reflect near-infrared (NIR) light and absorb red light.</p>
+                <p id="scale-range">Range: -1 to +1</p>
+                <p id="scale-increase"><b>Increase</b>: Vigorous plant growth, high leaf area.</p>
+                <p id="scale-decrease"><b>Decrease</b>: Sparse or stressed vegetation.</p>
+              </div>
+          
             </div>
             <div className="h-80">
               <Line 
@@ -881,12 +905,15 @@ const WaterIrrigationAnalysis = ({ dateRange = {} }) => {
             </div>
           </div>
 
-          <div className="bg-white p-5 rounded-lg shadow-lg border border-gray-100">
-            <div className="flex items-center mb-4">
-              <span className="text-blue-600 mr-3">
-                <FontAwesomeIcon icon={faTint} size="lg" />
-              </span>
-              <h3 className="text-lg font-semibold">Soil Moisture Trends</h3>
+          <div className="bg-white rounded-lg shadow-lg border border-gray-100">
+            <div className="flex items-center mb-0">
+              <h3 style={{borderBottom: "1px solid rgba(0,0,0,0.2)"}} className="text-lg w-full pl-2 pb-0.5"><b className="font-semibold">EWI - </b><span style={{fontSize: "17px"}} className="">Typically designed to enhance water body extraction under complex land cover</span></h3>
+              {/* <div style={{fontSize: "14px",borderBottom: "1px solid rgba(0,0,0,0.2)"}} class="chart-info-content pl-2 pr-2 pb-1">
+                <p id="defination">It measures the <b>amount and health of green vegetation</b> by comparing how plants reflect near-infrared (NIR) light and absorb red light.</p>
+                <p id="scale-range">Range: -1 to +1</p>
+                <p id="scale-increase"><b>Increase</b>: Vigorous plant growth, high leaf area.</p>
+                <p id="scale-decrease"><b>Decrease</b>: Sparse or stressed vegetation.</p>
+              </div> */}
             </div>
             <div className="h-80">
               <Line 
