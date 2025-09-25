@@ -1,9 +1,9 @@
 {
-    "N": 198,
-    "P": 110,
-    "K": 10,
-    "temperature": 40,
-    "humidity": 9,
-    "ph": 6.5,
-    "rainfall": 600
-}
+    "N": 243,
+    "P": 122,
+    "K": 81,
+    "temperature": 27,
+    "humidity": 75,
+    "ph": 7.4,
+    "rainfall": 0
+}   

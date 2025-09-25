@@ -35,9 +35,11 @@ const TranslateComponent = () => {
     top: "1px",
     right: "1px",
     zIndex: 70,
+    height: "auto",
+    weight: "300px",
     backgroundColor: "white",
     padding: "1px",
-    borderRadius: "1px",
+    borderRadius: "4px",
     boxShadow: "0 0px 0px rgba(0,0,0,0.2)",
   };
 
