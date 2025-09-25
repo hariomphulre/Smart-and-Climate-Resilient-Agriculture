@@ -562,7 +562,6 @@ app.post("/api/weather-location", async (req, res) => {
   }
 });
 
-const NEWS_KEY = process.env.NEWSDATA_API_KEY;
 
 app.get("/api/agri-news", async (req, res) => {
   console.log("📩 Incoming request:", req.query);
@@ -588,6 +587,60 @@ app.get("/api/agri-news", async (req, res) => {
     res.status(500).json({ status: "error", message: "Server error" });
   }
 
+});
+
+const new_weather_api = process.env.WEATHER_API_KEY;
+
+function getDatesBetween(startDate, endDate) {
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+  const dates = [];
+
+  for (let dt = new Date(start); dt <= end; dt.setDate(dt.getDate() + 1)) {
+    dates.push(new Date(dt).toISOString().split('T')[0]); // Format: YYYY-MM-DD
+  }
+
+  return dates;
+}
+
+app.get("/api/weather-for-farmer", async (req, res) => {
+  try {
+    const { lat, lng, start, end } = req.query; // GET uses req.query
+
+    if (!lat || !lng || !start || !end) {
+      return res.status(400).json({ error: "lat, lon, start, and end are required" });
+    }
+
+    const dates = getDatesBetween(start, end);
+    const results = [];
+
+    for (const date of dates) {
+      const response = await fetch(
+        `http://api.weatherapi.com/v1/history.json?key=${new_weather_api}&q=${lat},${lng}&dt=${date}`
+      );
+      const data = await response.json();
+
+      if (data.forecast) {
+        const day = data.forecast.forecastday[0].day;
+
+        results.push({
+          date,
+          value: day.avgtemp_c, // simplified structure
+          humidity: day.avghumidity,
+          rainfall: day.totalprecip_mm,
+        });
+      }
+    }
+    console.log(results);
+    res.json({
+      temperature: results.map(r => ({ date: r.date, value: r.value })),
+      humidity: results.map(r => ({ date: r.date, value: r.humidity })),
+      rainfall: results.map(r => ({ date: r.date, value: r.rainfall })),
+    });
+  } catch (err) {
+    console.error("Error fetching weather:", err);
+    res.status(500).json({ error: "Failed to fetch weather data" });
+  }
 });
 
 // Serve static files from public directory for production
