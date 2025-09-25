@@ -6,18 +6,29 @@ export default function App() {
   const [commodity, setCommodity] = useState("Soyabean");
   const [state, setState] = useState("Maharashtra");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const API_KEY = import.meta.env.VITE_DATA_GOV_API_KEY;
 
   const fetchData = async () => {
     setLoading(true);
+    setError("");
     try {
-      const url = `https://api.data.gov.in/resource/9ef84268-d588-465a-a308-a864a43d0070?api-key=${API_KEY}&format=json&limit=20&filters[state]=${state}&filters[commodity]=${commodity}`;
+      if (!API_KEY) {
+        throw new Error('VITE_DATA_GOV_API_KEY is not set');
+      }
+      const encState = encodeURIComponent(state);
+      const encCommodity = encodeURIComponent(commodity);
+      const url = `https://api.data.gov.in/resource/9ef84268-d588-465a-a308-a864a43d0070?api-key=${API_KEY}&format=json&limit=20&filters[state]=${encState}&filters[commodity]=${encCommodity}`;
       const res = await fetch(url);
       const json = await res.json();
-      setData(json.records || []);
+      if (!res.ok) {
+        throw new Error(json?.message || 'Upstream API error');
+      }
+      setData(Array.isArray(json.records) ? json.records : []);
     } catch (error) {
       console.error('Error fetching data:', error);
+      setError(error?.message || 'Failed to fetch');
     } finally {
       setLoading(false);
     }
@@ -65,6 +76,11 @@ export default function App() {
             <Filter className="w-5 h-5 text-gray-600" />
             <h2 className="text-lg font-semibold text-gray-900">Search Filters</h2>
           </div>
+          {error && (
+            <div className="mb-4 p-3 rounded-md bg-red-50 border border-red-200 text-red-700 text-sm">
+              {error}
+            </div>
+          )}
           
           <div className="grid md:grid-cols-4 gap-4">
             <div className="space-y-2">

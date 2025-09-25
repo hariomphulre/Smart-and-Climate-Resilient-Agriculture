@@ -589,20 +589,6 @@ app.get("/api/agri-news", async (req, res) => {
 
 });
 
-const new_weather_api = process.env.WEATHER_API_KEY;
-
-function getDatesBetween(startDate, endDate) {
-  const start = new Date(startDate);
-  const end = new Date(endDate);
-  const dates = [];
-
-  for (let dt = new Date(start); dt <= end; dt.setDate(dt.getDate() + 1)) {
-    dates.push(new Date(dt).toISOString().split('T')[0]); // Format: YYYY-MM-DD
-  }
-
-  return dates;
-}
-
 app.get("/api/weather-for-farmer", async (req, res) => {
   try {
     const { lat, lng, start, end } = req.query; // GET uses req.query
