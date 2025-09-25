@@ -45,6 +45,7 @@ function App() {
             <Route path="financial-aid" element={<FinancialAid />} />
             <Route path="water-management" element={<WaterManagement />} />
             <Route path="irrigation" element={<WaterManagement />} />
+            <Route path="market-price" element={<MarketPrice />} />
             <Route path="reports" element={<h1>Reports Page (Coming Soon)</h1>} />
             <Route path="ai-assistant" element={<AIAssistant />} />
             <Route path="soil" element={<SoilLandAnalysis />} />

@@ -210,6 +210,22 @@ const Sidebar = ({ isSidebarOpen, isCollapsed, toggleSidebar }) => {
                 </li>
                 <li>
                   <Link
+                    to="/market-price"
+                    className={`flex items-center px-3 py-2.5 rounded-lg ${isCollapsed ? 'justify-center' : ''} ${
+                      isActive('/market-price') 
+                        ? 'bg-green-100 text-green-800 font-medium shadow-sm border-l-4 border-green-600' 
+                        : 'text-gray-700 hover:bg-green-100 hover:text-green-700'
+                    } group transition-all duration-100`}
+                  >
+                    <FontAwesomeIcon
+                      icon={faRupeeSign}
+                      className={`w-5 h-5 ${isActive('/market-price') ? 'text-green-700' : 'text-gray-500 group-hover:text-gray-900'}`}
+                    />
+                    {!isCollapsed && <span className="ml-3 whitespace-nowrap">Market Prices</span>}
+                  </Link>
+                </li>
+                <li>
+                  <Link
                     to="/plant-disease-detection"
                     className={`flex items-center px-3 py-2.5 rounded-lg ${isCollapsed ? 'justify-center' : ''} ${
                       isActive('/plant-disease-detection') 

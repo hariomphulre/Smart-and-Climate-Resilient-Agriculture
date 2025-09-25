@@ -79,6 +79,39 @@ export const fetchWeatherByLocation = async (location) => {
   }
 };
 
+export async function getWeatherByCoordinates(lat, lng, startDate, endDate) {
+  try {
+    if (typeof lat !== "number" || typeof lng !== "number") {
+      throw new Error("Invalid coordinates");
+    }
+
+    const response = await fetch(
+      `http://localhost:5000/api/weather-for-farmer?lat=${lat}&lng=${lng}&start=${startDate}&end=${endDate}`
+    );    
+
+    if (!response.ok) {
+      throw new Error(`Weather API request failed with status ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log("hello", data); // <-- this is the correct data object
+
+    return {
+      temperature: data.temperature || [],
+      humidity: data.humidity || [],
+      rainfall: data.rainfall || []
+    };
+  } catch (error) {
+    console.error("Error fetching weather data:", error);
+    return {
+      temperature: [],
+      humidity: [],
+      rainfall: []
+    };
+  }
+}
+
+
 // Function to fetch all fields
 export const fetchFields = async () => {
   try {
